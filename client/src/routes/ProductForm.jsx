@@ -10,6 +10,7 @@ import {
   Input,
   Textarea,
   Button,
+  Center,
 } from "@chakra-ui/react"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -40,55 +41,68 @@ export default function ProductForm() {
   function handleSubmit(e) {
     e.preventDefault()
 
-    axios
-      .post("/product", { name, price, description })
-      .then((res) => navigate(`/product/${res.data.slug}`))
-      .catch((err) => {
-        if (err.response) {
-          setErrors(err.response.data.errors)
-        }
-      })
+    if (slug) {
+      axios
+        .put(`/product/${slug}`, { name, price, description })
+        .then((res) => navigate(`/product/${res.data.slug}`))
+        .catch((err) => {
+          if (err.response) {
+            setErrors(err.response.data.errors)
+          }
+        })
+    } else {
+      axios
+        .post("/product", { name, price, description })
+        .then((res) => navigate(`/product/${res.data.slug}`))
+        .catch((err) => {
+          if (err.response) {
+            setErrors(err.response.data.errors)
+          }
+        })
+    }
   }
 
   return (
-    <Box m="auto" maxW="sm">
-      <Heading mb="4">{heading}</Heading>
-      <form onSubmit={handleSubmit}>
-        <VStack spacing="4">
-          <FormControl isInvalid={errors.name}>
-            <FormLabel>Name</FormLabel>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-            {errors.name && (
-              <FormErrorMessage>{errors.name.msg}</FormErrorMessage>
-            )}
-          </FormControl>
+    <Center minH="100vh" bg="gray.100">
+      <Box bg="white" p="12" width="30rem" rounded="md" boxShadow="lg">
+        <Heading mb="4">{heading}</Heading>
+        <form onSubmit={handleSubmit}>
+          <VStack spacing="4">
+            <FormControl isInvalid={errors.name}>
+              <FormLabel>Name</FormLabel>
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              {errors.name && (
+                <FormErrorMessage>{errors.name.msg}</FormErrorMessage>
+              )}
+            </FormControl>
 
-          <FormControl isInvalid={errors.price}>
-            <FormLabel>Price</FormLabel>
-            <Input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-            {errors.price && (
-              <FormErrorMessage>{errors.price.msg}</FormErrorMessage>
-            )}
-          </FormControl>
+            <FormControl isInvalid={errors.price}>
+              <FormLabel>Price</FormLabel>
+              <Input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              {errors.price && (
+                <FormErrorMessage>{errors.price.msg}</FormErrorMessage>
+              )}
+            </FormControl>
 
-          <FormControl isInvalid={errors.description}>
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            {errors.description && (
-              <FormErrorMessage>{errors.description.msg}</FormErrorMessage>
-            )}
-          </FormControl>
+            <FormControl isInvalid={errors.description}>
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              {errors.description && (
+                <FormErrorMessage>{errors.description.msg}</FormErrorMessage>
+              )}
+            </FormControl>
 
-          <Button type="submit">Submit</Button>
-        </VStack>
-      </form>
-    </Box>
+            <Button type="submit">Submit</Button>
+          </VStack>
+        </form>
+      </Box>
+    </Center>
   )
 }
