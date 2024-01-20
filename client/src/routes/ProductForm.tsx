@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "../axios"
 import { useNavigate, useParams } from "react-router-dom"
+import { Button } from "../components/Button"
 
 export default function ProductForm() {
   const [name, setName] = useState("")
@@ -72,6 +73,7 @@ export default function ProductForm() {
               <textarea name="desc" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
             </div>
             <button>{btnText}</button>
+            <Button>{btnText}</Button>
           </div>
         </form>
       </main>

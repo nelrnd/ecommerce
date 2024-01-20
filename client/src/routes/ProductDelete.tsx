@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import useFetch from "../hooks/useFetch"
-import axios from "../axios"
+import axios from "../axios.ts"
 import NotFound from "./NotFound"
 
 export default function ProductDelete() {
@@ -13,10 +13,6 @@ export default function ProductDelete() {
       .delete(`/product/${slug}`)
       .catch((err) => console.log(err))
       .finally(() => navigate("/"))
-  }
-
-  if (loading) {
-    return <Spinner />
   }
 
   if (!product) {

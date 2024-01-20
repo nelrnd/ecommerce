@@ -69,6 +69,8 @@ export function DashboardIndex() {
 export function DashboardProducts() {
   const [products, loading] = useFetch("/product")
 
+  console.log(products)
+
   return (
     <div className="max-w-[64rem] m-auto bg-white rounded">
       <header className="p-8">

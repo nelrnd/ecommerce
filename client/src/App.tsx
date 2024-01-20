@@ -3,11 +3,23 @@ import Home from "./routes/Home"
 import ProductForm from "./routes/ProductForm"
 import ProductDelete from "./routes/ProductDelete"
 import Dashboard, { DashboardIndex, DashboardProducts } from "./routes/Dashboard"
+import Root from "./routes/Root"
+import Product from "./routes/Product"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "/product/:slug",
+        element: <Product />,
+      },
+    ],
   },
   {
     path: "/dashboard",
