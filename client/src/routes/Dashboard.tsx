@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { BiSolidHome, BiGridAlt, BiPlus, BiShow, BiTrash } from "react-icons/bi"
+import { BiSolidHome, BiGridAlt, BiPlus, BiShow, BiTrash, BiLinkExternal } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 
 const tabs = [
@@ -17,6 +17,11 @@ const tabs = [
     name: "Create product",
     href: "/dashboard/product/create",
     icon: <BiPlus />,
+  },
+  {
+    name: "Go to site",
+    href: "/",
+    icon: <BiLinkExternal />,
   },
 ]
 
