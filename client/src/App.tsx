@@ -4,7 +4,7 @@ import ProductForm from "./routes/ProductForm"
 import ProductDelete from "./routes/ProductDelete"
 import Dashboard, { DashboardIndex, DashboardProducts } from "./routes/Dashboard"
 import Root from "./routes/Root"
-import Product from "./routes/Product"
+import Product from "./components/Product"
 
 const router = createBrowserRouter([
   {

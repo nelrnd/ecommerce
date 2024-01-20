@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { BiSolidHome, BiGridAlt, BiPlus, BiShow } from "react-icons/bi"
+import { BiSolidHome, BiGridAlt, BiPlus, BiShow, BiTrash } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 
 const tabs = [
@@ -100,6 +100,12 @@ function DashboardProductTab({ product }) {
           <div className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 flex items-center gap-2">
             <BiShow />
             <span>PREVIEW</span>
+          </div>
+        </Link>
+        <Link to={`/dashboard/product/${product.slug}/delete`}>
+          <div className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 flex items-center gap-2">
+            <BiTrash />
+            <span>DELETE</span>
           </div>
         </Link>
       </div>

@@ -12,26 +12,26 @@ export default function ProductDelete() {
     axios
       .delete(`/product/${slug}`)
       .catch((err) => console.log(err))
-      .finally(() => navigate("/"))
+      .finally(() => navigate(-1))
   }
 
   if (!product) {
     return <NotFound />
   }
 
-  return <h1>Product delete</h1>
+  return (
+    <div className="max-w-[64rem] m-auto bg-white rounded">
+      <div className="max-w-[52rem] m-auto">
+        <header className="p-8">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Delete product</h1>
+        </header>
+        <main className="p-8 pt-0">
+          <p className="text-gray-600">Do you really wish to delete that product?</p>
+          <button onClick={handleClick} className="mt-4 px-6 py-3 bg-red-600 text-white hover:bg-red-700 rounded">
+            Delete
+          </button>
+        </main>
+      </div>
+    </div>
+  )
 }
-
-/*
-    <Center minH="100vh" bg="gray.100">
-      <Box bg="white" p="12" width="30rem" rounded="md" boxShadow="lg">
-        <Heading mb="4">Delete product</Heading>
-        <Text color="gray.600" mb="4">
-          Do you really wish to delete this product?
-        </Text>
-        <Button onClick={handleClick} colorScheme="red">
-          Delete
-        </Button>
-      </Box>
-    </Center>
-    */

@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator")
 const Product = require("../models/product")
 
 const create_slug = async (req, res, next) => {
-  const name = req.body.name
+  const { name, id } = req.body
   if (!name) {
     return next()
   }
@@ -17,14 +17,12 @@ const create_slug = async (req, res, next) => {
     if (i > 0) {
       slug += "-" + i
     }
-    exists = await Product.exists({ slug: slug }).exec()
+    exists = await Product.exists({ _id: { $ne: id }, slug: slug }).exec()
     i++
   }
 
   if (i === MAX_TRIES) {
-    return res
-      .status(500)
-      .json({ error: "Tried generating slug too many times" })
+    return res.status(500).json({ error: "Tried generating slug too many times" })
   }
 
   req.body.slug = slug
@@ -44,17 +42,12 @@ exports.product_create = [
     .isLength({ min: 3, max: 200 })
     .withMessage("Name must be between 3 and 200 characters")
     .escape(),
-  body("price")
-    .notEmpty()
-    .withMessage("Price is required")
-    .isNumeric()
-    .withMessage("Price must be a number")
-    .escape(),
+  body("price").notEmpty().withMessage("Price is required").isNumeric().withMessage("Price must be a number").escape(),
   body("description")
-    .optional()
     .isLength({ min: 3, max: 1000 })
     .withMessage("Description must be between 3 and 1000 characters")
-    .escape(),
+    .escape()
+    .optional({ values: "falsy" }),
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -89,13 +82,9 @@ exports.product_update = [
     .isLength({ min: 3, max: 200 })
     .withMessage("Name must be between 3 and 200 characters")
     .escape(),
-  body("price")
-    .optional()
-    .isNumeric()
-    .withMessage("Price must be a number")
-    .escape(),
+  body("price").optional().isNumeric().withMessage("Price must be a number").escape(),
   body("description")
-    .optional()
+    .optional({ values: "falsy" })
     .isLength({ min: 3, max: 1000 })
     .withMessage("Description must be between 3 and 1000 characters")
     .escape(),
