@@ -7,7 +7,7 @@ import Root from "./routes/Root"
 import Product from "./components/Product"
 import CategoryForm from "./routes/CategoryForm"
 import CategoryDelete from "./routes/CategoryDelete"
-import Category from "./components/Category"
+import Category, { CategoryList } from "./components/Category"
 
 const router = createBrowserRouter([
   {
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <Product />,
+      },
+      {
+        path: "/category",
+        element: <CategoryList />,
       },
       {
         path: "/category/:slug",

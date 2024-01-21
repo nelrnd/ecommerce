@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 import { ProductCard } from "./Product"
+import { useState } from "react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -56,5 +57,30 @@ export function CategoryCard({ category }) {
         </div>
       </div>
     </Link>
+  )
+}
+
+export function CategoryList() {
+  const [categories, loading] = useFetch("/category")
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+  return (
+    <div className="w-[64rem] mx-auto">
+      <header className="p-8">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">All categories</h1>
+      </header>
+      <main className="p-8 pt-0">
+        {categories && (
+          <div className="grid grid-cols-2 gap-4">
+            {categories.map((c) => (
+              <CategoryCard key={c._id} category={c} />
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
   )
 }
