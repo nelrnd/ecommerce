@@ -3,10 +3,11 @@ import axios from "../axios"
 import { useNavigate, useParams } from "react-router-dom"
 
 export default function ProductForm() {
-  const [id, setId] = useState(null)
+  const [id, setId] = useState("")
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
+  const [image, setImage] = useState("")
   const [errors, setErrors] = useState({})
 
   const { slug } = useParams()
@@ -24,6 +25,7 @@ export default function ProductForm() {
           setName(product.name)
           setPrice(product.price)
           setDescription(product.description)
+          setImage(product.image)
         })
         .catch((err) => console.log(err))
     }
@@ -32,9 +34,13 @@ export default function ProductForm() {
   function handleSubmit(e) {
     e.preventDefault()
 
+    const options = {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+
     if (slug) {
       axios
-        .put(`/product/${slug}`, { id, name, price, description })
+        .put(`/product/${slug}`, { id, name, price, description, image }, options)
         .then((res) => navigate(`/product/${res.data.slug}`))
         .catch((err) => {
           if (err.response) {
@@ -43,7 +49,7 @@ export default function ProductForm() {
         })
     } else {
       axios
-        .post("/product", { name, price, description })
+        .post("/product", { name, price, description, image }, options)
         .then((res) => navigate(`/product/${res.data.slug}`))
         .catch((err) => {
           console.log(err)
@@ -61,7 +67,7 @@ export default function ProductForm() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{heading}</h1>
         </header>
         <main className="p-8 pt-0">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="flex flex-col gap-4">
               <div>
                 <label htmlFor="name" className="text-gray-600">
@@ -97,6 +103,18 @@ export default function ProductForm() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="block w-full mt-2 border-gray-300 rounded"
                 ></textarea>
+              </div>
+              <div>
+                <label htmlFor="image" className="text-gray-600">
+                  Image
+                </label>
+                <input
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  className="block w-full mt-2 border-gray-300 rounded"
+                />
               </div>
               <button className="px-6 py-3 bg-blue-700 text-white hover:bg-blue-800 rounded">{btnText}</button>
             </div>

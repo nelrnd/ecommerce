@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 
+const API_BASE = import.meta.env.VITE_API_BASE
+
 export default function Product() {
   const { slug } = useParams()
   const [product] = useFetch(`/product/${slug}`)
@@ -17,6 +19,7 @@ export default function Product() {
         <p className="mt-2 text-xl">${product.price}</p>
       </header>
       <main className="p-8 pt-0">{product.description}</main>
+      <img src={API_BASE + "/" + product.image} alt="" />
     </div>
   )
 }
