@@ -19,12 +19,16 @@ export default function Product() {
 
   return (
     <div className="w-[64rem] mx-auto">
+      {product.image && (
+        <div className="aspect-square bg-gray-200 my-8">
+          <img src={API_BASE + "/" + product.image} alt="" className="block w-full h-full object-cover object-center" />
+        </div>
+      )}
       <header className="p-8">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
-        <p className="mt-2 text-xl">${product.price}</p>
+        <p className="mt-2 text-xl text-gray-600">${product.price}</p>
       </header>
       <main className="p-8 pt-0">{product.description}</main>
-      <img src={API_BASE + "/" + product.image} alt="" />
     </div>
   )
 }

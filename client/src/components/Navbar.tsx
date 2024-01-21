@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import Cart from "./Cart"
 
 export default function Navbar() {
   return (
@@ -11,7 +12,7 @@ export default function Navbar() {
           <Link to="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link to="/cart">Cart</Link>
+          <Cart />
         </li>
       </ul>
     </nav>
