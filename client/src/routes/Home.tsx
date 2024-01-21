@@ -1,3 +1,4 @@
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import useFetch from "../hooks/useFetch"
 import { ProductCard } from "../components/Product"
 import { CategoryCard } from "../components/Category"
@@ -30,15 +31,26 @@ export default function Home() {
           </div>
         )}
       </section>
-      <section className="px-8 py-32">
-        <h2 className="scroll-m-20 text-3xl font-extrabold tracking-tight mb-4">Latest</h2>
-        {products && (
-          <div className="grid grid-cols-3 gap-4 gap-y-8">
-            {products.map((p) => (
-              <ProductCard key={p._id} product={p} />
-            ))}
+      <section className="p-8">
+        <header className="py-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="scroll-m-20 text-3xl font-extrabold tracking-tight mb-5">Latest</h2>
+            <Link to="/latest">
+              <span className="text-gray-600 hover:underline">See all</span>
+            </Link>
           </div>
-        )}
+        </header>
+        <Carousel>
+          <CarouselContent>
+            {products.map((p) => (
+              <CarouselItem key={p._id} className="basis-1/3">
+                <ProductCard product={p} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </section>
     </div>
   )
