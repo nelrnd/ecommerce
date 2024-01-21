@@ -2,6 +2,7 @@ const { convert } = require("url-slug")
 const { body, validationResult } = require("express-validator")
 const multer = require("multer")
 const Product = require("../models/product")
+const Category = require("../models/category")
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -74,6 +75,7 @@ exports.product_create = [
       price: req.body.price,
       description: req.body.description,
       image: req.file ? req.file.path : null,
+      category: req.body.category,
     })
     await product.save()
     res.json(product)
@@ -103,6 +105,15 @@ exports.product_update = [
     .isLength({ min: 3, max: 1000 })
     .withMessage("Description must be between 3 and 1000 characters")
     .escape(),
+  body("category")
+    .optional({ values: "falsy" })
+    .custom(async (value) => {
+      const category = await Category.findById(value)
+      if (!category) {
+        throw new Error("Invalid category")
+      }
+    })
+    .escape(),
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -119,6 +130,7 @@ exports.product_update = [
         price: req.body.price,
         description: req.body.description,
         image: req.body.image || (req.file ? req.file.path : null),
+        category: req.body.category,
       },
       { new: true }
     )

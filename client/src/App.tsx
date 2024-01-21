@@ -2,9 +2,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Home from "./routes/Home"
 import ProductForm from "./routes/ProductForm"
 import ProductDelete from "./routes/ProductDelete"
-import Dashboard, { DashboardIndex, DashboardProducts } from "./routes/Dashboard"
+import Dashboard, { DashboardCategories, DashboardIndex, DashboardProducts } from "./routes/Dashboard"
 import Root from "./routes/Root"
 import Product from "./components/Product"
+import CategoryForm from "./routes/CategoryForm"
+import CategoryDelete from "./routes/CategoryDelete"
+import Category from "./components/Category"
 
 const router = createBrowserRouter([
   {
@@ -18,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <Product />,
+      },
+      {
+        path: "/category/:slug",
+        element: <Category />,
       },
     ],
   },
@@ -44,6 +51,22 @@ const router = createBrowserRouter([
       {
         path: "product/:slug/delete",
         element: <ProductDelete />,
+      },
+      {
+        path: "category",
+        element: <DashboardCategories />,
+      },
+      {
+        path: "category/create",
+        element: <CategoryForm />,
+      },
+      {
+        path: "category/:slug",
+        element: <CategoryForm />,
+      },
+      {
+        path: "category/:slug/delete",
+        element: <CategoryDelete />,
       },
     ],
   },

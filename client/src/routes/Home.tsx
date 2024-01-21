@@ -1,10 +1,12 @@
 import useFetch from "../hooks/useFetch"
 import { ProductCard } from "../components/Product"
+import { CategoryCard } from "../components/Category"
 
 export default function Home() {
-  const [products, loading] = useFetch("/product")
+  const [products, pLoading] = useFetch("/product")
+  const [categories, cLoading] = useFetch("/category")
 
-  if (loading) {
+  if (pLoading || cLoading) {
     return <p>Loading</p>
   }
 
@@ -13,15 +15,24 @@ export default function Home() {
       <header className="p-8">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Home</h1>
       </header>
-      <main className="p-8 pt-0">
-        {products && (
-          <div className="grid grid-cols-3 gap-4 gap-y-8">
-            {products.map((p) => (
-              <ProductCard key={products._id} product={p} />
+      <section className="p-8 pt-0">
+        {categories && (
+          <div className="grid grid-cols-2 gap-4">
+            {categories.map((c) => (
+              <CategoryCard key={c._id} category={c} />
             ))}
           </div>
         )}
-      </main>
+      </section>
+      <section className="p-8 pt-0">
+        {products && (
+          <div className="grid grid-cols-3 gap-4 gap-y-8">
+            {products.map((p) => (
+              <ProductCard key={p._id} product={p} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   )
 }

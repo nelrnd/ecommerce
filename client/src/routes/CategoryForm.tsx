@@ -1,35 +1,27 @@
 import { useEffect, useState } from "react"
 import axios from "../axios"
 import { useNavigate, useParams } from "react-router-dom"
-import useFetch from "../hooks/useFetch"
 
-export default function ProductForm() {
-  const [categories] = useFetch("/category")
+export default function CategoryForm() {
   const [id, setId] = useState("")
   const [name, setName] = useState("")
-  const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
-  const [category, setCategory] = useState("")
-  const [image, setImage] = useState("")
   const [errors, setErrors] = useState({})
 
   const { slug } = useParams()
   const navigate = useNavigate()
-  const heading = slug ? "Update product" : "Create product"
+  const heading = slug ? "Update category" : "Create category"
   const btnText = slug ? "Save" : "Submit"
 
   useEffect(() => {
     if (slug) {
       axios
-        .get(`/product/${slug}`)
+        .get(`/category/${slug}`)
         .then((res) => {
           const product = res.data
           setId(product._id)
           setName(product.name)
-          setPrice(product.price)
           setDescription(product.description)
-          setCategory(product.category)
-          setImage(product.image)
         })
         .catch((err) => console.log(err))
     }
@@ -38,14 +30,10 @@ export default function ProductForm() {
   function handleSubmit(e) {
     e.preventDefault()
 
-    const options = {
-      headers: { "Content-Type": "multipart/form-data" },
-    }
-
     if (slug) {
       axios
-        .put(`/product/${slug}`, { id, name, price, description, category, image }, options)
-        .then((res) => navigate(`/product/${res.data.slug}`))
+        .put(`/category/${slug}`, { id, name, description })
+        .then((res) => navigate(`/category/${res.data.slug}`))
         .catch((err) => {
           if (err.response) {
             setErrors(err.response.data.errors)
@@ -53,8 +41,8 @@ export default function ProductForm() {
         })
     } else {
       axios
-        .post("/product", { name, price, description, category, image }, options)
-        .then((res) => navigate(`/product/${res.data.slug}`))
+        .post("/category", { name, description })
+        .then((res) => navigate(`/category/${res.data.slug}`))
         .catch((err) => {
           console.log(err)
           if (err.response) {
@@ -86,18 +74,6 @@ export default function ProductForm() {
                 />
               </div>
               <div>
-                <label htmlFor="price" className="text-gray-600">
-                  Price
-                </label>
-                <input
-                  name="price"
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="block w-full mt-2 border-gray-300 rounded"
-                />
-              </div>
-              <div>
                 <label htmlFor="desc" className="text-gray-600">
                   Description
                 </label>
@@ -107,37 +83,6 @@ export default function ProductForm() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="block w-full mt-2 border-gray-300 rounded"
                 ></textarea>
-              </div>
-              {categories && (
-                <div>
-                  <label htmlFor="category" className="text-gray-600">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    className="block w-full mt-2 border-gray-300 rounded"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    {categories.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <div>
-                <label htmlFor="image" className="text-gray-600">
-                  Image
-                </label>
-                <input
-                  name="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setImage(e.target.files[0])}
-                  className="block w-full mt-2 border-gray-300 rounded"
-                />
               </div>
               <button className="px-6 py-3 bg-blue-700 text-white hover:bg-blue-800 rounded">{btnText}</button>
             </div>

@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { BiSolidHome, BiGridAlt, BiPlus, BiShow, BiTrash, BiLinkExternal } from "react-icons/bi"
+import { BiSolidHome, BiGridAlt, BiPurchaseTag, BiPlus, BiShow, BiTrash, BiLinkExternal } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 
 const tabs = [
@@ -16,6 +16,16 @@ const tabs = [
   {
     name: "Create product",
     href: "/dashboard/product/create",
+    icon: <BiPlus />,
+  },
+  {
+    name: "Categories",
+    href: "/dashboard/category",
+    icon: <BiPurchaseTag />,
+  },
+  {
+    name: "Create category",
+    href: "/dashboard/category/create",
     icon: <BiPlus />,
   },
   {
@@ -74,8 +84,6 @@ export function DashboardIndex() {
 export function DashboardProducts() {
   const [products, loading] = useFetch("/product")
 
-  console.log(products)
-
   return (
     <div className="max-w-[64rem] m-auto bg-white rounded">
       <header className="p-8">
@@ -114,6 +122,21 @@ function DashboardProductTab({ product }) {
           </div>
         </Link>
       </div>
+    </div>
+  )
+}
+
+export function DashboardCategories() {
+  const [categories, loading] = useFetch("/category")
+
+  return (
+    <div className="max-w-[64rem] m-auto bg-white rounded">
+      <header className="p-8">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Products</h1>
+      </header>
+      <main className="p-8 pt-0">
+        <p>Nothing here yet</p>
+      </main>
     </div>
   )
 }
