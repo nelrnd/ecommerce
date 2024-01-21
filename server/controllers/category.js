@@ -1,7 +1,19 @@
 const { convert } = require("url-slug")
 const { body, validationResult } = require("express-validator")
+const multer = require("multer")
 const Category = require("../models/category")
 const Product = require("../models/product")
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images/")
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname)
+  },
+})
+
+const upload = multer({ storage: storage })
 
 const create_slug = async (req, res, next) => {
   const { name, id } = req.body
@@ -36,6 +48,7 @@ exports.category_list = async (req, res) => {
 }
 
 exports.category_create = [
+  upload.single("image"),
   create_slug,
   body("name")
     .notEmpty()
@@ -59,6 +72,7 @@ exports.category_create = [
       name: req.body.name,
       slug: req.body.slug,
       description: req.body.description,
+      image: req.file ? req.file.path : null,
     })
     await category.save()
     res.json(category)
@@ -76,6 +90,7 @@ exports.category_detail = async (req, res) => {
 }
 
 exports.category_update = [
+  upload.single("image"),
   create_slug,
   body("name")
     .optional()
@@ -91,7 +106,12 @@ exports.category_update = [
     const { slug } = req.params
     const updatedCategory = await Category.findOneAndUpdate(
       { slug: slug },
-      { name: req.body.name, slug: req.body.slug, description: req.body.description },
+      {
+        name: req.body.name,
+        slug: req.body.slug,
+        description: req.body.description,
+        image: req.body.image || (req.file ? req.file.path : null),
+      },
       { new: true }
     )
     if (!updatedCategory) {

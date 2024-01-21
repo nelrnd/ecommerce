@@ -6,6 +6,7 @@ export default function CategoryForm() {
   const [id, setId] = useState("")
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
+  const [image, setImage] = useState("")
   const [errors, setErrors] = useState({})
 
   const { slug } = useParams()
@@ -18,10 +19,11 @@ export default function CategoryForm() {
       axios
         .get(`/category/${slug}`)
         .then((res) => {
-          const product = res.data
-          setId(product._id)
-          setName(product.name)
-          setDescription(product.description)
+          const category = res.data.category
+          setId(category._id)
+          setName(category.name)
+          setDescription(category.description)
+          setImage(category.image)
         })
         .catch((err) => console.log(err))
     }
@@ -30,9 +32,13 @@ export default function CategoryForm() {
   function handleSubmit(e) {
     e.preventDefault()
 
+    const options = {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+
     if (slug) {
       axios
-        .put(`/category/${slug}`, { id, name, description })
+        .put(`/category/${slug}`, { id, name, description, image }, options)
         .then((res) => navigate(`/category/${res.data.slug}`))
         .catch((err) => {
           if (err.response) {
@@ -41,7 +47,7 @@ export default function CategoryForm() {
         })
     } else {
       axios
-        .post("/category", { name, description })
+        .post("/category", { name, description, image }, options)
         .then((res) => navigate(`/category/${res.data.slug}`))
         .catch((err) => {
           console.log(err)
@@ -83,6 +89,18 @@ export default function CategoryForm() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="block w-full mt-2 border-gray-300 rounded"
                 ></textarea>
+              </div>
+              <div>
+                <label htmlFor="image" className="text-gray-600">
+                  Image
+                </label>
+                <input
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  className="block w-full mt-2 border-gray-300 rounded"
+                />
               </div>
               <button className="px-6 py-3 bg-blue-700 text-white hover:bg-blue-800 rounded">{btnText}</button>
             </div>

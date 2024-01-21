@@ -3,6 +3,8 @@ import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 import { ProductCard } from "./Product"
 
+const API_BASE = import.meta.env.VITE_API_BASE
+
 export default function Category() {
   const { slug } = useParams()
   const [data, loading] = useFetch(`/category/${slug}`)
@@ -41,8 +43,10 @@ export default function Category() {
 export function CategoryCard({ category }) {
   return (
     <Link to={`/category/${category.slug}`}>
-      <div className="group bg-gray-200 p-12 aspect-square rounded-xl flex items-end">
-        <h1 className="text-4xl group-hover:underline">{category.name}</h1>
+      <div className="group  p-12 aspect-square rounded-xl flex items-end relative overflow-hidden">
+        <div className="bg-black opacity-5 absolute inset-0 -z-10" />
+        <img className="block absolute inset-0 object-cover -z-20" src={API_BASE + "/" + category.image} alt="" />
+        <h1 className="font-bold text-4xl text-white group-hover:underline">{category.name}</h1>
       </div>
     </Link>
   )
