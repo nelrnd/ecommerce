@@ -132,11 +132,41 @@ export function DashboardCategories() {
   return (
     <div className="max-w-[64rem] m-auto bg-white rounded">
       <header className="p-8">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Products</h1>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Categories</h1>
       </header>
       <main className="p-8 pt-0">
-        <p>Nothing here yet</p>
+        {categories && (
+          <div className="flex flex-col gap-2">
+            {categories.map((c) => (
+              <DashboardCategoryTab key={c._id} category={c} />
+            ))}
+          </div>
+        )}
       </main>
+    </div>
+  )
+}
+
+function DashboardCategoryTab({ category }) {
+  return (
+    <div className="p-8 border-2 border-gray-200 rounded">
+      <div className="flex items-baseline justify-between gap-4">
+        <Link to={`/dashboard/category/${category.slug}`} className="hover:underline">
+          {category.name}
+        </Link>
+        <Link to={`/category/${category.slug}`}>
+          <div className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 flex items-center gap-2">
+            <BiShow />
+            <span>PREVIEW</span>
+          </div>
+        </Link>
+        <Link to={`/dashboard/category/${category.slug}/delete`}>
+          <div className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 flex items-center gap-2">
+            <BiTrash />
+            <span>DELETE</span>
+          </div>
+        </Link>
+      </div>
     </div>
   )
 }
