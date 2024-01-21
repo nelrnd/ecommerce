@@ -15,7 +15,7 @@ export default function Home() {
       </header>
       <main className="p-8 pt-0">
         {products && (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4 gap-y-8">
             {products.map((p) => (
               <ProductCard key={products._id} product={p} />
             ))}

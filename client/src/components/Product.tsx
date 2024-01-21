@@ -1,4 +1,5 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
+import { BiImage } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 
@@ -25,5 +26,21 @@ export default function Product() {
 }
 
 export function ProductCard({ product }) {
-  return <h1>Product Card</h1>
+  return (
+    <Link to={`/product/${product.slug}`}>
+      <div className="aspect-square bg-gray-200">
+        {product.image ? (
+          <img src={API_BASE + "/" + product.image} alt="" className="block w-full h-full object-fill" />
+        ) : (
+          <div className="text-5xl text-gray-400 h-full grid place-content-center opacity-50">
+            <BiImage />
+          </div>
+        )}
+      </div>
+      <div className="mt-2">
+        <h2 className="font-bold">{product.name}</h2>
+        <p className="text-gray-600">${product.price}</p>
+      </div>
+    </Link>
+  )
 }
