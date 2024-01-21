@@ -14,7 +14,7 @@ export default function Product() {
   }
 
   return (
-    <div className="w-[64rem] m-auto">
+    <div className="w-[64rem] mx-auto">
       <header className="p-8">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
         <p className="mt-2 text-xl">${product.price}</p>
