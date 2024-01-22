@@ -8,6 +8,7 @@ import Product from "./components/Product"
 import CategoryForm from "./routes/CategoryForm"
 import CategoryDelete from "./routes/CategoryDelete"
 import Category, { CategoryList } from "./components/Category"
+import CartProvider from "./providers/CartProvider"
 
 const router = createBrowserRouter([
   {
@@ -77,5 +78,9 @@ const router = createBrowserRouter([
 ])
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
+  )
 }
