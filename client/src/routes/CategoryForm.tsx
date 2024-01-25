@@ -72,6 +72,7 @@ export default function CategoryForm() {
                   Name
                 </label>
                 <input
+                  id="name"
                   name="name"
                   type="text"
                   value={name}
@@ -84,6 +85,7 @@ export default function CategoryForm() {
                   Description
                 </label>
                 <textarea
+                  id="desc"
                   name="desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -95,6 +97,7 @@ export default function CategoryForm() {
                   Image
                 </label>
                 <input
+                  id="image"
                   name="image"
                   type="file"
                   accept="image/*"

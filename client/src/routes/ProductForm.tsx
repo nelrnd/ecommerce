@@ -78,6 +78,7 @@ export default function ProductForm() {
                   Name
                 </label>
                 <input
+                  id="name"
                   name="name"
                   type="text"
                   value={name}
@@ -90,6 +91,7 @@ export default function ProductForm() {
                   Price
                 </label>
                 <input
+                  id="price"
                   name="price"
                   type="number"
                   value={price}
@@ -102,6 +104,7 @@ export default function ProductForm() {
                   Description
                 </label>
                 <textarea
+                  id="desc"
                   name="desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -114,6 +117,7 @@ export default function ProductForm() {
                     Category
                   </label>
                   <select
+                    id="category"
                     name="category"
                     className="block w-full mt-2 border-gray-300 rounded"
                     value={category}
@@ -132,6 +136,7 @@ export default function ProductForm() {
                   Image
                 </label>
                 <input
+                  id="image"
                   name="image"
                   type="file"
                   accept="image/*"
