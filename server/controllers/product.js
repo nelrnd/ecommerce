@@ -62,16 +62,7 @@ exports.product_create = [
     .withMessage("Description must be between 3 and 1000 characters")
     .escape()
     .optional({ values: "falsy" }),
-  body("sizes").notEmpty().withMessage("Sizes is required"),
-  body("sizes.*.size").notEmpty().withMessage("Size name is required").escape(),
-  body("sizes.*.quantity")
-    .notEmpty()
-    .withMessage("Size quantity is required")
-    .isNumeric()
-    .withMessage("Size quantity must be a number")
-    .isLength({ min: 0 })
-    .withMessage("Size quantity must be 0 or more")
-    .escape(),
+  body("sizes.*").notEmpty().withMessage("Size is required").escape(),
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -125,15 +116,7 @@ exports.product_update = [
       }
     })
     .escape(),
-  body("sizes.*.size").notEmpty().withMessage("Size name is required").escape(),
-  body("sizes.*.quantity")
-    .notEmpty()
-    .withMessage("Size quantity is required")
-    .isNumeric()
-    .withMessage("Size quantity must be a number")
-    .isLength({ min: 0 })
-    .withMessage("Size quantity must be 0 or more")
-    .escape(),
+  body("sizes.*").notEmpty().withMessage("Size is required").escape(),
   async (req, res) => {
     const errors = validationResult(req)
 
