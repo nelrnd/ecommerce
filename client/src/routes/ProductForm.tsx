@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "../axios"
-import { useNavigate, useParams } from "react-router-dom"
-import { BiGridVertical, BiTrash } from "react-icons/bi"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { BiGridVertical, BiTrash, BiShow } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 
 export default function ProductForm() {
@@ -32,7 +32,7 @@ export default function ProductForm() {
           setDescription(product.description)
           setCategory(product.category)
           setImage(product.image)
-          setSizes(product.sizes)
+          setSizes(product.sizes || [])
         })
         .catch((err) => console.log(err))
     } else {
@@ -115,6 +115,18 @@ export default function ProductForm() {
         <header className="p-8">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{heading}</h1>
         </header>
+
+        {slug && (
+          <section className="p-8 pt-0">
+            <Link to={`/product/${slug}`} className="hover:underline">
+              <div className="group bg-gray-200 px-4 py-2 rounded-md text-black flex items-center gap-2">
+                <BiShow className="text-xl" />
+                {`/product/${slug}`}
+              </div>
+            </Link>
+          </section>
+        )}
+
         <main className="p-8 pt-0">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="flex flex-col gap-6">
