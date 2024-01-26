@@ -77,7 +77,7 @@ exports.product_create = [
       description: req.body.description,
       image: req.file ? req.file.path : null,
       category: req.body.category,
-      sizes: req.body.sizes,
+      sizes: req.body.sizes && req.body.sizes.length ? req.body.sizes : null,
     })
     await product.save()
     res.json(product)
@@ -134,7 +134,7 @@ exports.product_update = [
         description: req.body.description,
         image: req.body.image || (req.file ? req.file.path : null),
         category: req.body.category,
-        sizes: req.body.sizes,
+        sizes: req.body.sizes.length ? req.body.sizes : null,
       },
       { new: true }
     )

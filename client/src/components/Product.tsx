@@ -3,6 +3,7 @@ import { BiImage } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 import { useCart } from "../providers/CartProvider"
+import { useState } from "react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -10,7 +11,14 @@ export default function Product() {
   const { slug } = useParams()
   const [product, loading] = useFetch(`/product/${slug}`)
 
+  const [selectedSize, setSelectedSize] = useState("")
+
   const { addToCart } = useCart()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    addToCart(product)
+  }
 
   if (loading) {
     return <p>Loading...</p>
@@ -28,15 +36,44 @@ export default function Product() {
         </div>
       )}
       <div className="py-12">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
-        <p className="mt-2 text-xl text-gray-600">${product.price}</p>
-        <p className="text-gray-600 mt-4">{product.description}</p>
-        <button
-          onClick={() => addToCart(product)}
-          className="bg-gray-900 w-96 font-semibold text-white px-6 py-3 rounded hover:bg-gray-800 mt-4"
-        >
-          Add To Cart
-        </button>
+        <div>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
+          <p className="mt-2 text-xl text-gray-600">${product.price}</p>
+          <p className="text-gray-600 mt-4">{product.description}</p>
+        </div>
+        <form onSubmit={handleSubmit} className="w-96">
+          {product.sizes ? (
+            <div className="flex gap-3">
+              {product.sizes.map((s) => (
+                <div key={s} className="flex-1">
+                  <input
+                    id={s}
+                    type="radio"
+                    name="size"
+                    value={s}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                    className="peer hidden"
+                  />
+                  <label
+                    htmlFor={s}
+                    key={s}
+                    className="block px-6 py-3 border border-gray-200 outline outline-2 outline-transparent rounded text-center peer-checked:border-blue-500 peer-checked: peer-checked:outline-blue-500 cursor-pointer select-none"
+                  >
+                    {s}
+                  </label>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">One size</p>
+          )}
+          <button
+            onClick={() => addToCart(product)}
+            className="w-full bg-gray-900 font-semibold text-white px-6 py-3 rounded hover:bg-gray-800 mt-4"
+          >
+            Add To Cart
+          </button>
+        </form>
       </div>
     </div>
   )
