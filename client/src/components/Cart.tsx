@@ -1,12 +1,18 @@
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BiX, BiShoppingBag, BiImage } from "react-icons/bi"
 import { useCart } from "../providers/CartProvider"
 import { Link } from "react-router-dom"
+import { useState } from "react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
 export default function Cart() {
   const { items } = useCart()
+
+  const handleClick = () => {
+    console.log(items)
+  }
 
   return (
     <Sheet>
@@ -27,7 +33,7 @@ export default function Cart() {
           <section className="p-6 flex-1 overflow-y-auto">
             <div className="flex flex-col gap-4">
               {items.map((i) => (
-                <CartProduct key={i._id} product={i} />
+                <CartProduct key={i._id + i.size} product={i} />
               ))}
             </div>
           </section>
@@ -45,7 +51,7 @@ export default function Cart() {
               <span>${items.reduce((total, curr) => total + curr.price, 0) + 10}</span>
             </div>
             <Link
-              to="/checkout"
+              onClick={handleClick}
               className="block w-full bg-gray-900 w-96 font-semibold text-white text-center px-6 py-3 rounded hover:bg-gray-800"
             >
               Go To Checkout
@@ -58,12 +64,12 @@ export default function Cart() {
 }
 
 function CartProduct({ product }) {
-  const { deleteFromCart } = useCart()
+  const { deleteFromCart, updateItemSize, updateItemQuantity } = useCart()
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-3">
       <Link to={`/product/${product.slug}`}>
-        <div className="aspect-square w-24 bg-gray-200">
+        <div className="aspect-square w-20 bg-gray-200">
           {product.image ? (
             <img src={API_BASE + "/" + product.image} alt="" className="block w-full h-full object-cover" />
           ) : (
@@ -73,24 +79,58 @@ function CartProduct({ product }) {
           )}
         </div>
       </Link>
-      <div className="mt-2 flex-1 ">
-        <Link to={`/product/${product.slug}`}>
-          <h2 className="font-bold group-hover:underline">{product.name}</h2>
-        </Link>
-        <p className="text-gray-600">${product.price}</p>
-        <div className="flex gap-3">
-          <button>Size: M</button>
-          <button>Quantity: {product.quantity}</button>
+      <div className="flex-1 ">
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <Link to={`/product/${product.slug}`}>
+              <h2 className="font-bold hover:underline">{product.name}</h2>
+            </Link>
+            <p className="text-gray-600">${product.price * product.quantity}</p>
+          </div>
+          <div>
+            <button
+              onClick={() => deleteFromCart(product._id)}
+              className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
+            >
+              <BiX />
+              <span className="sr-only">Remove item</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div>
-        <button
-          onClick={() => deleteFromCart(product._id)}
-          className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
-        >
-          <BiX />
-          <span className="sr-only">Remove item</span>
-        </button>
+        <div className="flex gap-2">
+          {product.sizes.length ? (
+            <Select defaultValue={product.size} onValueChange={(size) => updateItemSize(product, size)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Size">
+                  <span className="text-sm text-gray-600">Size:</span> {product.size}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {product.sizes.map((size) => (
+                  <SelectItem key={size} value={size}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <p className="text-gray-600 text-sm w-full px-2 py-1">One size</p>
+          )}
+          <Select defaultValue={product.quantity} onValueChange={(qty) => updateItemQuantity(product, qty)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Quantity">
+                <span className="text-sm text-gray-600">Quantity:</span> {product.quantity}
+              </SelectValue>
+              <SelectContent>
+                {[1, 2, 3, 4, 5].map((quantity) => (
+                  <SelectItem key={quantity} value={quantity.toString()}>
+                    {quantity}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectTrigger>
+          </Select>
+        </div>
       </div>
     </div>
   )

@@ -17,7 +17,7 @@ export default function Product() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    addToCart(product)
+    addToCart({ ...product, size: selectedSize })
   }
 
   if (loading) {
@@ -67,10 +67,7 @@ export default function Product() {
           ) : (
             <p className="text-gray-600">One size</p>
           )}
-          <button
-            onClick={() => addToCart(product)}
-            className="w-full bg-gray-900 font-semibold text-white px-6 py-3 rounded hover:bg-gray-800 mt-4"
-          >
+          <button className="w-full bg-gray-900 font-semibold text-white px-6 py-3 rounded hover:bg-gray-800 mt-4">
             Add To Cart
           </button>
         </form>
