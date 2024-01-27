@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom"
-import { BiImage } from "react-icons/bi"
+import { BiImage, BiChevronRight } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 import { useCart } from "../providers/CartProvider"
@@ -30,9 +30,11 @@ export default function Product() {
 
   return (
     <div className="w-[64rem] mx-auto">
-      <div className="grid grid-cols-2 gap-8">
+      <Product_Breadcrumb product={product} />
+
+      <div className="grid grid-cols-2 gap-8 items-start">
         {product.image && (
-          <div className="aspect-square bg-gray-200 mt-8">
+          <div className="aspect-square bg-gray-200">
             <img
               src={API_BASE + "/" + product.image}
               alt=""
@@ -40,7 +42,7 @@ export default function Product() {
             />
           </div>
         )}
-        <div className="py-12">
+        <div className="py-8">
           <div>
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
             <p className="mt-2 text-xl text-gray-600">${product.price}</p>
@@ -79,6 +81,28 @@ export default function Product() {
         </div>
       </div>
     </div>
+  )
+}
+
+function Product_Breadcrumb({ product }) {
+  return (
+    <section className="py-6">
+      <ul className="w-fit rounded-xl flex gap-1 items-center">
+        <li className="text-gray-600">
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
+        </li>
+        <BiChevronRight className="text-lg text-gray-500" />
+        <li className="text-gray-600">
+          <Link to={`/category/${product.category.slug}`} className="hover:underline">
+            {product.category.name}
+          </Link>
+        </li>
+        <BiChevronRight className="text-lg text-gray-500" />
+        <li>{product.name}</li>
+      </ul>
+    </section>
   )
 }
 
