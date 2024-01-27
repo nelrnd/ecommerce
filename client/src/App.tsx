@@ -9,6 +9,7 @@ import CategoryForm from "./routes/CategoryForm"
 import CategoryDelete from "./routes/CategoryDelete"
 import Category, { CategoryList } from "./components/Category"
 import CartProvider from "./providers/CartProvider"
+import Checkout from "./routes/Checkout"
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/category/:slug",
         element: <Category />,
+      },
+      {
+        path: "/checkout",
+        element: <Checkout />,
       },
     ],
   },

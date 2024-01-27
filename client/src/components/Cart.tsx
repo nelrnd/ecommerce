@@ -3,7 +3,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BiX, BiShoppingBag, BiImage } from "react-icons/bi"
 import { useCart } from "../providers/CartProvider"
 import { Link } from "react-router-dom"
-import { useState } from "react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
