@@ -50,7 +50,7 @@ export default function Cart() {
               <span>${items.reduce((total, curr) => total + curr.price, 0) + 10}</span>
             </div>
             <Link
-              onClick={handleClick}
+              to="/checkout"
               className="block w-full bg-gray-900 w-96 font-semibold text-white text-center px-6 py-3 rounded hover:bg-gray-800"
             >
               Go To Checkout
@@ -97,7 +97,7 @@ function CartProduct({ product }) {
           </div>
         </div>
         <div className="flex gap-2">
-          {product.sizes.length ? (
+          {product.sizes ? (
             <Select defaultValue={product.size} onValueChange={(size) => updateItemSize(product, size)}>
               <SelectTrigger>
                 <SelectValue placeholder="Size">
@@ -138,7 +138,7 @@ function CartProduct({ product }) {
 function CartLabel() {
   const { items } = useCart()
 
-  const nbOfItems = items.reduce((total, curr) => total + curr.quantity, 0)
+  const nbOfItems = items.reduce((total, curr) => total + Number(curr.quantity), 0)
 
   if (nbOfItems === 0) return null
 

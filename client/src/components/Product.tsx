@@ -1,24 +1,22 @@
 import { Link, useParams } from "react-router-dom"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import { BiImage, BiChevronRight } from "react-icons/bi"
+import * as z from "zod"
 import useFetch from "../hooks/useFetch"
 import NotFound from "../routes/NotFound"
 import { useCart } from "../providers/CartProvider"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
+import { Button } from "./ui/button"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
 export default function Product() {
   const { slug } = useParams()
+
   const [product, loading] = useFetch(`/product/${slug}`)
-
-  const [selectedSize, setSelectedSize] = useState("")
-
-  const { addToCart } = useCart()
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    addToCart({ ...product, size: selectedSize })
-  }
 
   if (loading) {
     return <p>Loading...</p>
@@ -48,43 +46,83 @@ export default function Product() {
             <p className="mt-2 text-xl text-gray-600">${product.price}</p>
             <p className="text-gray-600 mt-4">{product.description}</p>
           </div>
-          <form onSubmit={handleSubmit} className="w-96">
-            {product.sizes ? (
-              <div className="flex gap-3">
-                {product.sizes.map((s) => (
-                  <div key={s} className="flex-1">
-                    <input
-                      id={s}
-                      type="radio"
-                      name="size"
-                      value={s}
-                      onChange={(e) => setSelectedSize(e.target.value)}
-                      className="peer hidden"
-                    />
-                    <label
-                      htmlFor={s}
-                      key={s}
-                      className="block px-6 py-3 border border-gray-200 outline outline-2 outline-transparent rounded text-center peer-checked:border-blue-500 peer-checked: peer-checked:outline-blue-500 cursor-pointer select-none"
-                    >
-                      {s}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">One size</p>
-            )}
-            <button className="w-full bg-gray-900 font-semibold text-white px-6 py-3 rounded hover:bg-gray-800 mt-4">
-              Add To Cart
-            </button>
-          </form>
+
+          <Product_Form product={product} />
         </div>
       </div>
     </div>
   )
 }
 
+function Product_Form({ product }) {
+  const { addToCart, items } = useCart()
+
+  console.log(product)
+
+  const formSchema = z.object({
+    size: product.sizes ? z.string().min(1, "Please select a size") : z.null(),
+  })
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      size: product.sizes ? "" : null,
+    },
+  })
+
+  const [max, setMax] = useState(false)
+  const size = form.watch("size")
+
+  useEffect(() => {
+    setMax(items.find((i) => i._id === product._id && i.size === size)?.quantity >= 5)
+  }, [size, items, product._id])
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    addToCart({ ...product, ...values })
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-96">
+        {product.sizes && (
+          <FormField
+            control={form.control}
+            name="size"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value}>
+                    <div className="flex gap-2 items-center">
+                      {product.sizes.map((size) => (
+                        <FormItem className="flex-1">
+                          <FormControl>
+                            <RadioGroupItem value={size} className="peer hidden" />
+                          </FormControl>
+                          <FormLabel className="block px-6 py-3 border border-gray-200 hover:bg-gray-200 rounded text-center font-normal cursor-pointer outline outline-2 outline-transparent peer-data-[state=checked]:outline-gray-900 peer-data-[state=checked]:hover:bg-white">
+                            {size}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <Button className="w-full mt-4" disabled={max}>
+          {!max ? "Add To Cart" : "Max number of item in cart"}
+        </Button>
+      </form>
+    </Form>
+  )
+}
+
 function Product_Breadcrumb({ product }) {
+  if (!product.category) return null
+
   return (
     <section className="py-6">
       <ul className="w-fit rounded-xl flex gap-1 items-center">

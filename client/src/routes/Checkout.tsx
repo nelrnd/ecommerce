@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import countries from "../countries.json"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useEffect } from "react"
+import Footer from "@/components/Footer"
 
 export default function Checkout() {
   return (
@@ -19,6 +20,7 @@ export default function Checkout() {
         <Checkout_Header />
         <Checkout_Form />
       </div>
+      <Footer variant="minimum" />
     </div>
   )
 }

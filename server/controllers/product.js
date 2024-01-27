@@ -87,6 +87,7 @@ exports.product_create = [
 exports.product_detail = async (req, res) => {
   const { slug } = req.params
   const product = await Product.findOne({ slug: slug }).populate("category")
+  console.log(product)
   if (!product) {
     return res.status(404).json({ error: "Product not found" })
   }
