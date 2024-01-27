@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-export default function Footer({ variant }) {
+export default function Footer({ variant = "normal" }) {
   const year = new Date().getFullYear()
 
   return (
