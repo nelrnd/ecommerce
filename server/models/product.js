@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   image: { type: String },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+  brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
   sizes: { type: [String], default: null },
 })
 

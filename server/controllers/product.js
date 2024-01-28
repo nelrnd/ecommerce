@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator")
 const multer = require("multer")
 const Product = require("../models/product")
 const Category = require("../models/category")
+const Brand = require("../models/brand")
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -62,6 +63,24 @@ exports.product_create = [
     .withMessage("Description must be between 3 and 1000 characters")
     .escape()
     .optional({ values: "falsy" }),
+  body("category")
+    .optional({ values: "falsy" })
+    .custom(async (value) => {
+      const category = await Category.findById(value)
+      if (!category) {
+        throw new Error("Invalid category")
+      }
+    })
+    .escape(),
+  body("brand")
+    .optional({ values: "falsy" })
+    .custom(async (value) => {
+      const brand = await Brand.findById(value)
+      if (!brand) {
+        throw new Error("Invalid brand")
+      }
+    })
+    .escape(),
   body("sizes.*").notEmpty().withMessage("Size is required").escape(),
   async (req, res) => {
     const errors = validationResult(req)
@@ -77,6 +96,7 @@ exports.product_create = [
       description: req.body.description,
       image: req.file ? req.file.path : null,
       category: req.body.category,
+      brand: req.body.brand,
       sizes: req.body.sizes && req.body.sizes.length ? req.body.sizes : null,
     })
     await product.save()
@@ -86,8 +106,7 @@ exports.product_create = [
 
 exports.product_detail = async (req, res) => {
   const { slug } = req.params
-  const product = await Product.findOne({ slug: slug }).populate("category")
-  console.log(product)
+  const product = await Product.findOne({ slug: slug }).populate("category").populate("brand")
   if (!product) {
     return res.status(404).json({ error: "Product not found" })
   }
@@ -117,6 +136,15 @@ exports.product_update = [
       }
     })
     .escape(),
+  body("brand")
+    .optional({ values: "falsy" })
+    .custom(async (value) => {
+      const brand = await Brand.findById(value)
+      if (!brand) {
+        throw new Error("Invalid brand")
+      }
+    })
+    .escape(),
   body("sizes.*").notEmpty().withMessage("Size is required").escape(),
   async (req, res) => {
     const errors = validationResult(req)
@@ -135,6 +163,7 @@ exports.product_update = [
         description: req.body.description,
         image: req.body.image || (req.file ? req.file.path : null),
         category: req.body.category,
+        brand: req.body.brand,
         sizes: req.body.sizes.length ? req.body.sizes : null,
       },
       { new: true }
