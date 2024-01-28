@@ -1,45 +1,71 @@
-import { Link, Outlet } from "react-router-dom"
-import { BiSolidHome, BiGridAlt, BiPurchaseTag, BiPlus, BiShow, BiTrash, BiLinkExternal } from "react-icons/bi"
+import { Link, Outlet, useLocation } from "react-router-dom"
+import {
+  BiSolidHome,
+  BiChart,
+  BiCube,
+  BiGridAlt,
+  BiPurchaseTag,
+  BiPlus,
+  BiShow,
+  BiTrash,
+  BiLinkExternal,
+  BiLogOut,
+} from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
 
-const tabs = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: <BiSolidHome />,
-  },
-  {
-    name: "Products",
-    href: "/dashboard/product",
-    icon: <BiGridAlt />,
-  },
-  {
-    name: "Create product",
-    href: "/dashboard/product/create",
-    icon: <BiPlus />,
-  },
-  {
-    name: "Categories",
-    href: "/dashboard/category",
-    icon: <BiPurchaseTag />,
-  },
-  {
-    name: "Create category",
-    href: "/dashboard/category/create",
-    icon: <BiPlus />,
-  },
-  {
-    name: "Go to site",
-    href: "/",
-    icon: <BiLinkExternal />,
-  },
-]
+const tabs = {
+  top: [
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: <BiSolidHome />,
+    },
+    {
+      name: "Orders",
+      href: "/dashboard/order",
+      icon: <BiChart />,
+    },
+    {
+      name: "Products",
+      href: "/dashboard/product",
+      icon: <BiCube />,
+    },
+    {
+      name: "Categories",
+      href: "/dashboard/category",
+      icon: <BiGridAlt />,
+    },
+    {
+      name: "Brands",
+      href: "/dashboard/brand",
+      icon: <BiPurchaseTag />,
+    },
+  ],
+  bottom: [
+    {
+      name: "Go to site",
+      href: "/",
+      icon: <BiLinkExternal />,
+    },
+    {
+      name: "Log out",
+      href: "/logout",
+      icon: <BiLogOut />,
+    },
+  ],
+}
 
 function DashboardSidebar() {
   return (
-    <nav className="w-[20rem] bg-blue-700 p-8 shrink-0">
-      <ul className="flex flex-col gap-1">
-        {tabs.map((t) => (
+    <nav className="w-[20rem] h-screen sticky top-0 bg-white p-8 shrink-0 border-r border-gray-200 flex flex-col gap-4">
+      <h1 className="m-4">E-commerce</h1>
+      <ul className="flex-1 flex flex-col gap-1">
+        {tabs.top.map((t) => (
+          <DashboardSidebarTab key={t.name} tab={t} />
+        ))}
+      </ul>
+      <ul className="space-y-1">
+        {tabs.bottom.map((t) => (
           <DashboardSidebarTab key={t.name} tab={t} />
         ))}
       </ul>
@@ -48,8 +74,11 @@ function DashboardSidebar() {
 }
 
 function DashboardSidebarTab({ tab }) {
+  const location = useLocation()
+  const active = location.pathname === tab.href
+
   return (
-    <li className="rounded hover:bg-blue-600 text-gray-200">
+    <li className={`rounded hover:bg-gray-100 text-gray-600 ${active ? "bg-gray-100" : "bg-white"}`}>
       <Link to={tab.href} className="block p-4">
         <div className="flex items-center gap-2">
           {tab.icon}
