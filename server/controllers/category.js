@@ -57,8 +57,8 @@ exports.category_create = [
     .withMessage("Name must be between 3 and 200 characters")
     .escape(),
   body("description")
-    .isLength({ min: 3, max: 1000 })
-    .withMessage("Description must be between 3 and 1000 characters")
+    .isLength({ min: 3, max: 200 })
+    .withMessage("Description must be between 3 and 200 characters")
     .escape()
     .optional({ values: "falsy" }),
   async (req, res) => {
@@ -98,8 +98,8 @@ exports.category_update = [
     .withMessage("Name must be between 3 and 200 characters")
     .escape(),
   body("description")
-    .isLength({ min: 3, max: 1000 })
-    .withMessage("Description must be between 3 and 1000 characters")
+    .isLength({ min: 3, max: 200 })
+    .withMessage("Description must be between 3 and 200 characters")
     .escape()
     .optional({ values: "falsy" }),
   async (req, res) => {

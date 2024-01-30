@@ -5,13 +5,55 @@ import {
   BiCube,
   BiGridAlt,
   BiPurchaseTag,
-  BiPlus,
   BiShow,
   BiTrash,
   BiLinkExternal,
   BiLogOut,
 } from "react-icons/bi"
 import useFetch from "../hooks/useFetch"
+
+const router = {
+  path: "/dashboard",
+  element: <Dashboard />,
+  children: [
+    {
+      index: true,
+      element: <DashboardIndex />,
+    },
+    {
+      path: "product",
+      element: <DashboardProducts />,
+    },
+    {
+      path: "product/create",
+      element: <ProductForm />,
+    },
+    {
+      path: "product/:slug",
+      element: <ProductForm />,
+    },
+    {
+      path: "product/:slug/delete",
+      element: <ProductDelete />,
+    },
+    {
+      path: "category",
+      element: <DashboardCategories />,
+    },
+    {
+      path: "category/create",
+      element: <CategoryForm />,
+    },
+    {
+      path: "category/:slug",
+      element: <CategoryForm />,
+    },
+    {
+      path: "category/:slug/delete",
+      element: <CategoryDelete />,
+    },
+  ],
+}
 
 const tabs = {
   top: [
@@ -89,7 +131,7 @@ function DashboardSidebarTab({ tab }) {
   )
 }
 
-export default function Dashboard() {
+function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <DashboardSidebar />
@@ -100,7 +142,7 @@ export default function Dashboard() {
   )
 }
 
-export function DashboardIndex() {
+function DashboardIndex() {
   return (
     <div className="max-w-[64rem] m-auto bg-white rounded">
       <header className="p-8">
@@ -110,7 +152,7 @@ export function DashboardIndex() {
   )
 }
 
-export function DashboardProducts() {
+function DashboardProducts() {
   const [products, loading] = useFetch("/product")
 
   return (
@@ -155,7 +197,7 @@ function DashboardProductTab({ product }) {
   )
 }
 
-export function DashboardCategories() {
+function DashboardCategories() {
   const [categories, loading] = useFetch("/category")
 
   return (
@@ -199,3 +241,5 @@ function DashboardCategoryTab({ category }) {
     </div>
   )
 }
+
+export default router

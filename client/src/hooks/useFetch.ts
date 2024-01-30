@@ -8,9 +8,14 @@ export default function useFetch(url) {
   useEffect(() => {
     axios
       .get(url)
-      .then((res) => setData(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false))
+      .then((res) => {
+        setData(res.data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoading(false)
+        console.log(err)
+      })
   }, [url])
 
   return [data, loading]

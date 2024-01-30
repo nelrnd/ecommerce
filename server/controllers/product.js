@@ -44,7 +44,7 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.product_list = async (req, res) => {
-  const products = await Product.find()
+  const products = await Product.find().populate("category")
   res.json(products)
 }
 
