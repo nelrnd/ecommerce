@@ -4,7 +4,7 @@ import Home from "./routes/Home"
 import Product from "./components/Product"
 import Category, { CategoryList } from "./components/Category"
 import Checkout from "./routes/Checkout"
-import dashboardRouter from "./routes/Dashboard2"
+import dashboardRouter from "./routes/Dashboard/Dashboard"
 import CartProvider from "./providers/CartProvider"
 import { Toaster } from "./components/ui/toaster"
 
