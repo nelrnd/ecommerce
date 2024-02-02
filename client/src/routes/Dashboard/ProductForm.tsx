@@ -2,14 +2,14 @@ import useFetch from "../../hooks/useFetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { BiShow } from "react-icons/bi"
+import { BiGridVertical, BiShow, BiTrash } from "react-icons/bi"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import axios from "../../axios"
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
@@ -23,13 +23,10 @@ const formSchema = z.object({
   description: z.string().min(3).max(1000).optional(),
   category: z.string().min(1).optional(),
   brand: z.string().min(1).optional(),
-  image: z.union([
-    z.string(),
-    z
-      .instanceof(File)
-      .refine((f) => f.size < 5242880, "Image should be less than 5 MB")
-      .optional(),
-  ]),
+  image: z
+    .union([z.string(), z.instanceof(File).refine((f) => f.size < 5242880, "Image should be less than 5 MB")])
+    .optional(),
+  sizes: z.array(z.string()),
 })
 
 export default function ProductForm() {
@@ -38,8 +35,11 @@ export default function ProductForm() {
     defaultValues: {
       name: "",
       price: 0,
+      sizes: [],
     },
   })
+
+  const sizes = form.watch("sizes")
 
   const { slug } = useParams()
   const { toast } = useToast()
@@ -56,12 +56,14 @@ export default function ProductForm() {
         .get(`/product/${slug}`)
         .then((res) => {
           const product = res.data
+          form.setValue("id", product._id)
           form.setValue("name", product.name)
           form.setValue("price", product.price)
           form.setValue("description", product.description)
           form.setValue("category", product.category?._id)
           form.setValue("brand", product.brand?._id)
-          form.setValue("image", product.image)
+          if (product.image) form.setValue("image", product.image)
+          form.setValue("sizes", product.sizes)
         })
         .catch((err) => {
           console.log(err)
@@ -248,10 +250,102 @@ export default function ProductForm() {
               )}
             />
 
+            <SelectSizes sizes={sizes} form={form} />
+
             <Button type="submit">{btnText}</Button>
           </form>
         </Form>
       </section>
     </div>
+  )
+}
+
+function SelectSizes({ sizes, form }) {
+  const [value, setValue] = useState("")
+  const [selected, setSelected] = useState(null)
+
+  function add() {
+    if (!value || sizes.includes(value.toUpperCase())) return
+    form.setValue("sizes", [...sizes, value.toUpperCase()])
+    setValue("")
+  }
+
+  function remove(value: string) {
+    form.setValue(
+      "sizes",
+      sizes.filter((size: string) => size !== value)
+    )
+  }
+
+  function edit(value: string, index: number) {
+    const sizesCopy = [...sizes]
+    sizesCopy[index] = value.toUpperCase()
+    form.setValue("sizes", sizesCopy)
+  }
+
+  function select(value: string) {
+    setSelected(value)
+    document.addEventListener("mouseup", () => setSelected(null))
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault()
+      add()
+    }
+  }
+
+  function handleHover(value: string) {
+    if (!selected || selected === value) return
+    let sizesCopy = [...sizes]
+    const index = sizesCopy.findIndex((size) => size === value)
+    sizesCopy = sizesCopy.filter((size) => size !== selected)
+    sizesCopy.splice(index, 0, selected)
+    form.setValue("sizes", sizesCopy)
+  }
+
+  return (
+    <FormField
+      control={form.control}
+      name="sizes"
+      render={() => (
+        <FormItem>
+          <FormLabel>Sizes</FormLabel>
+          <ul className="mt-2 space-y-2">
+            {sizes.map((size, index) => (
+              <li key={index} onMouseEnter={() => handleHover(size)}>
+                <div className="flex gap-2">
+                  <Button type="button" variant="secondary" onMouseDown={() => select(size)} className="cursor-grab">
+                    <BiGridVertical />
+                  </Button>
+                  <Input value={size} onChange={(event) => edit(event.target.value, index)} />
+                  <Button type="button" variant="secondary" onClick={() => remove(size)}>
+                    <BiTrash />
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex gap-2">
+            {sizes.length > 0 && <div className="w-[4rem]" />}
+            <Input
+              placeholder="New size"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              className="px-10"
+              onClick={add}
+              disabled={!value || sizes.includes(value.toUpperCase())}
+            >
+              Add
+            </Button>
+          </div>
+        </FormItem>
+      )}
+    />
   )
 }
