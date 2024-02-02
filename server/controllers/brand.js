@@ -76,12 +76,12 @@ exports.brand_create = [
 
 exports.brand_detail = async (req, res) => {
   const { slug } = req.params
-  const brand = await Brand.findOne({ slug: slug })
+  const brand = await Brand.findOne({ slug: slug }).lean()
   if (!brand) {
     return res.status(404).json({ error: "Brand not found" })
   }
-  const brandProducts = await Product.find({ brand: brand })
-  res.json({ brand, brand_products: brandProducts })
+  brand.products = await Product.find({ brand: brand })
+  res.json(brand)
 }
 
 exports.brand_update = [
