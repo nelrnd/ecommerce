@@ -43,7 +43,7 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.category_list = async (req, res) => {
-  const categories = await Category.find().lean()
+  const categories = await Category.find().sort({ name: 1 }).lean()
 
   const categoryPromises = categories.map(async (category) => {
     const nbOfProducts = await Product.countDocuments({ category: category }).exec()
@@ -90,12 +90,12 @@ exports.category_create = [
 
 exports.category_detail = async (req, res) => {
   const { slug } = req.params
-  const category = await Category.findOne({ slug: slug })
+  const category = await Category.findOne({ slug: slug }).lean()
   if (!category) {
     return res.status(404).json({ error: "Category not found" })
   }
-  const categoryProducts = await Product.find({ category: category })
-  res.json({ category, category_products: categoryProducts })
+  category.products = await Product.find({ category: category })
+  res.json(category)
 }
 
 exports.category_update = [

@@ -31,8 +31,17 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.brand_list = async (req, res) => {
-  const brands = await Brand.find()
-  res.json(brands)
+  const brands = await Brand.find().sort({ name: 1 }).lean()
+
+  const brandPromises = brands.map(async (brand) => {
+    const nbOfProducts = await Product.countDocuments({ brand: brand }).exec()
+    brand.nb_of_products = nbOfProducts
+    return brand
+  })
+
+  const brandsWithNbOfProducts = await Promise.all(brandPromises)
+
+  res.json(brandsWithNbOfProducts)
 }
 
 exports.brand_create = [
