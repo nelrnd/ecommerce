@@ -26,6 +26,7 @@ import { formatPrice } from "../utils"
 import { ProductImage } from "@/components/Product"
 import { DataTable } from "@/components/ui/data-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Products from "./Dashboard/Products"
 
 export default {
   path: "/dashboard",
@@ -45,7 +46,7 @@ export default {
     },
     {
       path: "product",
-      element: <Dashboard_Products />,
+      element: <Products />,
     },
     {
       path: "product/create",
@@ -240,6 +241,8 @@ function Dashboard_Products() {
         const image = row.getValue("image")
         return <ProductImage src={image} className="w-10" />
       },
+      autoWidth: true,
+      enab,
     },
     {
       accessorKey: "name",
@@ -292,7 +295,7 @@ function Dashboard_Products() {
     },
   ]
 
-  if (loading) return <p>Loading man.</p>
+  if (loading) return null
 
   return (
     <div>
@@ -303,7 +306,7 @@ function Dashboard_Products() {
         </Link>
       </header>
       <section className="bg-white mx-12 mb-12 p-12 border border-gray-200 rounded-lg">
-        <DataTable columns={columns} data={tableProducts} />
+        <DataTable columns={columns} data={tableProducts} imgCol />
       </section>
     </div>
   )
@@ -459,31 +462,77 @@ function Dashboard_ProductDelete() {
 
 type Category = {
   _id: string
+  image: string | null
   name: string
-  nbOfProducts: string
+  slug: string
+  nbOfProducts: number
 }
 
 function Dashboard_Categories() {
   const [categories, loading] = useFetch("/category")
 
   const tableCategories = categories?.map((category) => ({
-    _id: category.category._id,
-    name: category.category.name,
-    nbOfProducts: category.category_products.length,
+    _id: category._id,
+    image: category.image,
+    name: category.name,
+    slug: category.slug,
+    nbOfProducts: category.nb_of_products,
   }))
 
   const columns: ColumnDef<Category>[] = [
     {
+      accessorKey: "image",
+      header: "",
+      cell: ({ row }) => {
+        const image = row.getValue("image")
+        return <ProductImage src={image} className="w-10" />
+      },
+    },
+    {
       accessorKey: "name",
       header: "Name",
+      cell: ({ row }) => {
+        const category = row.original
+        return (
+          <Link to={`/category/${category.slug}`} className="font-semibold hover:underline">
+            {category.name}
+          </Link>
+        )
+      },
     },
     {
       accessorKey: "nbOfProducts",
       header: "Number of products",
     },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const category = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <BiDotsHorizontalRounded />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link to={`/dashboard/category/${category.slug}`}>Edit</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to={`/dashboard/category/${category.slug}/delete`}>
+                  <span className="text-red-600">Delete</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
   ]
 
-  if (!loading) return <p>Loading...</p>
+  if (loading) return <p>Loading...</p>
 
   return (
     <div>
@@ -494,7 +543,7 @@ function Dashboard_Categories() {
         </Link>
       </header>
       <section className="bg-white mx-12 mb-12 p-12 border border-gray-200 rounded-lg">
-        <DataTable columns={columns} data={tableCategories} />
+        <DataTable data={tableCategories} columns={columns} imgCol />
       </section>
     </div>
   )
@@ -583,17 +632,12 @@ function Dashboard_Brands() {
   const tableBrands = brands?.map((brand) => ({
     _id: brand.brand._id,
     name: brand.brand.name,
-    nbOfProducts: brand.brand_products.length,
   }))
 
   const columns: ColumnDef<Brand>[] = [
     {
       accessorKey: "name",
       header: "Name",
-    },
-    {
-      accessorKey: "nbOfProducts",
-      header: "Number of products",
     },
   ]
 
