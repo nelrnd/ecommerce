@@ -2,12 +2,13 @@ import useFetch from "../../hooks/useFetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { BiShow } from "react-icons/bi"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect } from "react"
 import axios from "../../axios"
 import { useToast } from "@/components/ui/use-toast"
@@ -21,6 +22,13 @@ const formSchema = z.object({
   description: z.string().min(3).max(1000).optional(),
   category: z.string().min(1).optional(),
   brand: z.string().min(1).optional(),
+  image: z.union([
+    z.string(),
+    z
+      .instanceof(File)
+      .refine((f) => f.size < 5242880, "Image should be less than 5 MB")
+      .optional(),
+  ]),
 })
 
 export default function ProductForm() {
@@ -52,6 +60,7 @@ export default function ProductForm() {
           form.setValue("description", product.description)
           form.setValue("category", product.category?._id)
           form.setValue("brand", product.brand?._id)
+          form.setValue("image", product.image)
         })
         .catch((err) => {
           console.log(err)
@@ -75,7 +84,13 @@ export default function ProductForm() {
     if (slug) {
       axios
         .put(`/product/${slug}`, values, options)
-        .then((res) => {})
+        .then((res) => {
+          navigate(`/dashboard/product/${res.data.slug}`)
+          toast({
+            title: "Success!",
+            description: "Product was successfully saved.",
+          })
+        })
         .catch(catchHandler)
     } else {
       axios
@@ -101,6 +116,17 @@ export default function ProductForm() {
       <header className="p-12">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{heading}</h1>
       </header>
+      {slug && (
+        <section className="mx-12 mb-6">
+          <Link
+            to={`/product/${slug}`}
+            className="p-4 w-fit bg-white border border-gray-200 rounded-xl flex items-center gap-2 shadow hover:bg-gray-50"
+          >
+            <BiShow className="text-lg" />
+            /product/{slug}
+          </Link>
+        </section>
+      )}
       <section className="bg-white mx-12 mb-12 p-12 border border-gray-200 rounded-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-[36rem] space-y-6">
@@ -201,6 +227,25 @@ export default function ProductForm() {
                 )}
               />
             )}
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <Button type="submit">{btnText}</Button>
           </form>

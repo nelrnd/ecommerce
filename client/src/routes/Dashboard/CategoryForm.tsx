@@ -3,13 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "../../axios"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import * as z from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { ToastAction } from "@/components/ui/toast"
+import { BiShow } from "react-icons/bi"
 
 const formSchema = z.object({
   name: z.string().min(3).max(200),
@@ -104,6 +105,17 @@ export default function CategoryForm() {
       <header className="p-12">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{heading}</h1>
       </header>
+      {slug && (
+        <section className="mx-12 mb-6">
+          <Link
+            to={`/category/${slug}`}
+            className="p-4 w-fit bg-white border border-gray-200 rounded-xl flex items-center gap-2 shadow hover:bg-gray-50"
+          >
+            <BiShow className="text-lg" />
+            /category/{slug}
+          </Link>
+        </section>
+      )}
       <section className="bg-white mx-12 mb-12 p-12 border border-gray-200 rounded-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-[36rem] space-y-6">
