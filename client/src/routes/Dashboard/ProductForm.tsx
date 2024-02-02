@@ -73,6 +73,7 @@ export default function ProductForm() {
   }, [slug, form, navigate])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values)
     const options = { headers: { "Content-Type": "multipart/form-data" } }
 
     const catchHandler = (err) => {
@@ -99,7 +100,14 @@ export default function ProductForm() {
       axios
         .post("/product", values, options)
         .then((res) => {
-          form.reset()
+          form.setValue("name", "")
+          form.setValue("price", 0)
+          form.setValue("description", "")
+          form.setValue("category", "")
+          form.setValue("brand", "")
+          form.setValue("image", undefined)
+          document.getElementById("image").value = null
+          form.setValue("sizes", [])
           toast({
             title: "Success!",
             description: "New product successfully created.",
@@ -312,19 +320,20 @@ function SelectSizes({ sizes, form }) {
         <FormItem>
           <FormLabel>Sizes</FormLabel>
           <ul className="mt-2 space-y-2">
-            {sizes.map((size, index) => (
-              <li key={index} onMouseEnter={() => handleHover(size)}>
-                <div className="flex gap-2">
-                  <Button type="button" variant="secondary" onMouseDown={() => select(size)} className="cursor-grab">
-                    <BiGridVertical />
-                  </Button>
-                  <Input value={size} onChange={(event) => edit(event.target.value, index)} />
-                  <Button type="button" variant="secondary" onClick={() => remove(size)}>
-                    <BiTrash />
-                  </Button>
-                </div>
-              </li>
-            ))}
+            {!!sizes.length &&
+              sizes.map((size, index) => (
+                <li key={index} onMouseEnter={() => handleHover(size)}>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="secondary" onMouseDown={() => select(size)} className="cursor-grab">
+                      <BiGridVertical />
+                    </Button>
+                    <Input value={size} onChange={(event) => edit(event.target.value, index)} />
+                    <Button type="button" variant="secondary" onClick={() => remove(size)}>
+                      <BiTrash />
+                    </Button>
+                  </div>
+                </li>
+              ))}
           </ul>
           <div className="mt-4 flex gap-2">
             {sizes.length > 0 && <div className="w-[4rem]" />}

@@ -74,7 +74,8 @@ export default function BrandForm() {
       axios
         .post("/brand", values)
         .then((res) => {
-          form.reset()
+          form.setValue("name", "")
+          form.setValue("description", "")
           toast({
             title: "Success!",
             description: "New brand successfully created.",
