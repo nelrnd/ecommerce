@@ -27,6 +27,8 @@ import { ProductImage } from "@/components/Product"
 import { DataTable } from "@/components/ui/data-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Products from "./Dashboard/Products"
+import ProductForm from "./Dashboard/ProductForm"
+import ProductDelete from "./Dashboard/ProductDelete"
 
 export default {
   path: "/dashboard",
@@ -50,15 +52,15 @@ export default {
     },
     {
       path: "product/create",
-      element: <Dashboard_ProductForm />,
+      element: <ProductForm />,
     },
     {
       path: "product/:slug",
-      element: <Dashboard_ProductForm />,
+      element: <ProductForm />,
     },
     {
       path: "product/:slug/delete",
-      element: <Dashboard_ProductDelete />,
+      element: <ProductDelete />,
     },
     {
       path: "category",
@@ -446,16 +448,6 @@ function Dashboard_ProductForm() {
           </form>
         </Form>
       </section>
-    </div>
-  )
-}
-
-function Dashboard_ProductDelete() {
-  return (
-    <div>
-      <header className="p-12">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Delete product</h1>
-      </header>
     </div>
   )
 }
