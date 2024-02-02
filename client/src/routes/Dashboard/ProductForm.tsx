@@ -15,6 +15,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 
 const formSchema = z.object({
+  id: z.string().optional(), // if editing existing product
   name: z.string().min(3).max(200),
   price: z.coerce
     .number({ required_error: "Price is required", invalid_type_error: "Price must be a number" })

@@ -13,6 +13,7 @@ import { ToastAction } from "@/components/ui/toast"
 import { BiShow } from "react-icons/bi"
 
 const formSchema = z.object({
+  id: z.string().optional(), // if editing existing category
   name: z.string().min(3).max(200),
   description: z.string().min(3).max(200).optional(),
   image: z.union([
@@ -44,6 +45,7 @@ export default function CategoryForm() {
         .get(`/category/${slug}`)
         .then((res) => {
           const category = res.data
+          form.setValue("id", category._id)
           form.setValue("name", category.name)
           form.setValue("description", category.description)
           form.setValue("image", category.image)

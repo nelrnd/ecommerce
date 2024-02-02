@@ -13,6 +13,7 @@ import { ToastAction } from "@/components/ui/toast"
 import { BiShow } from "react-icons/bi"
 
 const formSchema = z.object({
+  id: z.string().optional(), // if editing an existing brand
   name: z.string().min(3).max(200),
   description: z.string().min(3).max(200).optional(),
 })
@@ -37,6 +38,7 @@ export default function BrandForm() {
         .get(`/brand/${slug}`)
         .then((res) => {
           const brand = res.data
+          form.setValue("id", brand._id)
           form.setValue("name", brand.name)
           form.setValue("description", brand.description)
         })
