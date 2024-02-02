@@ -14,6 +14,13 @@ import { ToastAction } from "@/components/ui/toast"
 const formSchema = z.object({
   name: z.string().min(3).max(200),
   description: z.string().min(3).max(200).optional(),
+  image: z.union([
+    z.string(),
+    z
+      .instanceof(File)
+      .refine((f) => f.size < 5242880, "Image should be less than 5 MB")
+      .optional(),
+  ]),
 })
 
 export default function CategoryForm() {
@@ -38,6 +45,7 @@ export default function CategoryForm() {
           const category = res.data
           form.setValue("name", category.name)
           form.setValue("description", category.description)
+          form.setValue("image", category.image)
         })
         .catch((err) => {
           console.log(err)
@@ -73,7 +81,10 @@ export default function CategoryForm() {
       axios
         .post("/category", values, options)
         .then((res) => {
-          form.reset()
+          form.setValue("name", "")
+          form.setValue("description", "")
+          form.setValue("image", undefined)
+          document.getElementById("image").value = null
           toast({
             title: "Success!",
             description: "New category successfully created.",
@@ -118,6 +129,25 @@ export default function CategoryForm() {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
