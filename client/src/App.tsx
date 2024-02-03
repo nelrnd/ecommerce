@@ -10,6 +10,8 @@ import dashboardRouter from "./routes/Dashboard/Dashboard"
 import CartProvider from "./providers/CartProvider"
 import { Toaster } from "./components/ui/toaster"
 import NotFound from "./routes/NotFound"
+import Brand from "./routes/Brand"
+import Categories from "./routes/Categories"
 
 const router = createBrowserRouter([
   {
@@ -31,11 +33,29 @@ const router = createBrowserRouter([
       },
       */
       {
+        path: "category",
+        element: <Categories />,
+        errorElement: <NotFound />,
+        loader: async () => {
+          const res = await axios.get("/category")
+          return res.data
+        },
+      },
+      {
         path: "category/:slug",
         element: <Category />,
         errorElement: <NotFound />,
         loader: async ({ params }) => {
           const res = await axios.get(`/category/${params.slug}`)
+          return res.data
+        },
+      },
+      {
+        path: "brand/:slug",
+        element: <Brand />,
+        errorElement: <NotFound />,
+        loader: async ({ params }) => {
+          const res = await axios.get(`/brand/${params.slug}`)
           return res.data
         },
       },

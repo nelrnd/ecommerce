@@ -1,7 +1,7 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import useFetch from "../hooks/useFetch"
 import { ProductCard } from "../components/Product"
-import { CategoryCard } from "../components/Category"
+import CategoryCard from "../components/CategoryCard"
 import { Link } from "react-router-dom"
 
 export default function Home() {
