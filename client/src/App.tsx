@@ -12,6 +12,7 @@ import { Toaster } from "./components/ui/toaster"
 import NotFound from "./routes/NotFound"
 import Brand from "./routes/Brand"
 import Categories from "./routes/Categories"
+import Brands from "./routes/Brands"
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,15 @@ const router = createBrowserRouter([
         errorElement: <NotFound />,
         loader: async ({ params }) => {
           const res = await axios.get(`/category/${params.slug}`)
+          return res.data
+        },
+      },
+      {
+        path: "brand",
+        element: <Brands />,
+        errorElement: <NotFound />,
+        loader: async () => {
+          const res = await axios.get(`/brand`)
           return res.data
         },
       },
