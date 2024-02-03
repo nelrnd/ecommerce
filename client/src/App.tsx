@@ -46,8 +46,11 @@ const router = createBrowserRouter([
         path: "category/:slug",
         element: <Category />,
         errorElement: <NotFound />,
-        loader: async ({ params }) => {
-          const res = await axios.get(`/category/${params.slug}`)
+        loader: async ({ request, params }) => {
+          const url = new URL(request.url)
+          const sort = url.searchParams.get("sort")
+          const endpoint = `/category/${params.slug}${sort ? `?sort=${sort}` : ""}`
+          const res = await axios.get(endpoint)
           return res.data
         },
       },
@@ -64,8 +67,11 @@ const router = createBrowserRouter([
         path: "brand/:slug",
         element: <Brand />,
         errorElement: <NotFound />,
-        loader: async ({ params }) => {
-          const res = await axios.get(`/brand/${params.slug}`)
+        loader: async ({ request, params }) => {
+          const url = new URL(request.url)
+          const sort = url.searchParams.get("sort")
+          const endpoint = `/brand/${params.slug}${sort ? `?sort=${sort}` : ""}`
+          const res = await axios.get(endpoint)
           return res.data
         },
       },

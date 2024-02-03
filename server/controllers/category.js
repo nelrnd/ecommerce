@@ -90,11 +90,30 @@ exports.category_create = [
 
 exports.category_detail = async (req, res) => {
   const { slug } = req.params
+  const { sort } = req.query
+
   const category = await Category.findOne({ slug: slug }).lean()
   if (!category) {
     return res.status(404).json({ error: "Category not found" })
   }
-  category.products = await Product.find({ category: category })
+
+  const productQuery = Product.find({ category: category })
+
+  switch (sort) {
+    case "price_asc":
+      productQuery.sort({ price: 1 })
+      break
+    case "price_desc":
+      productQuery.sort({ price: -1 })
+      break
+    case "popular":
+      productQuery.sort({ view_count: -1 })
+      break
+    default:
+      productQuery.sort({ created_at: -1 })
+  }
+
+  category.products = await productQuery.exec()
   res.json(category)
 }
 

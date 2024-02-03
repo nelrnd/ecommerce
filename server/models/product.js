@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
   brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
   sizes: { type: [String], default: null },
   created_at: { type: Date, default: Date.now },
-  view_count: { type: Number, default: 0 },
+  view_count: { type: Number, default: () => Math.floor(Math.random() * 10) },
 })
 
 module.exports = mongoose.model("Product", productSchema)
