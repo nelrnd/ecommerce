@@ -38,7 +38,7 @@ export default function Brand() {
           </div>
         )}
       </header>
-      <main className="p-8 pt-0">
+      <main className="p-8 pt-0 mb-16">
         <div className="grid grid-cols-3 gap-x-4 gap-y-8">
           {brand.products.map((product) => (
             <ProductCard key={product._id} product={product} />
