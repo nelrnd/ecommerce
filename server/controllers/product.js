@@ -44,7 +44,7 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.product_list = async (req, res) => {
-  const { sort } = req.query
+  const { sort, limit } = req.query
 
   const query = Product.find().populate("category")
 
@@ -60,6 +60,10 @@ exports.product_list = async (req, res) => {
       break
     default:
       query.sort({ created_at: -1 })
+  }
+
+  if (limit) {
+    query.limit(limit)
   }
 
   const products = await query.exec()
