@@ -44,7 +44,25 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.product_list = async (req, res) => {
-  const products = await Product.find().populate("category")
+  const { sort } = req.query
+
+  const query = Product.find().populate("category")
+
+  switch (sort) {
+    case "price_asc":
+      query.sort({ price: 1 })
+      break
+    case "price_desc":
+      query.sort({ price: -1 })
+      break
+    case "popular":
+      query.sort({ view_count: -1 })
+      break
+    default:
+      query.sort({ created_at: -1 })
+  }
+
+  const products = await query.exec()
   res.json(products)
 }
 
@@ -110,6 +128,10 @@ exports.product_detail = async (req, res) => {
   if (!product) {
     return res.status(404).json({ error: "Product not found" })
   }
+
+  // increment product view count
+  Product.findOneAndUpdate({ slug: slug }, { $inc: { view_count: 1 } }).exec()
+
   res.json(product)
 }
 

@@ -9,6 +9,8 @@ const productSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
   sizes: { type: [String], default: null },
+  created_at: { type: Date, default: Date.now },
+  view_count: { type: Number, default: 0 },
 })
 
 module.exports = mongoose.model("Product", productSchema)
