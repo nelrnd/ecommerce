@@ -1,4 +1,4 @@
-import { ProductImage } from "../../components/Product"
+import ProductImage from "../../components/ProductImage"
 import { Button, buttonVariants } from "../../components/ui/button"
 import { DataTable } from "../../components/ui/data-table"
 import {

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import useFetch from "../../hooks/useFetch"
-import { ProductImage } from "../../components/Product"
+import ProductImage from "../../components/ProductImage"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { BiDotsHorizontalRounded, BiSortAlt2 } from "react-icons/bi"
 import { Link } from "react-router-dom"
