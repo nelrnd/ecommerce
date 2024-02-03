@@ -1,14 +1,15 @@
+import Layout from "@/components/Layout"
 import { Link, useLoaderData } from "react-router-dom"
 
 export default function Brands() {
   const brands = useLoaderData()
 
   return (
-    <div className="w-[64rem] mx-auto">
-      <header className="p-8">
+    <Layout>
+      <header className="py-8">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">All brands</h1>
       </header>
-      <main className="p-8 pt-0 mb-16">
+      <section>
         <ul className="space-y-4 columns-3">
           {brands.map((brand) => (
             <li key={brand._id}>
@@ -18,7 +19,7 @@ export default function Brands() {
             </li>
           ))}
         </ul>
-      </main>
-    </div>
+      </section>
+    </Layout>
   )
 }

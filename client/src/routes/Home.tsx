@@ -3,6 +3,7 @@ import useFetch from "../hooks/useFetch"
 import { ProductCard } from "../components/Product"
 import CategoryCard from "../components/CategoryCard"
 import { Link } from "react-router-dom"
+import Layout from "@/components/Layout"
 
 export default function Home() {
   const [products, pLoading] = useFetch("/product")
@@ -13,8 +14,8 @@ export default function Home() {
   }
 
   return (
-    <div className="w-[64rem] m-auto">
-      <section className="px-8 py-8">
+    <Layout>
+      <section className="mt-8">
         <header className="py-4">
           <div className="flex items-baseline justify-between">
             <h2 className="scroll-m-20 text-4xl font-extrabold tracking-tight mb-5">Categories</h2>
@@ -31,7 +32,7 @@ export default function Home() {
           </div>
         )}
       </section>
-      <section className="p-8">
+      <section className="mt-8">
         <header className="py-4">
           <div className="flex items-baseline justify-between">
             <h2 className="scroll-m-20 text-3xl font-extrabold tracking-tight mb-5">Latest</h2>
@@ -52,6 +53,6 @@ export default function Home() {
           <CarouselNext />
         </Carousel>
       </section>
-    </div>
+    </Layout>
   )
 }

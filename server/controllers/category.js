@@ -43,7 +43,15 @@ const create_slug = async (req, res, next) => {
 }
 
 exports.category_list = async (req, res) => {
-  const categories = await Category.find().sort({ name: 1 }).lean()
+  const { limit } = req.query
+
+  const query = Category.find().sort({ name: 1 })
+
+  if (limit) {
+    query.limit(limit)
+  }
+
+  const categories = await query.lean()
 
   const categoryPromises = categories.map(async (category) => {
     const nbOfProducts = await Product.countDocuments({ category: category }).exec()

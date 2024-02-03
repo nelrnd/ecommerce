@@ -3,7 +3,6 @@ import axios from "./axios"
 import Root from "./routes/Root"
 import Home from "./routes/Home"
 import Product from "./components/Product"
-//import Category, { CategoryList } from "./components/Category"
 import Category from "./routes/Category"
 import Checkout from "./routes/Checkout"
 import dashboardRouter from "./routes/Dashboard/Dashboard"
@@ -13,11 +12,17 @@ import NotFound from "./routes/NotFound"
 import Brand from "./routes/Brand"
 import Categories from "./routes/Categories"
 import Brands from "./routes/Brands"
+import Latest from "./routes/Latest"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: (
+      <div className="h-screen">
+        <NotFound />
+      </div>
+    ),
     children: [
       {
         index: true,
@@ -27,12 +32,6 @@ const router = createBrowserRouter([
         path: "/product/:slug",
         element: <Product />,
       },
-      /*
-      {
-        path: "/category",
-        element: <CategoryList />,
-      },
-      */
       {
         path: "category",
         element: <Categories />,
@@ -75,12 +74,15 @@ const router = createBrowserRouter([
           return res.data
         },
       },
-      /*
       {
-        path: "/category/:slug",
-        element: <Category />,
+        path: "latest",
+        element: <Latest />,
+        errorElement: <NotFound />,
+        loader: async ({ request, params }) => {
+          const res = await axios.get("/product")
+          return res.data
+        },
       },
-      */
       {
         path: "/checkout",
         element: <Checkout />,
