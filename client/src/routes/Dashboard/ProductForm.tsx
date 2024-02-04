@@ -320,7 +320,7 @@ function SelectSizes({ sizes, form }) {
         <FormItem>
           <FormLabel>Sizes</FormLabel>
           <ul className="mt-2 space-y-2">
-            {!!sizes.length &&
+            {sizes &&
               sizes.map((size, index) => (
                 <li key={index} onMouseEnter={() => handleHover(size)}>
                   <div className="flex gap-2">
@@ -336,7 +336,7 @@ function SelectSizes({ sizes, form }) {
               ))}
           </ul>
           <div className="mt-4 flex gap-2">
-            {sizes.length > 0 && <div className="w-[4rem]" />}
+            {sizes && sizes.length > 0 && <div className="w-[4rem]" />}
             <Input
               placeholder="New size"
               value={value}

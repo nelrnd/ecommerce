@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import axios from "./axios"
 import Root from "./routes/Root"
 import Home from "./routes/Home"
-import Product from "./components/Product"
+import Product from "./routes/Product"
 import Category from "./routes/Category"
 import Checkout from "./routes/Checkout"
 import dashboardRouter from "./routes/Dashboard/Dashboard"
@@ -31,6 +31,11 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <Product />,
+        errorElement: <NotFound />,
+        loader: async ({ params }) => {
+          const res = await axios.get(`/product/${params.slug}`)
+          return res.data
+        },
       },
       {
         path: "category",
