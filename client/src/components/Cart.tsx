@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BiX, BiShoppingBag, BiImage } from "react-icons/bi"
 import { useCart } from "../providers/CartProvider"
 import { Link } from "react-router-dom"
+import { formatPrice } from "@/utils"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -39,15 +40,15 @@ export default function Cart() {
           <footer className="p-6">
             <div className="py-3 flex justify-between">
               <span>Subtotal:</span>
-              <span>${items.reduce((total, curr) => total + curr.price * curr.quantity, 0)}</span>
+              <span>{formatPrice(items.reduce((total, curr) => total + curr.price * curr.quantity, 0))}</span>
             </div>
             <div className="py-3 pt-0 flex justify-between">
               <span>Shipping:</span>
-              <span>$10</span>
+              <span>{formatPrice(0)}</span>
             </div>
             <div className="font-bold py-6 border-t border-gray-200 flex justify-between">
               <span>Total:</span>
-              <span>${items.reduce((total, curr) => total + curr.price, 0) + 10}</span>
+              <span>{formatPrice(items.reduce((total, curr) => total + curr.price * curr.quantity, 0))}</span>
             </div>
             <Link
               to="/checkout"
@@ -84,7 +85,7 @@ function CartProduct({ product }) {
             <Link to={`/product/${product.slug}`}>
               <h2 className="font-bold hover:underline">{product.name}</h2>
             </Link>
-            <p className="text-gray-600">${product.price * product.quantity}</p>
+            <p className="text-gray-600">{formatPrice(product.price * product.quantity)}</p>
           </div>
           <div>
             <button

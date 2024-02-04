@@ -27,6 +27,16 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+        errorElement: <NotFound />,
+        loader: async () => {
+          const [category1, category2, products] = await Promise.all([
+            axios.get("/category/t-shirts-1"),
+            axios.get("/category/jackets"),
+            axios.get("/product?limit=5"),
+          ])
+
+          return { categories: [category1.data, category2.data], products: products.data }
+        },
       },
       {
         path: "/product/:slug",
@@ -83,7 +93,7 @@ const router = createBrowserRouter([
         path: "latest",
         element: <Latest />,
         errorElement: <NotFound />,
-        loader: async ({ request, params }) => {
+        loader: async () => {
           const res = await axios.get("/product")
           return res.data
         },
