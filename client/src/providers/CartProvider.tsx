@@ -10,25 +10,40 @@ export default function CartProvider({ children }) {
   const closeCart = () => setIsOpen(false)
 
   const addToCart = (product) => {
-    const exists = items.find((i) => i._id === product._id && i.size === product.size)
-    if (exists) {
-      exists.quantity++
-      setItems((items) => items.map((i) => (i._id === product._id ? exists : i)))
+    const inCart = items.find((item) => item._id === product._id && item.size == product.size)
+    if (inCart) {
+      if (inCart.quantity < 5) {
+        setItems((items) =>
+          items.map((item) => (item === inCart ? { ...inCart, quantity: inCart.quantity + 1 } : item))
+        )
+      }
     } else {
-      setItems([...items, { ...product, quantity: 1 }])
+      setItems((items) => [...items, { ...product, quantity: 1 }])
     }
   }
 
-  const deleteFromCart = (id) => {
-    setItems((items) => items.filter((i) => i._id !== id))
+  const deleteFromCart = (product) => {
+    setItems((items) => items.filter((item) => !(item._id === product._id && item.size == product.size)))
   }
 
-  const updateItemSize = (item, size) => {
-    setItems(items.map((i) => (i._id === item._id && i.size === item.size ? { ...item, size } : item)))
+  const updateItemSize = (product, size) => {
+    const inCart = items.find((item) => item._id === product._id && item.size === size)
+    if (inCart) {
+      setItems((items) => items.filter((item) => !(item._id === product._id && item.size == product.size)))
+      setItems((items) =>
+        items.map((item) =>
+          item === inCart ? { ...inCart, quantity: Math.min(5, inCart.quantity + product.quantity) } : item
+        )
+      )
+    } else {
+      setItems((items) =>
+        items.map((item) => (item._id === product._id && item.size == product.size ? { ...product, size } : item))
+      )
+    }
   }
 
   const updateItemQuantity = (item, quantity) => {
-    setItems(items.map((i) => (i._id === item._id && i.size === item.size ? { ...item, quantity } : item)))
+    setItems(items.map((i) => (i._id === item._id && i.size == item.size ? { ...item, quantity } : i)))
   }
 
   const contextValue = {

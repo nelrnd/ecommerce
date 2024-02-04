@@ -1,6 +1,6 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import useFetch from "../hooks/useFetch"
-import { ProductCard } from "../components/Product"
+import ProductCard from "../components/ProductCard"
 import CategoryCard from "../components/CategoryCard"
 import { Link } from "react-router-dom"
 import Layout, { Section } from "@/components/Layout"

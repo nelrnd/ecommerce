@@ -21,7 +21,7 @@ export default function Product() {
         <div className="col-span-2">
           <ProductImage src={product.image} />
         </div>
-        <div>
+        <div className="pt-6">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
           <p className="mt-2 text-xl text-gray-600">${product.price}</p>
           <p className="text-gray-600 mt-4">{product.description}</p>

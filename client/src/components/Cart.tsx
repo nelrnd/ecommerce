@@ -17,7 +17,7 @@ export default function Cart() {
     <Sheet>
       <SheetTrigger className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center text-xl relative">
         <BiShoppingBag />
-        <span className="sr-only">Cart</span>
+        <span className="sr-only">Open cart</span>
         <CartLabel />
       </SheetTrigger>
       <SheetContent className="w-[24rem]">
@@ -30,7 +30,7 @@ export default function Cart() {
             </SheetClose>
           </header>
           <section className="p-6 flex-1 overflow-y-auto">
-            <div className="flex flex-col gap-4">
+            <div className="space-y-8">
               {items.map((i) => (
                 <CartProduct key={i._id + i.size} product={i} />
               ))}
@@ -39,7 +39,7 @@ export default function Cart() {
           <footer className="p-6">
             <div className="py-3 flex justify-between">
               <span>Subtotal:</span>
-              <span>${items.reduce((total, curr) => total + curr.price, 0)}</span>
+              <span>${items.reduce((total, curr) => total + curr.price * curr.quantity, 0)}</span>
             </div>
             <div className="py-3 pt-0 flex justify-between">
               <span>Shipping:</span>
@@ -78,7 +78,7 @@ function CartProduct({ product }) {
           )}
         </div>
       </Link>
-      <div className="flex-1 ">
+      <div className="flex-1">
         <div className="flex gap-2">
           <div className="flex-1">
             <Link to={`/product/${product.slug}`}>
@@ -88,7 +88,7 @@ function CartProduct({ product }) {
           </div>
           <div>
             <button
-              onClick={() => deleteFromCart(product._id)}
+              onClick={() => deleteFromCart(product)}
               className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
             >
               <BiX />
@@ -96,10 +96,10 @@ function CartProduct({ product }) {
             </button>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-1">
           {product.sizes ? (
             <Select defaultValue={product.size} onValueChange={(size) => updateItemSize(product, size)}>
-              <SelectTrigger>
+              <SelectTrigger className="px-2 h-8">
                 <SelectValue placeholder="Size">
                   <span className="text-sm text-gray-600">Size:</span> {product.size}
                 </SelectValue>
@@ -115,8 +115,8 @@ function CartProduct({ product }) {
           ) : (
             <p className="text-gray-600 text-sm w-full px-2 py-1">One size</p>
           )}
-          <Select defaultValue={product.quantity} onValueChange={(qty) => updateItemQuantity(product, qty)}>
-            <SelectTrigger>
+          <Select defaultValue={product.quantity.toString()} onValueChange={(qty) => updateItemQuantity(product, qty)}>
+            <SelectTrigger className="px-2 h-8">
               <SelectValue placeholder="Quantity">
                 <span className="text-sm text-gray-600">Quantity:</span> {product.quantity}
               </SelectValue>
