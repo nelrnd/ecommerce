@@ -13,6 +13,7 @@ import Brand from "./routes/Brand"
 import Categories from "./routes/Categories"
 import Brands from "./routes/Brands"
 import Latest from "./routes/Latest"
+import OrderConfirmation from "./routes/OrderConfirmation"
 
 const router = createBrowserRouter([
   {
@@ -98,11 +99,15 @@ const router = createBrowserRouter([
           return res.data
         },
       },
-      {
-        path: "/checkout",
-        element: <Checkout />,
-      },
     ],
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />,
+  },
+  {
+    path: "order",
+    element: <OrderConfirmation />,
   },
   dashboardRouter,
 ])
