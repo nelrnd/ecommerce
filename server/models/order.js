@@ -12,6 +12,7 @@ const orderSchema = new mongoose.Schema({
   phone_code: { type: String, required: true },
   phone: { type: Number, required: true },
   shipping_method: { type: String, required: true },
+  created_at: { type: Date, default: Date.now },
   products: [
     {
       product: { type: mongoose.Types.ObjectId, ref: "Product", required: true },
@@ -21,4 +22,12 @@ const orderSchema = new mongoose.Schema({
   ],
 })
 
-module.exports = mongoose.model("Order", orderSchema)
+orderSchema.pre("save", async function (next) {
+  const count = await Order.countDocuments()
+  this.number = 10000 + count + 1
+  next()
+})
+
+const Order = mongoose.model("Order", orderSchema)
+
+module.exports = Order
