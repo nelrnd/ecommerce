@@ -2,7 +2,7 @@ const Order = require("../models/order")
 const { body, validationResult } = require("express-validator")
 
 exports.order_list = async (req, res) => {
-  const orders = await Order.find().exec()
+  const orders = await Order.find().populate("products.product").exec()
   return res.json(orders)
 }
 
@@ -60,7 +60,7 @@ exports.order_create = [
   body("phone").notEmpty().withMessage("Phone number is required").escape(),
   body("shipping_method").notEmpty().withMessage("Shipping method is required").escape(),
   body("products").isArray().notEmpty().withMessage("Order cannot be empty"),
-  body("products.quantity")
+  body("products.*.quantity")
     .notEmpty()
     .withMessage("Product quantity must be specified")
     .isNumeric()
@@ -93,7 +93,7 @@ exports.order_create = [
 
 exports.order_detail = async (req, res) => {
   const { id } = req.params
-  const order = await Order.findById(id).exec()
+  const order = await Order.findById(id).populate("products.product").exec()
   if (!order) {
     return res.status(404).json({ error: "Order not found" })
   }
