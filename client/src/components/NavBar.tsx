@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom"
+import { Link, useLoaderData } from "react-router-dom"
 import Cart from "./Cart"
-import useFetch from "@/hooks/useFetch"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,8 +10,7 @@ import {
 } from "./ui/navigation-menu"
 
 export default function NavBar() {
-  const [categories, categoriesLoading] = useFetch("/category?limit=5")
-  const [brands, brandsLoading] = useFetch("/brand?limit=5")
+  const { navbarCategories, navbarBrands } = useLoaderData()
 
   return (
     <header className="p-6 lg:px-16 xl:px-24 border-b border-gray-200">
@@ -25,12 +23,12 @@ export default function NavBar() {
         <div className="col-span-2 flex justify-center">
           <NavigationMenu className="justify-end">
             <NavigationMenuList>
-              {categories && (
+              {navbarCategories && navbarCategories.length > 0 && (
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="px-8 py-4 columns-2 w-[24rem] space-y-2">
-                      {categories.map((category) => (
+                      {navbarCategories.map((category) => (
                         <li key={category._id}>
                           <NavigationMenuLink asChild>
                             <Link to={`/category/${category.slug}`} className="hover:underline">
@@ -50,12 +48,12 @@ export default function NavBar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               )}
-              {brands && (
+              {navbarBrands && (
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Brands</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="px-8 py-4 columns-2 w-[24rem] space-y-2">
-                      {brands.map((brand) => (
+                      {navbarBrands.map((brand) => (
                         <li key={brand._id}>
                           <NavigationMenuLink asChild>
                             <Link to={`/brand/${brand.slug}`} className="hover:underline">

@@ -24,6 +24,13 @@ const router = createBrowserRouter([
         <NotFound />
       </div>
     ),
+    loader: async () => {
+      const [navbarCategories, navbarBrands] = await Promise.all([
+        axios.get("/category?limit=5"),
+        axios.get("/brand?limit=5"),
+      ])
+      return { navbarCategories: navbarCategories.data, navbarBrands: navbarBrands.data }
+    },
     children: [
       {
         index: true,
