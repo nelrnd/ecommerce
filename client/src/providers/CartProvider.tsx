@@ -3,64 +3,87 @@ import { createContext, useContext, useState } from "react"
 const CartContext = createContext(null)
 
 interface cartItem {
+  id: string
   productId: string
   quantity: number
   size?: string
 }
 
+const MAX_ITEM_QUANTITY = 5
+
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<cartItem[]>([])
 
-  const openCart = () => setIsOpen(true)
-  const closeCart = () => setIsOpen(false)
+  function openCart() {
+    setIsOpen(true)
+  }
 
-  const addToCart = (product) => {
-    const inCart = items.find((item) => item._id === product._id && item.size == product.size)
-    if (inCart) {
-      if (inCart.quantity < 5) {
-        setItems((items) =>
-          items.map((item) => (item === inCart ? { ...inCart, quantity: inCart.quantity + 1 } : item))
-        )
-      }
+  function closeCart() {
+    setIsOpen(false)
+  }
+
+  function addItem(item) {
+    item = giveItemId(item)
+    const itemInCart = getItem(item)
+    if (itemInCart) {
+      editItemQuantity(item, itemInCart.quantity + 1)
     } else {
-      setItems((items) => [...items, { ...product, quantity: 1 }])
+      setItems([...items, item])
     }
   }
 
-  const deleteFromCart = (product) => {
-    setItems((items) => items.filter((item) => !(item._id === product._id && item.size == product.size)))
+  function deleteItem(item) {
+    const itemsCopy = [...items]
+    const updatedItems = itemsCopy.filter((cartItem) => cartItem.id !== item.id)
+    setItems(updatedItems)
   }
 
-  const updateItemSize = (product, size) => {
-    const inCart = items.find((item) => item._id === product._id && item.size === size)
-    if (inCart) {
-      setItems((items) => items.filter((item) => !(item._id === product._id && item.size == product.size)))
-      setItems((items) =>
-        items.map((item) =>
-          item === inCart ? { ...inCart, quantity: Math.min(5, inCart.quantity + product.quantity) } : item
-        )
-      )
+  function editItemSize(item, newSize) {
+    const itemInCart = getItem({ ...item, newSize })
+    const itemsCopy = [...items]
+    if (itemInCart) {
+      const newQuantity = Math.min(MAX_ITEM_QUANTITY, itemInCart.quantity + item.quantity)
+      const updatedItems = itemsCopy
+        .filter((cartItem) => cartItem !== item)
+        .map((cartItem) => (cartItem === itemInCart ? { ...itemInCart, quantity: newQuantity } : cartItem))
+      setItems(updatedItems)
     } else {
-      setItems((items) =>
-        items.map((item) => (item._id === product._id && item.size == product.size ? { ...product, size } : item))
-      )
+      const updatedItems = itemsCopy.map((cartItem) => (cartItem === item ? { ...item, size: newSize } : cartItem))
+      setItems(updatedItems)
     }
   }
 
-  const updateItemQuantity = (item, quantity) => {
-    setItems(items.map((i) => (i._id === item._id && i.size == item.size ? { ...item, quantity } : i)))
+  function editItemQuantity(item, newQuantity) {
+    const itemInCart = getItem(item)
+    if (itemInCart && newQuantity <= MAX_ITEM_QUANTITY) {
+      itemInCart.quantity = newQuantity
+      const itemsCopy = [...items]
+      const updatedItems = itemsCopy.map((cartItem) => (cartItem.id === itemInCart.id ? itemInCart : cartItem))
+      setItems(updatedItems)
+    }
+  }
+
+  function getItem(item) {
+    if (!item.id) item = giveItemId(item)
+    return items.find((cartItem) => cartItem.id === item.id)
+  }
+
+  function giveItemId(item) {
+    return { ...item, id: item.product._id + item.size }
   }
 
   const contextValue = {
     isOpen,
+    setIsOpen,
     items,
     openCart,
     closeCart,
-    addToCart,
-    deleteFromCart,
-    updateItemSize,
-    updateItemQuantity,
+    addItem,
+    deleteItem,
+    editItemSize,
+    editItemQuantity,
+    getItem,
   }
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>

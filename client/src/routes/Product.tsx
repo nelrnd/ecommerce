@@ -11,8 +11,23 @@ import { useForm } from "react-hook-form"
 import { BiChevronRight } from "react-icons/bi"
 import { Link, useLoaderData } from "react-router-dom"
 
+interface Product {
+  name: string
+  slug: string
+  price: number
+  description?: string
+  image?: string
+  category?: string
+  brand?: string
+  sizes?: [string]
+  created_at: number
+  view_count: number
+}
+
+const MAX_ITEM_QUANTITY = 5
+
 export default function Product() {
-  const product = useLoaderData()
+  const product: Product = useLoaderData()
 
   return (
     <Section>
@@ -58,7 +73,7 @@ function ProductBreadcrumb({ product }) {
 }
 
 function ProductForm({ product }) {
-  const { addToCart, items } = useCart()
+  const { addItem, openCart, getItem } = useCart()
 
   const formSchema = z.object({
     size: product.sizes ? z.string().min(1, "Please select a size") : z.null(),
@@ -72,15 +87,13 @@ function ProductForm({ product }) {
   })
 
   const size = form.watch("size")
-  const item = items.find((item) => item._id === product._id && item.size == size)
-  const maxReached = item && item.quantity >= 5
+  const item = getItem({ product: product, size: size })
+  const maxReached = item && item.quantity >= MAX_ITEM_QUANTITY
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const cartItem = { ...product }
-    if (values.size) {
-      cartItem.size = values.size
-    }
-    addToCart(cartItem)
+    const item = { product: product, size: values.size, quantity: 1 }
+    addItem(item)
+    openCart()
   }
 
   return (

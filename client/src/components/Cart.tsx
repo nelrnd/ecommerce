@@ -2,7 +2,7 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/s
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BiX, BiShoppingBag } from "react-icons/bi"
 import { useCart } from "../providers/CartProvider"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { formatPrice } from "@/utils"
 import { Button } from "./ui/button"
 import ProductImage from "./ProductImage"
@@ -10,10 +10,16 @@ import ProductImage from "./ProductImage"
 const MAX_ITEM_QUANTITY = 5
 
 export default function Cart() {
-  const { items } = useCart()
+  const { items, isOpen, setIsOpen, closeCart } = useCart()
+  const navigate = useNavigate()
+
+  function handleClick() {
+    closeCart()
+    navigate("/checkout")
+  }
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
           <BiShoppingBag className="text-xl" />
@@ -68,7 +74,7 @@ export default function Cart() {
                   <span>{formatPrice(row.value)}</span>
                 </li>
               ))}
-            <Button size="lg" className="w-full" disabled={items.length === 0}>
+            <Button onClick={handleClick} size="lg" className="w-full" disabled={items.length === 0}>
               Go To Checkout
             </Button>
           </footer>
@@ -79,62 +85,66 @@ export default function Cart() {
 }
 
 function CartItem({ item, editable = true }) {
+  const { editItemSize, editItemQuantity, deleteItem, closeCart } = useCart()
+
   return (
     <div className="flex gap-3">
-      <Link to={`/product/${item.product.slug}`} className="w-16">
+      <Link to={`/product/${item.product.slug}`} className="w-20" onClick={closeCart}>
         <ProductImage src={item.product.image} />
       </Link>
-      <div className="flex-1 flex gap-2">
-        <div className="flex-1">
-          <Link to={`/product/${item.product.slug}`}>
-            <h2 className="font-bold hover:underline">{item.product.name}</h2>
-          </Link>
-          <p className="text-gray-600">{formatPrice(item.product.price * item.quantity)}</p>
-        </div>
-        <button
-          onClick={() => deleteFromCart(item)}
-          className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
-        >
-          <BiX />
-          <span className="sr-only">Remove item</span>
-        </button>
-      </div>
-      <div className="mt-1 flex gap-2">
-        {item.size && editable ? (
-          <Select value={item.size} onValueChange={(newSize) => updateItemSize(item, newSize)}>
-            <SelectTrigger className="px-2 h-8">
-              <SelectValue placeholder="Size">Size: {item.size}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {item.product.sizes.map((size) => (
-                <SelectItem key={size} value={size}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : (
-          <p className="text-gray-600 text-sm py-1">One size</p>
-        )}
-        {editable ? (
-          <Select
-            value={item.quantity.toString()}
-            onValueChange={(newQuantity) => updateItemQuantity(item, newQuantity)}
+      <div className="flex-1">
+        <div className="flex">
+          <div className="flex-1">
+            <Link to={`/product/${item.product.slug}`} onClick={closeCart}>
+              <h2 className="font-bold hover:underline">{item.product.name}</h2>
+            </Link>
+            <p className="text-gray-600">{formatPrice(item.product.price * item.quantity)}</p>
+          </div>
+          <button
+            onClick={() => deleteItem(item)}
+            className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
           >
-            <SelectTrigger className="px-2 h-8">
-              <SelectValue placeholder="Quantity">Quantity: {item.quantity}</SelectValue>
+            <BiX />
+            <span className="sr-only">Remove item</span>
+          </button>
+        </div>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          {item.size && editable ? (
+            <Select value={item.size} onValueChange={(newSize) => editItemSize(item, newSize)}>
+              <SelectTrigger className="px-2 h-8">
+                <SelectValue placeholder="Size">Size: {item.size}</SelectValue>
+              </SelectTrigger>
               <SelectContent>
-                {Array.from(MAX_ITEM_QUANTITY, (_, index) => index + 1).map((quantity) => (
-                  <SelectItem key={quantity} value={quantity}>
-                    {quantity}
+                {item.product.sizes.map((size) => (
+                  <SelectItem key={size} value={size}>
+                    {size}
                   </SelectItem>
                 ))}
               </SelectContent>
-            </SelectTrigger>
-          </Select>
-        ) : (
-          <p className="text-gray-600 text-sm py-1">Quantity: {item.quantity}</p>
-        )}
+            </Select>
+          ) : (
+            <p className="text-gray-600 text-sm py-1">One size</p>
+          )}
+          {editable ? (
+            <Select
+              value={item.quantity.toString()}
+              onValueChange={(newQuantity) => editItemQuantity(item, newQuantity)}
+            >
+              <SelectTrigger className="px-2 h-8">
+                <SelectValue placeholder="Quantity">Quantity: {item.quantity}</SelectValue>
+                <SelectContent>
+                  {Array.from({ length: MAX_ITEM_QUANTITY }, (_, index) => index + 1).map((quantity) => (
+                    <SelectItem key={quantity} value={quantity.toString()}>
+                      {quantity}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectTrigger>
+            </Select>
+          ) : (
+            <p className="text-gray-600 text-sm py-1">Quantity: {item.quantity}</p>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -148,7 +158,7 @@ function CartBadge() {
   if (count === 0) return null
 
   return (
-    <div className="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs font-semibold grid place-content-center absolute left-2 bottom-2">
+    <div className="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs font-semibold grid place-content-center absolute -right-1 -top-1">
       <span>{text}</span>
     </div>
   )
