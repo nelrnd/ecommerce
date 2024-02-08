@@ -40,7 +40,9 @@ export default function CartProvider({ children }) {
   }
 
   function editItemSize(item, newSize) {
-    const itemInCart = getItem({ ...item, newSize })
+    let updatedItem = { ...item, size: newSize }
+    updatedItem = giveItemId(updatedItem)
+    const itemInCart = getItem(updatedItem)
     const itemsCopy = [...items]
     if (itemInCart) {
       const newQuantity = Math.min(MAX_ITEM_QUANTITY, itemInCart.quantity + item.quantity)
@@ -49,7 +51,7 @@ export default function CartProvider({ children }) {
         .map((cartItem) => (cartItem === itemInCart ? { ...itemInCart, quantity: newQuantity } : cartItem))
       setItems(updatedItems)
     } else {
-      const updatedItems = itemsCopy.map((cartItem) => (cartItem === item ? { ...item, size: newSize } : cartItem))
+      const updatedItems = itemsCopy.map((cartItem) => (cartItem === item ? updatedItem : cartItem))
       setItems(updatedItems)
     }
   }

@@ -128,7 +128,7 @@ function CartItem({ item, editable = true }) {
           {editable ? (
             <Select
               value={item.quantity.toString()}
-              onValueChange={(newQuantity) => editItemQuantity(item, newQuantity)}
+              onValueChange={(newQuantity) => editItemQuantity(item, Number(newQuantity))}
             >
               <SelectTrigger className="px-2 h-8">
                 <SelectValue placeholder="Quantity">Quantity: {item.quantity}</SelectValue>

@@ -13,15 +13,17 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useEffect } from "react"
 import Footer from "@/components/Footer"
 import OrderSummary from "@/components/OrderSummary"
+import NavBar from "@/components/NavBar"
 
 export default function Checkout() {
   return (
     <div className="min-h-screen bg-gray-100">
+      <NavBar minimized={true} />
       <div className="w-[64rem] m-auto mb-16">
         <Checkout_Header />
         <Checkout_Form />
       </div>
-      <Footer variant="minimum" />
+      <Footer minimized={true} />
     </div>
   )
 }
