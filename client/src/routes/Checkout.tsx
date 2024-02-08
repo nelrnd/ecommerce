@@ -12,6 +12,7 @@ import countries from "../countries.json"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useEffect } from "react"
 import Footer from "@/components/Footer"
+import OrderSummary from "@/components/OrderSummary"
 
 export default function Checkout() {
   return (
@@ -81,6 +82,8 @@ function Checkout_Form() {
 
   const countryValue = watch("country")
   const shipingMethodValue = watch("shipping_method")
+
+  const { items } = useCart()
 
   useEffect(() => {
     if (countryValue) {
@@ -367,7 +370,9 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <Checkout_Summary shippingMethodValue={shipingMethodValue} />
+          <div className="row-start-1 col-start-6 col-span-3 sticky top-4">
+            <OrderSummary items={items} shippingMethod={shipingMethodValue} />
+          </div>
 
           <section className="bg-white p-8 rounded-xl border border-gray-200 col-span-5">
             <Button className="w-full">Continue</Button>

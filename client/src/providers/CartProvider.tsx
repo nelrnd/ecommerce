@@ -2,9 +2,15 @@ import { createContext, useContext, useState } from "react"
 
 const CartContext = createContext(null)
 
+interface cartItem {
+  productId: string
+  quantity: number
+  size?: string
+}
+
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<cartItem[]>([])
 
   const openCart = () => setIsOpen(true)
   const closeCart = () => setIsOpen(false)
