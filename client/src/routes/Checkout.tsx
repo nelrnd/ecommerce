@@ -1,25 +1,26 @@
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useWatch } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/providers/CartProvider"
 import { formatPrice } from "../utils"
-import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import countries from "../countries.json"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { useEffect } from "react"
-import Footer from "@/components/Footer"
-import OrderSummary from "@/components/OrderSummary"
-import NavBar from "@/components/NavBar"
+import Footer from "../components/Footer"
+import OrderSummary from "../components/OrderSummary"
+import NavBar from "../components/NavBar"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group"
+import { Link, useNavigate } from "react-router-dom"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export default function Checkout() {
   return (
     <div className="min-h-screen bg-gray-100">
       <NavBar minimized={true} />
-      <div className="w-[64rem] m-auto mb-16">
+      <div className="w-[64rem] max-w-full m-auto mb-16 px-4">
         <Checkout_Header />
         <Checkout_Form />
       </div>
@@ -31,27 +32,28 @@ export default function Checkout() {
 function Checkout_Header() {
   return (
     <header className="py-8">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Checkout</h1>
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Checkout</h1>
     </header>
   )
 }
 
 const formSchema = z.object({
-  first_name: z.string().min(2).max(50),
-  last_name: z.string().min(2).max(50),
-  email: z.string().min(1).email("This is not a valid email"),
-  country: z.string().min(1),
-  address: z.string().min(1),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  zip_code: z.string().min(1),
-  phone_code: z.number(),
-  phone: z.number(),
-  shipping_method: z.string(),
-  card_name: z.string().min(2),
-  card_number: z.number(),
-  card_expires: z.string().length(3),
-  card_cvc: z.number().int().lte(999),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  email: z.string().min(1, "Email is required").email("Email format is invalid"),
+  country: z.string().min(1, "Country is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1).optional(),
+  zip_code: z.string().min(1, "Zip code is required"),
+  phone_code: z.string().min(1, "Phone code is required"),
+  phone: z.string().min(1, "Phone is required"),
+  shipping_method: z.string().min(1, "Shipping method is required"),
+  card_name: z.string().min(1, "Cardholder's name is required"),
+  card_number: z.string().min(1, "Card number is required"),
+  card_expires: z.string().min(1, "Card expiration date is required"),
+  card_cvc: z.string().min(1, "Card CVC is required").length(3, "CVC must be 3 characters long"),
+  accepts_terms: z.boolean().default(false),
 })
 
 const shippingMethods = [
@@ -69,21 +71,23 @@ function Checkout_Form() {
       country: "",
       address: "",
       city: "",
-      state: "",
+      state: undefined,
       zip_code: "",
-      //phone_code: 0,
-      //phone: 0,
+      phone_code: "",
+      phone: "",
       shipping_method: shippingMethods[0].name,
       card_name: "",
-      //card_number: 0,
-      //card_expires: 0,
-      //card_cvc: 0
+      card_number: "",
+      card_expires: "",
+      card_cvc: "",
+      accepts_terms: false,
     },
   })
   const { watch, setValue } = form
-
   const countryValue = watch("country")
   const shipingMethodValue = watch("shipping_method")
+  const acceptTerms = watch("accepts_terms")
+  const navigate = useNavigate()
 
   const { items } = useCart()
 
@@ -94,20 +98,29 @@ function Checkout_Form() {
     }
   }, [countryValue, setValue])
 
+  /*
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate("/")
+    }
+  }, [items, navigate])
+  */
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (acceptTerms === false) return
     console.log(values)
   }
 
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-8 gap-6 items-start">
-          <section className="bg-white p-8 rounded-xl border border-gray-200 col-span-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid md:grid-cols-8 gap-6 items-start">
+          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
               <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Personal info</h2>
             </header>
             <main className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="first_name"
@@ -171,6 +184,7 @@ function Checkout_Form() {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -189,7 +203,7 @@ function Checkout_Form() {
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="city"
@@ -209,7 +223,9 @@ function Checkout_Form() {
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State</FormLabel>
+                      <FormLabel>
+                        State <span className="font-normal text-gray-600">(optional)</span>
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -233,7 +249,7 @@ function Checkout_Form() {
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="phone_code"
@@ -276,7 +292,7 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 col-span-5">
+          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
               <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Shipping method</h2>
             </header>
@@ -293,7 +309,7 @@ function Checkout_Form() {
                         className="flex flex-col gap-3"
                       >
                         {shippingMethods.map((method) => (
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormItem key={method.name} className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value={method.name} />
                             </FormControl>
@@ -308,7 +324,7 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 col-span-5">
+          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
               <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Payment info</h2>
             </header>
@@ -341,7 +357,7 @@ function Checkout_Form() {
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="card_expires"
@@ -362,7 +378,7 @@ function Checkout_Form() {
                     <FormItem>
                       <FormLabel>CVC</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} placeholder="CVC" />
+                        <Input {...field} placeholder="CVC" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -372,94 +388,38 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <div className="row-start-1 col-start-6 col-span-3 sticky top-4">
+          <div className="md:row-start-1 md:col-start-6 md:col-span-3 md:sticky top-4">
             <OrderSummary items={items} shippingMethod={shipingMethodValue} />
           </div>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 col-span-5">
-            <Button className="w-full">Continue</Button>
+          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
+            <FormField
+              control={form.control}
+              name="accepts_terms"
+              render={({ field }) => (
+                <FormItem className="flex items-end mb-4 gap-2">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel>
+                    By clicking this, I agree to{" "}
+                    <Link to="#" className="text-indigo-700 hover:underline">
+                      Terms & Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link to="#" className="text-indigo-700 hover:underline">
+                      Privacy Policy
+                    </Link>
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+            <Button className="w-full" disabled={acceptTerms === false}>
+              Continue
+            </Button>
           </section>
         </form>
       </Form>
-    </div>
-  )
-}
-
-function Checkout_Summary({ shippingMethodValue }) {
-  const nbOfItems = 6
-  const items = [
-    {
-      _id: 1,
-      name: "Stussy Basic Tee",
-      size: "M",
-      quantity: 3,
-      price: 50,
-    },
-    {
-      _id: 2,
-      name: "Lacoste Jacket",
-      size: "M",
-      quantity: 1,
-      price: 200,
-    },
-    {
-      _id: 3,
-      name: "Arc'Teryx Beanie",
-      quantity: 1,
-      price: 40,
-    },
-  ]
-
-  const shippingMethod = shippingMethods.find((m) => m.name === shippingMethodValue)
-  const shippingPrice = shippingMethod.price
-  const subTotalPrice = items.reduce((prev, curr) => prev + curr.price * curr.quantity, 0)
-  const totalPrice = shippingPrice + subTotalPrice
-
-  return (
-    <aside className="bg-white p-8 rounded-xl border border-gray-200 row-start-1 col-start-6 col-span-3 sticky top-4">
-      <header className="mb-8 flex items-baseline justify-between">
-        <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Summary</h2>
-        <p className="text-sm text-gray-600">
-          {nbOfItems} {nbOfItems > 1 ? "items" : "item"}
-        </p>
-      </header>
-      <Separator />
-      <main className="mt-8 mb-8 space-y-4">
-        {items.map((item) => (
-          <Checkout_SummaryItem key={item._id} item={item} />
-        ))}
-      </main>
-      <footer>
-        <div className="mb-2 flex justify-between">
-          <span>Subtotal</span>
-          <span>{formatPrice(subTotalPrice)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Shipping</span>
-          <span>{formatPrice(shippingPrice)}</span>
-        </div>
-        <Separator className="my-3" />
-        <div className="font-semibold text-lg flex justify-between">
-          <span>Total</span>
-          <span>{formatPrice(totalPrice)}</span>
-        </div>
-      </footer>
-    </aside>
-  )
-}
-
-function Checkout_SummaryItem({ item }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-[5rem] bg-gray-200 aspect-square"></div>
-      <div>
-        <h3 className="font-semibold">{item.name}</h3>
-        <p>{formatPrice(250)}</p>
-        <div className="text-sm text-gray-600 flex gap-3">
-          <span>{item.size ? "Size: " + item.size : "One size"}</span>
-          <span>Quantity: {item.quantity}</span>
-        </div>
-      </div>
     </div>
   )
 }

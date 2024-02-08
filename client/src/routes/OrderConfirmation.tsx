@@ -66,7 +66,7 @@ export default function OrderConfirmation() {
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8 lg:py-16">
       <div className="w-[40rem] max-w-full m-auto space-y-8">
-        <section className="bg-white p-8 rounded-2xl border border-gray-200 space-y-8">
+        <section className="bg-white p-8 rounded-xl border border-gray-200 space-y-8">
           <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight text-center">
             <BiCheckCircle className="inline-block mr-2 -translate-y-0.5 text-indigo-600" />
             Thank you for your order!
