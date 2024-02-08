@@ -1,74 +1,45 @@
 import { Link } from "react-router-dom"
 
-export default function Footer({ variant = "normal" }) {
+export default function Footer({ minimized = false }) {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-white px-8 py-24 border-t border-gray-200">
-      <div className="w-[80rem] m-auto flex items-center justify-between gap-8">
-        <div>
-          <h3 className="text-xl mb-4">E-Commerce</h3>
-          <p className="text-gray-600">© {year} E-Commerce. All rights reserved.</p>
+    <footer className="bg-white px-8 py-12 border-t border-gray-200 lg:py-24">
+      <div className="w-[80rem] max-w-full m-auto">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-6">
+          <div className="md:col-span-3">
+            <h3 className="text-xl mb-4">E-Commerce</h3>
+            <p className="text-gray-600">©{year} E-Commerce. All rights reserved.</p>
+          </div>
+          {!minimized &&
+            [
+              {
+                title: "About",
+                links: ["Our mission", "Careers", "Affiliate"],
+              },
+              {
+                title: "Customer service",
+                links: ["Help", "Shipping", "Returns"],
+              },
+              {
+                title: "Contact",
+                links: ["+44 421 036 551", "Write us an email"],
+              },
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="font-bold mb-3">{col.title}</h4>
+                <ul className="space-y-2">
+                  {col.links.map((link) => (
+                    <li key={link}>
+                      <Link to="#" className="text-gray-600 hover:underline">
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
         </div>
-        {variant !== "minimum" && (
-          <nav className="grid grid-cols-3 gap-24">
-            <div>
-              <h4 className="font-bold mb-3">About</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Our mission
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Affiliate
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-3">Customer service</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Help
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Shipping
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Returns
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-3">Contact</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    +44 421 036 551
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-gray-600 hover:underline">
-                    Email
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        )}
       </div>
     </footer>
   )
