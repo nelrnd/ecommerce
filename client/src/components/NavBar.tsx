@@ -15,7 +15,7 @@ export default function NavBar() {
   const [brands, brandsLoading] = useFetch("/brand?limit=5")
 
   return (
-    <header className="h-[6rem] p-8 lg:px-16 xl:px-24 border-b border-gray-200">
+    <header className="p-6 lg:px-16 xl:px-24 border-b border-gray-200">
       <div className="grid grid-cols-4 items-center">
         <div>
           <Link to="/">
