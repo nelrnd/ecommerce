@@ -27,38 +27,56 @@ exports.order_create = [
   body("country")
     .notEmpty()
     .withMessage("Country is required ")
+    .isString()
+    .withMessage("Country must be a string")
     .isLength({ min: 2, max: 50 })
     .withMessage("Country must be between 2 and 50 characters long")
     .escape(),
   body("address")
     .notEmpty()
     .withMessage("Address is required")
-    .isLength({ min: 2, max: 50 })
-    .withMessage("Address must be between 2 and 50 characters long")
+    .isString()
+    .withMessage("Address must be a string")
+    .isLength({ min: 2, max: 200 })
+    .withMessage("Address must be between 2 and 200 characters long")
     .escape(),
   body("city")
     .notEmpty()
     .withMessage("City is required")
+    .isString()
+    .withMessage("City must be a string")
     .isLength({ min: 2, max: 50 })
     .withMessage("City must be between 2 and 50 characters long")
     .escape(),
-  body("state").optional().escape(),
+  body("state").isString().withMessage("State must be a string").optional().escape(),
   body("zip_code")
     .notEmpty()
     .withMessage("Zip/postal code is required")
+    .isString()
+    .withMessage("Zip/postal code must be a string")
     .isLength({ min: 2, max: 50 })
     .withMessage("Country must be between 2 and 50 characters long")
     .escape(),
   body("phone_code")
     .notEmpty()
     .withMessage("Country calling code is required")
-    .isNumeric()
-    .withMessage("Phone code must be a number")
-    .isFloat({ min: 1, max: 900 })
-    .withMessage("Country calling code must between 1 and 900")
+    .isString()
+    .withMessage("Country calling code must be a string")
+    .isLength({ min: 0, max: 999 })
+    .withMessage("Country calling code must be between 0 and 999")
     .escape(),
-  body("phone").notEmpty().withMessage("Phone number is required").escape(),
-  body("shipping_method").notEmpty().withMessage("Shipping method is required").escape(),
+  body("phone")
+    .notEmpty()
+    .withMessage("Phone number is required")
+    .isString()
+    .withMessage("Phone number must be a string")
+    .escape(),
+  body("shipping_method")
+    .notEmpty()
+    .withMessage("Shipping method is required")
+    .isString()
+    .withMessage("Shipping method must be a string")
+    .escape(),
   body("products").isArray().notEmpty().withMessage("Order cannot be empty"),
   body("products.*.quantity")
     .notEmpty()

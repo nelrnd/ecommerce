@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
   city: { type: String, required: true },
   state: { type: String },
   zip_code: { type: String, required: true },
-  phone_code: { type: Number, required: true },
+  phone_code: { type: String, required: true },
   phone: { type: String, required: true },
   shipping_method: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
