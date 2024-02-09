@@ -26,7 +26,7 @@ const formSchema = z.object({
   image: z
     .union([z.string(), z.instanceof(File).refine((f) => f.size < 5242880, "Image should be less than 5 MB")])
     .optional(),
-  sizes: z.array(z.string()),
+  sizes: z.array(z.string()).optional(),
 })
 
 export default function ProductForm() {
@@ -35,7 +35,6 @@ export default function ProductForm() {
     defaultValues: {
       name: "",
       price: 0,
-      sizes: [],
     },
   })
 

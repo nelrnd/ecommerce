@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
   image: { type: String },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
-  sizes: { type: [String], default: null },
+  sizes: { type: [String], default: undefined },
   created_at: { type: Date, default: Date.now },
   view_count: { type: Number, default: () => Math.floor(Math.random() * 10) },
 })

@@ -103,7 +103,6 @@ exports.product_create = [
       }
     })
     .escape(),
-  body("sizes.*").notEmpty().withMessage("Size is required").escape(),
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -111,15 +110,17 @@ exports.product_create = [
       return res.status(401).json({ errors: errors.mapped() })
     }
 
+    console.log(req.body.sizes)
+
     const product = new Product({
       name: req.body.name,
       slug: req.body.slug,
       price: req.body.price,
       description: req.body.description,
-      image: req.file ? req.file.path : null,
+      image: req.file && req.file.path,
       category: req.body.category,
       brand: req.body.brand,
-      sizes: req.body.sizes && req.body.sizes.length ? req.body.sizes : null,
+      sizes: req.body.sizes,
     })
     await product.save()
     res.json(product)
