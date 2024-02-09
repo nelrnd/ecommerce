@@ -1,65 +1,20 @@
 import { BiCheckCircle } from "react-icons/bi"
 import { buttonVariants } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import { Link, Navigate, useLocation } from "react-router-dom"
 import OrderSummary from "@/components/OrderSummary"
 import moment from "moment"
 
-const testOrder = {
-  _id: "65c1edfca6b6da166e7242b8",
-  number: 10002,
-  first_name: "John",
-  last_name: "Smith",
-  email: "johnsmith@email.com",
-  country: "France",
-  address: "41 Rue du Louvre",
-  city: "Paris",
-  zip_code: "75000",
-  phone_code: 33,
-  phone: "631 22 42 51",
-  shipping_method: "standard",
-  products: [
-    {
-      product: {
-        _id: "65bf47580476ea150103f71e",
-        name: "Lambo",
-        slug: "lambo",
-        price: 40290,
-        image: null,
-        sizes: null,
-        created_at: "2024-02-04T08:14:16.429Z",
-        view_count: 23,
-        __v: 0,
-      },
-      quantity: 1,
-      _id: "65c1edfca6b6da166e7242b9",
-    },
-    {
-      product: {
-        _id: "65ad4a79c4ed3b0fcb48588c",
-        name: "Stussy Basic Tee",
-        slug: "stussy-basic-tee",
-        price: 40,
-        image: "images/1705866837743-stuss.webp",
-        __v: 0,
-        category: "65ad7267c8bc8a1ac7b2293b",
-        description: "This is perfect",
-        sizes: ["SMALL", "MEDIUM"],
-        view_count: 11,
-        created_at: "2024-02-06T08:30:42.046Z",
-      },
-      quantity: 2,
-      size: "SMALL",
-      _id: "65c1edfca6b6da166e7242ba",
-    },
-  ],
-  created_at: "2024-02-06T08:29:48.831Z",
-  __v: 0,
-}
-
 export default function OrderConfirmation() {
-  const creationTime = moment(testOrder.created_at)
+  const location = useLocation()
+  const order = location.state
+
+  if (!order) {
+    return <Navigate to="/" />
+  }
+
+  const creationTime = moment(order.created_at)
   const estimatedDeliveryDates =
-    testOrder.shipping_method === "standard"
+    order.shipping_method === "standard"
       ? creationTime.add(5, "days").format("dddd, MMM D") + " - " + creationTime.add(6, "days").format("dddd, MMM D")
       : creationTime.add(2, "days").format("dddd, MMM D") + " - " + creationTime.add(3, "days").format("dddd, MMM D")
 
@@ -75,12 +30,12 @@ export default function OrderConfirmation() {
             <p className="text-gray-600">
               We just sent you an email confirmation at:
               <br />
-              <span className="text-black font-medium">{testOrder.email}</span>
+              <span className="text-black font-medium">{order.email}</span>
             </p>
             <p className="text-gray-600">
               Your order number is:
               <br />
-              <span className="text-black font-medium">#{testOrder.number}</span>
+              <span className="text-black font-medium">#{order.number}</span>
             </p>
             <p className="text-gray-600">
               Your order will deliver on:
@@ -91,9 +46,9 @@ export default function OrderConfirmation() {
               to the address:
               <br />
               <span className="text-black font-medium">
-                {testOrder.address}
+                {order.address}
                 <br />
-                {testOrder.city}, {testOrder.zip_code} {testOrder.country}
+                {order.city}, {order.zip_code} {order.country}
               </span>
             </p>
           </div>
@@ -104,7 +59,7 @@ export default function OrderConfirmation() {
           </div>
         </section>
 
-        <OrderSummary title="Order summary" items={testOrder.products} shippingMethod={testOrder.shipping_method} />
+        <OrderSummary title="Order summary" items={order.products} shippingMethod={order.shipping_method} />
       </div>
     </div>
   )

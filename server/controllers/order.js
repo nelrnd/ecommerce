@@ -104,7 +104,11 @@ exports.order_create = [
       shipping_method: req.body.shipping_method,
       products: req.body.products,
     })
+
     await order.save()
+
+    await order.populate("products.product")
+
     res.json(order)
   },
 ]

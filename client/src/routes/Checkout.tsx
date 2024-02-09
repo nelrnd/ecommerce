@@ -4,6 +4,7 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useCart } from "@/providers/CartProvider"
 import { formatPrice } from "../utils"
+import axios from "../axios"
 import countries from "../countries.json"
 import Footer from "../components/Footer"
 import OrderSummary from "../components/OrderSummary"
@@ -54,6 +55,9 @@ const formSchema = z.object({
   card_expires: z.string().min(1, "Card expiration date is required"),
   card_cvc: z.string().min(1, "Card CVC is required").length(3, "CVC must be 3 characters long"),
   accepts_terms: z.boolean().default(false),
+  products: z.array(
+    z.object({ id: z.string(), product: z.string(), quantity: z.number(), size: z.string().nullable() })
+  ),
 })
 
 const shippingMethods = [
@@ -81,6 +85,7 @@ function Checkout_Form() {
       card_expires: "",
       card_cvc: "",
       accepts_terms: false,
+      products: [],
     },
   })
   const { watch, setValue } = form
@@ -98,17 +103,23 @@ function Checkout_Form() {
     }
   }, [countryValue, setValue])
 
-  /*
   useEffect(() => {
     if (items.length === 0) {
-      navigate("/")
+      return navigate("/")
     }
-  }, [items, navigate])
-  */
+    setValue(
+      "products",
+      items.map((item) => ({ ...item, product: item.product._id }))
+    )
+  }, [items, navigate, setValue])
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     if (acceptTerms === false) return
-    console.log(values)
+    const res = await axios.post("/order", values)
+    const order = res.data
+    if (order) {
+      navigate("/order", { state: order })
+    }
   }
 
   return (
