@@ -14,6 +14,7 @@ import Categories from "./routes/Categories"
 import Brands from "./routes/Brands"
 import Latest from "./routes/Latest"
 import OrderConfirmation from "./routes/OrderConfirmation"
+import Search from "./routes/Search"
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
-        errorElement: <NotFound />,
         loader: async () => {
           const [category1, category2, products] = await Promise.all([
             axios.get("/category/t-shirts-1"),
@@ -49,7 +49,6 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <Product />,
-        errorElement: <NotFound />,
         loader: async ({ params }) => {
           const res = await axios.get(`/product/${params.slug}`)
           return res.data
@@ -58,7 +57,6 @@ const router = createBrowserRouter([
       {
         path: "category",
         element: <Categories />,
-        errorElement: <NotFound />,
         loader: async () => {
           const res = await axios.get("/category")
           return res.data
@@ -67,7 +65,6 @@ const router = createBrowserRouter([
       {
         path: "category/:slug",
         element: <Category />,
-        errorElement: <NotFound />,
         loader: async ({ request, params }) => {
           const url = new URL(request.url)
           const sort = url.searchParams.get("sort")
@@ -79,7 +76,6 @@ const router = createBrowserRouter([
       {
         path: "brand",
         element: <Brands />,
-        errorElement: <NotFound />,
         loader: async () => {
           const res = await axios.get(`/brand`)
           return res.data
@@ -88,7 +84,6 @@ const router = createBrowserRouter([
       {
         path: "brand/:slug",
         element: <Brand />,
-        errorElement: <NotFound />,
         loader: async ({ request, params }) => {
           const url = new URL(request.url)
           const sort = url.searchParams.get("sort")
@@ -100,11 +95,14 @@ const router = createBrowserRouter([
       {
         path: "latest",
         element: <Latest />,
-        errorElement: <NotFound />,
         loader: async () => {
           const res = await axios.get("/product")
           return res.data
         },
+      },
+      {
+        path: "search",
+        element: <Search />,
       },
     ],
   },

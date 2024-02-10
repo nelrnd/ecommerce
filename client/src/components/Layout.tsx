@@ -7,7 +7,7 @@ export function ProductGrid({ children }) {
 }
 
 export function Section({ className = "", children }) {
-  const sectionClasses = `py-16 ${className || ""}`
+  const sectionClasses = `py-14 ${className || ""}`
   return (
     <section className={sectionClasses}>
       <Layout>{children}</Layout>

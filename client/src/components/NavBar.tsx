@@ -8,6 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "./ui/navigation-menu"
+import SearchModal from "./SearchModal"
 
 export default function NavBar({ minimized = false }) {
   return (
@@ -21,7 +22,8 @@ export default function NavBar({ minimized = false }) {
         {!minimized && (
           <>
             <NavBarLinks />
-            <div className="flex justify-end items-center gap-4">
+            <div className="flex justify-end items-center gap-2">
+              <SearchModal />
               <Cart />
             </div>
           </>

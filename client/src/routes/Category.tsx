@@ -1,4 +1,4 @@
-import Layout, { ProductGrid } from "@/components/Layout"
+import { ProductGrid, Section } from "@/components/Layout"
 import ProductCard from "@/components/ProductCard"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLoaderData, useNavigate } from "react-router-dom"
@@ -12,8 +12,8 @@ export default function Category() {
   }
 
   return (
-    <Layout>
-      <header className="py-8">
+    <Section>
+      <header className="mb-6">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{category.name}</h1>
@@ -41,13 +41,13 @@ export default function Category() {
           )}
         </div>
       </header>
-      <section>
+      <main>
         <ProductGrid>
           {category.products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </ProductGrid>
-      </section>
-    </Layout>
+      </main>
+    </Section>
   )
 }
