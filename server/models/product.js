@@ -13,4 +13,6 @@ const productSchema = new mongoose.Schema({
   view_count: { type: Number, default: () => Math.floor(Math.random() * 10) },
 })
 
+productSchema.index({ name: "text" })
+
 module.exports = mongoose.model("Product", productSchema)
