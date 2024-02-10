@@ -21,7 +21,7 @@ export default function Category() {
               {category.products.length} {category.products.length < 2 ? "item" : "items"}
             </p>
           </div>
-          {category.products.length && (
+          {category.products.length > 0 && (
             <div className="flex items-center gap-3">
               <span className="text-sm">Sort by</span>
               <Select defaultValue="latest" onValueChange={handleChange}>

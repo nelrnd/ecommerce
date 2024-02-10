@@ -21,7 +21,7 @@ export default function Brand() {
               {brand.products.length} {brand.products.length < 2 ? "item" : "items"}
             </p>
           </div>
-          {brand.products.length && (
+          {brand.products.length > 0 && (
             <div className="flex items-center gap-3">
               <span className="text-sm">Sort by</span>
               <Select defaultValue="latest" onValueChange={handleChange}>
