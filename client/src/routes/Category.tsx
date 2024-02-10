@@ -13,7 +13,7 @@ export default function Category() {
 
   return (
     <Section>
-      <header className="mb-6">
+      <header className="mb-8">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{category.name}</h1>
