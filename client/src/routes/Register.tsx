@@ -5,7 +5,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "../axios"
+import { useAuth } from "@/providers/AuthProvider"
 
 const formSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
@@ -14,6 +16,9 @@ const formSchema = z.object({
 })
 
 export default function Register() {
+  const { setToken } = useAuth()
+  const navigate = useNavigate()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -25,6 +30,19 @@ export default function Register() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    axios
+      .post("/auth/register", values)
+      .then((res) => {
+        const token = res.data.token
+        setToken(token)
+        navigate("/")
+      })
+      .catch((err) => {
+        const errors = err.response.data.errors
+        for (const error in errors) {
+          form.setError(errors[error].path, { type: "custom", message: errors[error].msg })
+        }
+      })
   }
 
   return (
