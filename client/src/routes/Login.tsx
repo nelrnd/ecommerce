@@ -5,7 +5,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useEffect } from "react"
+import { useAuth } from "@/providers/AuthProvider"
 
 const formSchema = z.object({
   email: z.string().min(1, "Email is required").email("Email format is invalid"),
@@ -13,6 +15,9 @@ const formSchema = z.object({
 })
 
 export default function Login() {
+  const { token, setToken } = useAuth()
+  const navigate = useNavigate()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -24,6 +29,13 @@ export default function Login() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
   }
+
+  // redirect to home if logged in
+  useEffect(() => {
+    if (token) {
+      navigate("/")
+    }
+  }, [token, navigate])
 
   return (
     <div className="mt-24 m-auto w-full max-w-md p-8 border border-gray-200 rounded-xl">

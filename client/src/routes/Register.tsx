@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "../axios"
 import { useAuth } from "@/providers/AuthProvider"
+import { useEffect } from "react"
 
 const formSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
@@ -16,7 +17,7 @@ const formSchema = z.object({
 })
 
 export default function Register() {
-  const { setToken } = useAuth()
+  const { token, setToken } = useAuth()
   const navigate = useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,7 +36,6 @@ export default function Register() {
       .then((res) => {
         const token = res.data.token
         setToken(token)
-        navigate("/")
       })
       .catch((err) => {
         const errors = err.response.data.errors
@@ -44,6 +44,13 @@ export default function Register() {
         }
       })
   }
+
+  // redirect to home if logged in
+  useEffect(() => {
+    if (token) {
+      navigate("/")
+    }
+  }, [token, navigate])
 
   return (
     <div className="mt-24 m-auto w-full max-w-md p-8 border border-gray-200 rounded-xl">
