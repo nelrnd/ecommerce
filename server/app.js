@@ -19,11 +19,13 @@ const categoryRouter = require("./routes/category")
 const brandRouter = require("./routes/brand")
 const orderRouter = require("./routes/order")
 const searchRouter = require("./routes/search")
+const authRouter = require("./routes/auth")
 app.use("/api/product", productRouter)
 app.use("/api/category", categoryRouter)
 app.use("/api/brand", brandRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/search", searchRouter)
+app.use("/api/auth", authRouter)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
