@@ -10,7 +10,7 @@ import { Link } from "react-router-dom"
 const formSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
   email: z.string().min(1, "Email is required").email("Email format is invalid"),
-  password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters"),
+  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
 })
 
 export default function Register() {
