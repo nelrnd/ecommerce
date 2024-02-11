@@ -15,6 +15,7 @@ import Brands from "./routes/Brands"
 import Latest from "./routes/Latest"
 import OrderConfirmation from "./routes/OrderConfirmation"
 import Search from "./routes/Search"
+import Register from "./routes/Register"
 
 const router = createBrowserRouter([
   {
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
           const res = await axios.get("/product")
           return res.data
         },
+      },
+      {
+        path: "register",
+        element: <Register />,
       },
       {
         path: "search",
