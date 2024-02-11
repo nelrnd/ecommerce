@@ -8,16 +8,14 @@ import { Separator } from "@/components/ui/separator"
 import { Link } from "react-router-dom"
 
 const formSchema = z.object({
-  full_name: z.string().min(1, "Full name is required"),
   email: z.string().min(1, "Email is required").email("Email format is invalid"),
   password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters"),
 })
 
-export default function Register() {
+export default function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      full_name: "",
       email: "",
       password: "",
     },
@@ -29,23 +27,9 @@ export default function Register() {
 
   return (
     <div className="mt-24 m-auto w-full max-w-md p-8 border border-gray-200 rounded-xl">
-      <h1 className="text-3xl font-semibold tracking-tight mb-6">Register</h1>
+      <h1 className="text-3xl font-semibold tracking-tight mb-6">Login</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="full_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="email"
@@ -74,15 +58,15 @@ export default function Register() {
             )}
           />
 
-          <Button className="w-full mt-10">Register</Button>
+          <Button className="w-full mt-10">Log in</Button>
         </form>
 
         <Separator className="my-6" />
 
         <p className="text-sm">
-          Have an account already?{" "}
-          <Link to="/login" className="text-indigo-700 hover:underline">
-            Log in
+          Don't have an account yet?{" "}
+          <Link to="/register" className="text-indigo-700 hover:underline">
+            Register
           </Link>
         </p>
       </Form>

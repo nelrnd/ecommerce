@@ -16,6 +16,7 @@ import Latest from "./routes/Latest"
 import OrderConfirmation from "./routes/OrderConfirmation"
 import Search from "./routes/Search"
 import Register from "./routes/Register"
+import Login from "./routes/Login"
 
 const router = createBrowserRouter([
   {
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "login",
+        element: <Login />,
       },
       {
         path: "search",
