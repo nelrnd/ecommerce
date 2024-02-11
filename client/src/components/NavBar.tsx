@@ -10,6 +10,8 @@ import {
   NavigationMenuTrigger,
 } from "./ui/navigation-menu"
 import SearchModal from "./SearchModal"
+import { useAuth } from "@/providers/AuthProvider"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
 export default function NavBar({ minimized = false }) {
   return (
@@ -36,11 +38,33 @@ export default function NavBar({ minimized = false }) {
 }
 
 function AccountButton() {
-  return (
+  const { token, setToken } = useAuth()
+
+  function logout() {
+    setToken()
+  }
+
+  return !token ? (
     <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
       <BiUser className="text-xl" />
       <span className="sr-only">Account</span>
     </Link>
+  ) : (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
+          <BiUser className="text-xl" />
+          <span className="sr-only">Account</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>
+          <button className="semibold cursor-pointer" onClick={logout}>
+            Logout
+          </button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link, useNavigate } from "react-router-dom"
-import { useEffect } from "react"
+import axios from "../axios"
+import { useEffect, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
 
 const formSchema = z.object({
@@ -17,6 +18,7 @@ const formSchema = z.object({
 export default function Login() {
   const { token, setToken } = useAuth()
   const navigate = useNavigate()
+  const [error, setError] = useState("")
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -28,6 +30,19 @@ export default function Login() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    axios
+      .post("/auth/login", values)
+      .then((res) => {
+        const token = res.data.token
+        setToken(token)
+      })
+      .catch((err) => {
+        console.log(err)
+        const globalError = err.response.data.error
+        if (globalError) {
+          setError(globalError)
+        }
+      })
   }
 
   // redirect to home if logged in
@@ -69,6 +84,7 @@ export default function Login() {
               </FormItem>
             )}
           />
+          {error && <p className="px-4 py-2 bg-red-50 text-red-600 rounded-xl">{error}</p>}
 
           <Button className="w-full mt-10">Log in</Button>
         </form>
