@@ -17,6 +17,7 @@ import OrderConfirmation from "./routes/OrderConfirmation"
 import Search from "./routes/Search"
 import Register from "./routes/Register"
 import Login from "./routes/Login"
+import AuthProvider from "./providers/AuthProvider"
 
 const router = createBrowserRouter([
   {
@@ -129,9 +130,11 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <CartProvider>
-      <Toaster />
-      <RouterProvider router={router} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Toaster />
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   )
 }
