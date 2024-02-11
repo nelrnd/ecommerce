@@ -1,4 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom"
+import { BiUser } from "react-icons/bi"
 import Cart from "./Cart"
 import {
   NavigationMenu,
@@ -22,14 +23,24 @@ export default function NavBar({ minimized = false }) {
         {!minimized && (
           <>
             <NavBarLinks />
-            <div className="flex justify-end items-center gap-2">
+            <div className="flex justify-end items-center gap-1">
               <SearchModal />
               <Cart />
+              <AccountButton />
             </div>
           </>
         )}
       </div>
     </header>
+  )
+}
+
+function AccountButton() {
+  return (
+    <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
+      <BiUser className="text-xl" />
+      <span className="sr-only">Account</span>
+    </Link>
   )
 }
 
