@@ -4,7 +4,7 @@ import axios from "../axios"
 const AuthContext = createContext({})
 
 export default function AuthProvider({ children }) {
-  const [user, setUser_] = useState(localStorage.getItem("user"))
+  const [user, setUser_] = useState(JSON.parse(localStorage.getItem("user")))
 
   const setUser = (user) => {
     setUser_(user)
@@ -13,7 +13,7 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     if (user && user.token) {
       axios.defaults.headers.common["x-auth-token"] = user.token
-      localStorage.setItem("user", user)
+      localStorage.setItem("user", JSON.stringify(user))
     } else {
       delete axios.defaults.headers.common["x-auth-token"]
       localStorage.removeItem("user")
