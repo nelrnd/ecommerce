@@ -77,7 +77,7 @@ exports.login = [
       role: user.role,
     }
     const token = jwt.sign(payload, SECRET)
-    res.json({ message: "Login successful", payload, token })
+    res.json({ message: "Login successful", user: { ...payload, token } })
   },
 ]
 

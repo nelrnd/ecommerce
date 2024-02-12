@@ -16,7 +16,7 @@ const formSchema = z.object({
 })
 
 export default function Login() {
-  const { token, setToken } = useAuth()
+  const { user, setUser } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState("")
 
@@ -29,12 +29,11 @@ export default function Login() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     axios
       .post("/auth/login", values)
       .then((res) => {
-        const token = res.data.token
-        setToken(token)
+        const user = res.data.user
+        setUser(user)
       })
       .catch((err) => {
         console.log(err)
@@ -47,10 +46,10 @@ export default function Login() {
 
   // redirect to home if logged in
   useEffect(() => {
-    if (token) {
+    if (user) {
       navigate("/")
     }
-  }, [token, navigate])
+  }, [user, navigate])
 
   return (
     <div className="mt-24 m-auto w-full max-w-md p-8 border border-gray-200 rounded-xl">

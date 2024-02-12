@@ -4,23 +4,23 @@ import axios from "../axios"
 const AuthContext = createContext({})
 
 export default function AuthProvider({ children }) {
-  const [token, setToken_] = useState(localStorage.getItem("token"))
+  const [user, setUser_] = useState(localStorage.getItem("user"))
 
-  const setToken = (newToken: string) => {
-    setToken_(newToken)
+  const setUser = (user) => {
+    setUser_(user)
   }
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["x-auth-token"] = token
-      localStorage.setItem("token", token)
+    if (user && user.token) {
+      axios.defaults.headers.common["x-auth-token"] = user.token
+      localStorage.setItem("user", user)
     } else {
       delete axios.defaults.headers.common["x-auth-token"]
-      localStorage.removeItem("token")
+      localStorage.removeItem("user")
     }
-  }, [token])
+  }, [user])
 
-  const contextValue = useMemo(() => ({ token, setToken }), [token])
+  const contextValue = useMemo(() => ({ user, setUser }), [user])
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

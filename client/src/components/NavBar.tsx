@@ -38,13 +38,15 @@ export default function NavBar({ minimized = false }) {
 }
 
 function AccountButton() {
-  const { token, setToken } = useAuth()
+  const { user, setUser } = useAuth()
+
+  const userName = user?.full_name.split(" ")[0]
 
   function logout() {
-    setToken()
+    setUser()
   }
 
-  return !token ? (
+  return !user ? (
     <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
       <BiUser className="text-xl" />
       <span className="sr-only">Account</span>
@@ -52,8 +54,11 @@ function AccountButton() {
   ) : (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
-          <BiUser className="text-xl" />
+        <button className="min-w-11 h-11 px-3 rounded-md hover:bg-gray-100 grid place-content-center relative">
+          <div className="flex items-center gap-2">
+            <BiUser className="text-xl" />
+            <span>{userName}</span>
+          </div>
           <span className="sr-only">Account</span>
         </button>
       </DropdownMenuTrigger>
