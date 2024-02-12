@@ -110,8 +110,6 @@ exports.product_create = [
       return res.status(401).json({ errors: errors.mapped() })
     }
 
-    console.log(req.body.sizes)
-
     const product = new Product({
       name: req.body.name,
       slug: req.body.slug,

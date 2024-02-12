@@ -80,3 +80,29 @@ exports.login = [
     res.json({ message: "Login successful", payload, token })
   },
 ]
+
+exports.isAuth = isAuth = async (req, res, next) => {
+  const token = req.headers["x-access-token"]
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" })
+  }
+  const SECRET = process.env.SECRET
+  jwt.verify(token, SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ error: "Unauthorized" })
+    }
+    req.user = decoded
+    next()
+  })
+}
+
+exports.isAdmin = [
+  isAuth,
+  async (req, res, next) => {
+    const user = req.user
+    if (user.role === "admin") {
+      return next()
+    }
+    res.status(403).json({ error: "Unauthorized / Admin only" })
+  },
+]

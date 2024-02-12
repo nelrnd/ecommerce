@@ -58,8 +58,8 @@ function AccountButton() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <button className="font-semibold cursor-pointer" onClick={logout}>
+        <DropdownMenuItem asChild>
+          <button className="w-full font-semibold cursor-pointer" onClick={logout}>
             Logout
           </button>
         </DropdownMenuItem>
