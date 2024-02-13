@@ -18,6 +18,8 @@ import Search from "./routes/Search"
 import Register from "./routes/Register"
 import Login from "./routes/Login"
 import AuthProvider from "./providers/AuthProvider"
+import AuthRoute from "./routes/AuthRoute"
+import Wishlist from "./routes/Wishlist"
 
 const router = createBrowserRouter([
   {
@@ -114,6 +116,15 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <Search />,
+      },
+      {
+        element: <AuthRoute />,
+        children: [
+          {
+            path: "wishlist",
+            element: <Wishlist />,
+          },
+        ],
       },
     ],
   },

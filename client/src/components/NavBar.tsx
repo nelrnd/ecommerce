@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom"
-import { BiUser } from "react-icons/bi"
+import { BiUser, BiHeart } from "react-icons/bi"
 import Cart from "./Cart"
 import {
   NavigationMenu,
@@ -27,6 +27,7 @@ export default function NavBar({ minimized = false }) {
             <NavBarLinks />
             <div className="flex justify-end items-center gap-1">
               <SearchModal />
+              <WishlistButton />
               <Cart />
               <AccountButton />
             </div>
@@ -34,6 +35,15 @@ export default function NavBar({ minimized = false }) {
         )}
       </div>
     </header>
+  )
+}
+
+function WishlistButton() {
+  return (
+    <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
+      <BiHeart className="text-xl" />
+      <span className="sr-only">Wishlist</span>
+    </Link>
   )
 }
 
@@ -47,7 +57,7 @@ function AccountButton() {
   }
 
   return !user ? (
-    <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
+    <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
       <BiUser className="text-xl" />
       <span className="sr-only">Account</span>
     </Link>
