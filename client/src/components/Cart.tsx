@@ -6,12 +6,15 @@ import { Link, useNavigate } from "react-router-dom"
 import { formatPrice } from "@/utils"
 import { Button } from "./ui/button"
 import ProductImage from "./ProductImage"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 
 const MAX_ITEM_QUANTITY = 5
 
 export default function Cart() {
   const { items, isOpen, setIsOpen, closeCart } = useCart()
   const navigate = useNavigate()
+
+  const itemsQuantity = items.reduce((acc, curr) => curr.quantity + acc, 0)
 
   function handleClick() {
     closeCart()
@@ -20,13 +23,18 @@ export default function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
-          <BiShoppingBag className="text-xl" />
-          <span className="sr-only">Open cart</span>
-          <CartBadge />
-        </button>
-      </SheetTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SheetTrigger asChild>
+            <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
+              <BiShoppingBag className="text-xl" />
+              <span className="sr-only">Open cart</span>
+              <CartBadge />
+            </button>
+          </SheetTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Cart ({itemsQuantity})</TooltipContent>
+      </Tooltip>
 
       <SheetContent className="w-[24rem]">
         <div className="h-full flex flex-col">

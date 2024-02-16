@@ -12,38 +12,46 @@ import {
 import SearchModal from "./SearchModal"
 import { useAuth } from "@/providers/AuthProvider"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
 export default function NavBar({ minimized = false }) {
   return (
-    <header className="bg-white p-6 lg:px-16 xl:px-24 border-b border-gray-200">
-      <div className="grid grid-cols-4 items-center">
-        <div className={minimized ? "col-span-4" : "" + " w-fit"}>
-          <Link to="/">
-            <h3>E-Commerce</h3>
-          </Link>
+    <TooltipProvider>
+      <header className="bg-white p-6 lg:px-16 xl:px-24 border-b border-gray-200">
+        <div className="grid grid-cols-4 items-center">
+          <div className={minimized ? "col-span-4" : "" + " w-fit"}>
+            <Link to="/">
+              <h3>E-Commerce</h3>
+            </Link>
+          </div>
+          {!minimized && (
+            <>
+              <NavBarLinks />
+              <div className="flex justify-end items-center gap-1">
+                <SearchModal />
+                <WishlistButton />
+                <Cart />
+                <AccountButton />
+              </div>
+            </>
+          )}
         </div>
-        {!minimized && (
-          <>
-            <NavBarLinks />
-            <div className="flex justify-end items-center gap-1">
-              <SearchModal />
-              <WishlistButton />
-              <Cart />
-              <AccountButton />
-            </div>
-          </>
-        )}
-      </div>
-    </header>
+      </header>
+    </TooltipProvider>
   )
 }
 
 function WishlistButton() {
   return (
-    <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
-      <BiHeart className="text-xl" />
-      <span className="sr-only">Wishlist</span>
-    </Link>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
+          <BiHeart className="text-xl" />
+          <span className="sr-only">Wishlist</span>
+        </Link>
+      </TooltipTrigger>
+      <TooltipContent>Wishlist</TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -56,30 +64,39 @@ function AccountButton() {
     setUser()
   }
 
-  return !user ? (
-    <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
-      <BiUser className="text-xl" />
-      <span className="sr-only">Account</span>
-    </Link>
-  ) : (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="min-w-11 h-11 px-3 rounded-md hover:bg-gray-100 grid place-content-center relative">
-          <div className="flex items-center gap-2">
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {!user ? (
+          <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
             <BiUser className="text-xl" />
-            <span>{userName}</span>
+            <span className="sr-only">Account</span>
+          </Link>
+        ) : (
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="min-w-11 h-11 px-3 rounded-md hover:bg-gray-100 grid place-content-center relative">
+                  <div className="flex items-center gap-2">
+                    <BiUser className="text-xl" />
+                    <span>{userName}</span>
+                  </div>
+                  <span className="sr-only">Account</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <button className="w-full font-semibold cursor-pointer" onClick={logout}>
+                    Logout
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <span className="sr-only">Account</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <button className="w-full font-semibold cursor-pointer" onClick={logout}>
-            Logout
-          </button>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        )}
+      </TooltipTrigger>
+      <TooltipContent>Account</TooltipContent>
+    </Tooltip>
   )
 }
 

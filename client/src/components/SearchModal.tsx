@@ -7,6 +7,7 @@ import ProductCard from "./ProductCard"
 import { useNavigate } from "react-router-dom"
 import { BiX } from "react-icons/bi"
 import { Button } from "./ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 
 export default function SearchModal() {
   const [isOpen, setIsOpen] = useState(false)
@@ -39,12 +40,17 @@ export default function SearchModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
-          <BiSearch className="text-xl" />
-          <span className="sr-only">Open search</span>
-        </button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DialogTrigger asChild>
+            <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
+              <BiSearch className="text-xl" />
+              <span className="sr-only">Open search</span>
+            </button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Search</TooltipContent>
+      </Tooltip>
 
       <DialogContent className="top-[2rem] max-w-[36rem] translate-y-0">
         <div className="flex gap-2">
