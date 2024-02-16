@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 const CartContext = createContext(null)
 
@@ -13,7 +13,7 @@ const MAX_ITEM_QUANTITY = 5
 
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState<cartItem[]>([])
+  const [items, setItems] = useState<cartItem[]>(JSON.parse(localStorage.getItem("cart")) || [])
 
   function openCart() {
     setIsOpen(true)
@@ -74,6 +74,10 @@ export default function CartProvider({ children }) {
   function giveItemId(item) {
     return { ...item, id: item.product._id + item.size }
   }
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(items))
+  }, [items])
 
   const contextValue = {
     isOpen,
