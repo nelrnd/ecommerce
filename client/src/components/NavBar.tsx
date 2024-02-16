@@ -17,7 +17,7 @@ export default function NavBar({ minimized = false }) {
   return (
     <header className="bg-white p-6 lg:px-16 xl:px-24 border-b border-gray-200">
       <div className="grid grid-cols-4 items-center">
-        <div className={minimized ? "col-span-4" : ""}>
+        <div className={minimized ? "col-span-4" : "" + " w-fit"}>
           <Link to="/">
             <h3>E-Commerce</h3>
           </Link>
