@@ -17,9 +17,9 @@ exports.cart_create_item = async (req, res) => {
   const { cartId } = req.params
 
   const product = req.body.product
-  const sku = product.name + product.size
+  const sku = product.slug + "_" + req.body.size
 
-  const itemInCart = await ProductVariant.findOne({ cart: cartId, sku: sku }).exec()
+  const itemInCart = await ProductVariant.findOne({ in_cart: cartId, sku: sku }).exec()
   if (itemInCart && itemInCart.quantity < MAX_ITEM_QUANTITY) {
     itemInCart.quantity++
     await itemInCart.save()
@@ -37,7 +37,7 @@ exports.cart_create_item = async (req, res) => {
     await item.save()
   }
 
-  const items = await ProductVariant.find({ cart: cartId }).exec()
+  const items = await ProductVariant.find({ in_cart: cartId }).populate("product").exec()
   res.json(items)
 }
 
