@@ -49,7 +49,7 @@ export default function Cart() {
           </header>
           <main className="p-6 flex-1 overflow-y-auto space-y-8">
             {items.length ? (
-              items.map((item) => <CartItem key={item.id} item={item} />)
+              items.map((item) => <CartItem key={item.sku} item={item} />)
             ) : (
               <div className="h-full grid place-content-center">
                 <p className="text-xl">Your cart is currently empty</p>
@@ -93,7 +93,7 @@ export default function Cart() {
 }
 
 function CartItem({ item, editable = true }) {
-  const { editItemSize, editItemQuantity, deleteItem, closeCart } = useCart()
+  const { updateItemSize, updateItemQuantity, deleteItem, closeCart } = useCart()
 
   return (
     <div className="flex gap-3">
@@ -118,7 +118,7 @@ function CartItem({ item, editable = true }) {
         </div>
         <div className="mt-1 grid grid-cols-2 gap-2">
           {item.size && editable ? (
-            <Select value={item.size} onValueChange={(newSize) => editItemSize(item, newSize)}>
+            <Select value={item.size} onValueChange={(newSize) => updateItemSize(item, newSize)}>
               <SelectTrigger className="px-2 h-8">
                 <SelectValue placeholder="Size">Size: {item.size}</SelectValue>
               </SelectTrigger>
@@ -136,7 +136,7 @@ function CartItem({ item, editable = true }) {
           {editable ? (
             <Select
               value={item.quantity.toString()}
-              onValueChange={(newQuantity) => editItemQuantity(item, Number(newQuantity))}
+              onValueChange={(newQuantity) => updateItemQuantity(item, Number(newQuantity))}
             >
               <SelectTrigger className="px-2 h-8">
                 <SelectValue placeholder="Quantity">Quantity: {item.quantity}</SelectValue>

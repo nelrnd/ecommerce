@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
+import axios from "../axios"
+import { useAuth } from "./AuthProvider"
 
 const CartContext = createContext(null)
 
@@ -13,7 +15,9 @@ const MAX_ITEM_QUANTITY = 5
 
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState<cartItem[]>(JSON.parse(localStorage.getItem("cart")) || [])
+  const [items, setItems] = useState<cartItem[]>([])
+  const [cartId, setCartId] = useState("")
+  const { user } = useAuth()
 
   function openCart() {
     setIsOpen(true)
@@ -23,61 +27,90 @@ export default function CartProvider({ children }) {
     setIsOpen(false)
   }
 
-  function addItem(item) {
-    item = giveItemId(item)
-    const itemInCart = getItem(item)
-    if (itemInCart) {
-      editItemQuantity(item, itemInCart.quantity + 1)
-    } else {
-      setItems([...items, item])
+  async function addItem(item) {
+    if (cartId) {
+      try {
+        const res = await axios.post(`/cart/${cartId}`, item)
+        const items = res.data
+        setItems(items)
+        openCart()
+        return Promise.resolve()
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
-  function deleteItem(item) {
-    const itemsCopy = [...items]
-    const updatedItems = itemsCopy.filter((cartItem) => cartItem.id !== item.id)
-    setItems(updatedItems)
-  }
-
-  function editItemSize(item, newSize) {
-    let updatedItem = { ...item, size: newSize }
-    updatedItem = giveItemId(updatedItem)
-    const itemInCart = getItem(updatedItem)
-    const itemsCopy = [...items]
-    if (itemInCart) {
-      const newQuantity = Math.min(MAX_ITEM_QUANTITY, itemInCart.quantity + item.quantity)
-      const updatedItems = itemsCopy
-        .filter((cartItem) => cartItem !== item)
-        .map((cartItem) => (cartItem === itemInCart ? { ...itemInCart, quantity: newQuantity } : cartItem))
-      setItems(updatedItems)
-    } else {
-      const updatedItems = itemsCopy.map((cartItem) => (cartItem === item ? updatedItem : cartItem))
-      setItems(updatedItems)
+  async function updateItemSize(item, newSize) {
+    if (cartId) {
+      try {
+        const res = await axios.put(`/cart/${cartId}/item/${item._id}`, {
+          slug: item.product.slug,
+          size: newSize,
+          quantity: item.quantity,
+        })
+        const items = res.data
+        setItems(items)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
-  function editItemQuantity(item, newQuantity) {
-    const itemInCart = getItem(item)
-    if (itemInCart && newQuantity <= MAX_ITEM_QUANTITY) {
-      itemInCart.quantity = newQuantity
-      const itemsCopy = [...items]
-      const updatedItems = itemsCopy.map((cartItem) => (cartItem.id === itemInCart.id ? itemInCart : cartItem))
-      setItems(updatedItems)
+  async function updateItemQuantity(item, newQuantity) {
+    if (cartId) {
+      try {
+        const res = await axios.put(`/cart/${cartId}/item/${item._id}`, {
+          slug: item.product.slug,
+          size: item.size,
+          quantity: newQuantity,
+        })
+        const items = res.data
+        setItems(items)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  async function deleteItem(item) {
+    if (cartId) {
+      try {
+        const res = await axios.delete(`/cart/${cartId}/item/${item._id}`)
+        const items = res.data
+        setItems(items)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
   function getItem(item) {
-    if (!item.id) item = giveItemId(item)
-    return items.find((cartItem) => cartItem.id === item.id)
-  }
-
-  function giveItemId(item) {
-    return { ...item, id: item.product._id + item.size }
+    const sku = item.product.slug + "_" + item.size
+    return items.find((cartItem) => cartItem.sku === sku)
   }
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items))
-  }, [items])
+    if (user) {
+      setCartId(user.cart_id)
+    } else {
+      setCartId("")
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (cartId) {
+      axios
+        .get(`/cart/${cartId}`)
+        .then((res) => {
+          const items = res.data
+          setItems(items)
+        })
+        .catch((err) => console.log(err))
+    } else {
+      setItems([])
+    }
+  }, [cartId])
 
   const contextValue = {
     isOpen,
@@ -87,8 +120,8 @@ export default function CartProvider({ children }) {
     closeCart,
     addItem,
     deleteItem,
-    editItemSize,
-    editItemQuantity,
+    updateItemSize,
+    updateItemQuantity,
     getItem,
   }
 

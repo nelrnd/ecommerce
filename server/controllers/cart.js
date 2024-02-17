@@ -58,7 +58,8 @@ exports.cart_item_update = [
     .isNumeric()
     .withMessage("Quantity must be a number")
     .isInt({ max: MAX_ITEM_QUANTITY })
-    .withMessage(`Maximum quantity per item is ${MAX_ITEM_QUANTITY}`),
+    .withMessage(`Maximum quantity per item is ${MAX_ITEM_QUANTITY}`)
+    .optional(),
   async (req, res, next) => {
     const errors = validationResult(req)
 
@@ -66,18 +67,31 @@ exports.cart_item_update = [
       return res.json(errors.array())
     }
 
-    const { itemId } = req.params
-    const updatedItem = await ProductVariant.findByIdAndUpdate(
-      itemId,
-      {
-        quantity: req.body.quantity,
-        size: req.body.size,
-      },
-      { new: true }
-    ).exec()
-    if (!updatedItem) {
-      return res.status(404).json({ error: "Item not found" })
+    const { cartId, itemId } = req.params
+
+    const newSku = req.body.slug + "_" + req.body.size
+
+    const itemInCart = await ProductVariant.findOne({ _id: { $ne: itemId }, in_cart: cartId, sku: newSku }).exec()
+
+    if (itemInCart) {
+      itemInCart.quantity = Math.min(MAX_ITEM_QUANTITY, itemInCart.quantity + req.body.quantity)
+      await itemInCart.save()
+      await ProductVariant.findByIdAndDelete(itemId).exec()
+    } else {
+      const updatedItem = await ProductVariant.findByIdAndUpdate(
+        itemId,
+        {
+          sku: newSku,
+          quantity: req.body.quantity,
+          size: req.body.size,
+        },
+        { new: true }
+      ).exec()
+      if (!updatedItem) {
+        return res.status(404).json({ error: "Item not found" })
+      }
     }
+
     next()
   },
 ]

@@ -8,8 +8,9 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RadioGroup } from "@radix-ui/react-radio-group"
 import { useForm } from "react-hook-form"
-import { BiChevronRight } from "react-icons/bi"
+import { BiChevronRight, BiLoaderAlt } from "react-icons/bi"
 import { Link, useLoaderData } from "react-router-dom"
+import { useState } from "react"
 
 interface Product {
   name: string
@@ -73,7 +74,8 @@ function ProductBreadcrumb({ product }) {
 }
 
 function ProductForm({ product }) {
-  const { addItem, openCart, getItem } = useCart()
+  const [loading, setLoading] = useState(false)
+  const { addItem, getItem } = useCart()
 
   const formSchema = z.object({
     size: product.sizes ? z.string().min(1, "Please select a size") : z.null(),
@@ -90,10 +92,11 @@ function ProductForm({ product }) {
   const item = getItem({ product: product, size: size })
   const maxReached = item && item.quantity >= MAX_ITEM_QUANTITY
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true)
     const item = { product: product, size: values.size, quantity: 1 }
-    addItem(item)
-    openCart()
+    await addItem(item)
+    setLoading(false)
   }
 
   return (
@@ -126,8 +129,14 @@ function ProductForm({ product }) {
             )}
           />
         )}
-        <Button type="submit" className="w-full mt-4" disabled={maxReached}>
-          {!maxReached ? "Add To Cart" : "Max number of item in cart"}
+        <Button type="submit" className="w-full mt-4" disabled={maxReached || loading}>
+          {loading ? (
+            <BiLoaderAlt className="animate-spin" />
+          ) : !maxReached ? (
+            "Add To Cart"
+          ) : (
+            "Max number of item in cart"
+          )}
         </Button>
       </form>
     </Form>
