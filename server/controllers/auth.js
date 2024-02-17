@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const Cart = require("../models/cart")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const { body, validationResult } = require("express-validator")
@@ -43,6 +44,13 @@ exports.register = [
 
     await user.save()
 
+    // create new cart when creating user
+    const userCart = new Cart({
+      user: user._id,
+    })
+
+    await userCart.save()
+
     next()
   },
 ]
@@ -69,12 +77,14 @@ exports.login = [
     if (!match) {
       return res.status(400).json({ error: "Incorrect email or password" })
     }
+    const cart = await Cart.findOne({ user: user }).exec()
     const SECRET = process.env.SECRET
     const payload = {
       id: user._id,
       full_name: user.full_name,
       email: user.email,
       role: user.role,
+      cart_id: cart._id,
     }
     const token = jwt.sign(payload, SECRET)
     res.json({ message: "Login successful", user: { ...payload, token } })
