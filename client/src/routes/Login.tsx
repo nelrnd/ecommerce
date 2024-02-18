@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import axios from "../axios"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
@@ -18,6 +18,8 @@ const formSchema = z.object({
 export default function Login() {
   const { user, setUser } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from || "/"
   const [error, setError] = useState("")
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,10 +46,10 @@ export default function Login() {
       })
   }
 
-  // redirect to home if logged in
+  // redirect if logged in
   useEffect(() => {
     if (user) {
-      navigate("/")
+      navigate(from)
     }
   }, [user, navigate])
 
@@ -92,7 +94,7 @@ export default function Login() {
 
         <p className="text-sm">
           Don't have an account yet?{" "}
-          <Link to="/register" className="text-indigo-700 hover:underline">
+          <Link to="/register" state={{ from: from }} className="text-indigo-700 hover:underline">
             Register
           </Link>
         </p>

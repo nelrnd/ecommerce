@@ -155,7 +155,6 @@ export default function CartProvider({ children }) {
 
   // set cartId to local storage cartId if defined
   useEffect(() => {
-    console.log("oug")
     const savedCartId = localStorage.getItem("cartId")
     if (savedCartId) {
       setCartId_(savedCartId)

@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import axios from "../axios"
 import { useAuth } from "@/providers/AuthProvider"
 import { useEffect } from "react"
@@ -19,6 +19,8 @@ const formSchema = z.object({
 export default function Register() {
   const { user, setUser } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from || "/"
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -105,7 +107,7 @@ export default function Register() {
 
         <p className="text-sm">
           Have an account already?{" "}
-          <Link to="/login" className="text-indigo-700 hover:underline">
+          <Link to="/login" state={{ from: from }} className="text-indigo-700 hover:underline">
             Log in
           </Link>
         </p>
