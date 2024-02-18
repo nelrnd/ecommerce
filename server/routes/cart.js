@@ -8,6 +8,8 @@ Router.get("/:cartId", cartController.cart_get)
 
 Router.delete("/:cartId", cartController.cart_delete)
 
+Router.post("/:cartId/merge", cartController.cart_merge, cartController.cart_get)
+
 Router.post("/:cartId", cartController.cart_item_create, cartController.cart_get)
 
 Router.put("/:cartId/item/:itemId", cartController.cart_item_update, cartController.cart_get)

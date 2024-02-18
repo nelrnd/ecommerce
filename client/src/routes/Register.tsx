@@ -30,7 +30,6 @@ export default function Register() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     axios
       .post("/auth/register", values)
       .then((res) => {

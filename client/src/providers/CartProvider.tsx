@@ -5,18 +5,17 @@ import { useAuth } from "./AuthProvider"
 const CartContext = createContext(null)
 
 interface cartItem {
-  id: string
-  productId: string
+  _id: string
+  sku: string
+  product: string
   quantity: number
   size?: string
 }
 
-const MAX_ITEM_QUANTITY = 5
-
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<cartItem[]>([])
-  const [cartId, setCartId] = useState("")
+  const [cartId, setCartId_] = useState("")
   const { user } = useAuth()
 
   function openCart() {
@@ -28,16 +27,19 @@ export default function CartProvider({ children }) {
   }
 
   async function addItem(item) {
-    if (cartId) {
-      try {
-        const res = await axios.post(`/cart/${cartId}`, item)
-        const items = res.data
-        setItems(items)
-        openCart()
-        return Promise.resolve()
-      } catch (err) {
-        console.log(err)
+    try {
+      let newCartId = cartId
+      if (!newCartId) {
+        newCartId = await setCartId()
       }
+
+      const res = await axios.post(`/cart/${newCartId}`, item)
+      const items = res.data
+      setItems(items)
+      openCart()
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -90,27 +92,75 @@ export default function CartProvider({ children }) {
     return items.find((cartItem) => cartItem.sku === sku)
   }
 
-  useEffect(() => {
+  async function setCartId() {
+    let cartId
+
     if (user) {
-      setCartId(user.cart_id)
+      cartId = user.cart_id
     } else {
-      setCartId("")
+      cartId = localStorage.getItem("cartId")
+      if (!cartId) {
+        const res = await axios.post("/cart")
+        cartId = res.data._id
+        localStorage.setItem("cartId", cartId)
+      }
+    }
+
+    setCartId_(cartId)
+    return cartId
+  }
+
+  // remove user cartId when user log out
+  useEffect(() => {
+    if (!user) {
+      setCartId_("")
     }
   }, [user])
 
+  // set cart id to user cart id when user log in
   useEffect(() => {
-    if (cartId) {
-      axios
-        .get(`/cart/${cartId}`)
-        .then((res) => {
+    async function handleUserLogin() {
+      if (user) {
+        setCartId_(user.cart_id)
+        // merge current cart with user cart when user log in
+        const currentCartId = localStorage.getItem("cartId")
+        if (currentCartId) {
+          localStorage.removeItem("cartId")
+          const res = await axios.post(`/cart/${user.cart_id}/merge`, { currentCartId: currentCartId })
           const items = res.data
           setItems(items)
-        })
-        .catch((err) => console.log(err))
-    } else {
-      setItems([])
+        }
+      }
     }
+    handleUserLogin()
+  }, [user])
+
+  // fetch cart items when changing cart id
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        if (cartId) {
+          const res = await axios.get(`/cart/${cartId}`)
+          const items = res.data
+          setItems(items)
+        } else {
+          setItems([])
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchItems()
   }, [cartId])
+
+  // set cartId to local storage cartId if defined
+  useEffect(() => {
+    console.log("oug")
+    const savedCartId = localStorage.getItem("cartId")
+    if (savedCartId) {
+      setCartId_(savedCartId)
+    }
+  }, [])
 
   const contextValue = {
     isOpen,

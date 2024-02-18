@@ -27,6 +27,30 @@ exports.cart_delete = async (req, res) => {
   res.json(deletedCart)
 }
 
+exports.cart_merge = async (req, res, next) => {
+  const { cartId } = req.params // user cart
+  const { currentCartId } = req.body
+
+  const items = await ProductVariant.find({ in_cart: currentCartId }).exec()
+
+  await Promise.all(
+    items.map(async (item) => {
+      const itemInUserCart = await ProductVariant.findOne({ in_cart: cartId, sku: item.sku }).exec()
+      if (itemInUserCart) {
+        item.quantity = Math.min(MAX_ITEM_QUANTITY, item.quantity + itemInUserCart.quantity)
+        await ProductVariant.findByIdAndDelete(itemInUserCart._id).exec()
+      }
+      item.in_cart = cartId
+      await item.save()
+      return item
+    })
+  )
+
+  await Cart.findByIdAndDelete(currentCartId).exec()
+
+  next()
+}
+
 exports.cart_item_create = async (req, res, next) => {
   const { cartId } = req.params
   const { product, quantity, size } = req.body
