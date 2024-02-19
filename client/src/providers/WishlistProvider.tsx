@@ -50,7 +50,7 @@ export default function WishlistProvider({ children }) {
 
   function redirectWrapper(fn) {
     if (!wishlistId) {
-      return navigate(from)
+      return navigate("/login", { state: { from: from } })
     }
     fn()
   }
