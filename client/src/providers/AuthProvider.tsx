@@ -12,10 +12,10 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     if (user && user.token) {
-      axios.defaults.headers.common["x-auth-token"] = user.token
+      axios.defaults.headers.common["x-access-token"] = user.token
       localStorage.setItem("user", JSON.stringify(user))
     } else {
-      delete axios.defaults.headers.common["x-auth-token"]
+      delete axios.defaults.headers.common["x-access-token"]
       localStorage.removeItem("user")
     }
   }, [user])
