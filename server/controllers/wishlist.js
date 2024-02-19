@@ -2,15 +2,20 @@ const ProductVariant = require("../models/productVariant")
 
 exports.wishlist_get = async (req, res) => {
   const { wishlistId } = req.params
-  const items = await ProductVariant.find({ in_wishlist: wishlistId }).exec()
+  const items = await ProductVariant.find({ in_wishlist: wishlistId }).populate("product").exec()
   res.json(items)
 }
 
 exports.wishlist_item_create = async (req, res, next) => {
+  const { wishlistId } = req.params
+
+  const sku = req.body.product.slug + "_" + req.body.size
   const item = new ProductVariant({
+    sku: sku,
     product: req.body.product,
     size: req.body.size,
     quantity: req.body.quantity,
+    in_wishlist: wishlistId,
   })
 
   await item.save()
@@ -22,7 +27,7 @@ exports.wishlist_item_update = async (req, res, next) => {
   const { itemId } = req.params
   const updatedItem = await ProductVariant.findByIdAndUpdate(
     itemId,
-    { size: req.body.size, quantity: req.body.quantity },
+    { size: req.body.size, quantity: req.body.quantity || 1 },
     { new: true }
   ).exec()
 

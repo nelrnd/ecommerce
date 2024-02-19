@@ -13,34 +13,36 @@ export default function WishlistProvider({ children }) {
   const location = useLocation()
   const from = location.pathname
 
-  function addItem(item) {
+  function addItem(product, size, quantity) {
     redirectWrapper(async () => {
-      const res = await axios.post(`/wishlist/${wishlistId}/item`, item)
+      const res = await axios.post(`/wishlist/${wishlistId}/item`, { product, size, quantity })
       const items = res.data
       setItems(items)
     })
   }
 
-  function removeItem(item) {
+  function removeItem(itemId) {
     redirectWrapper(async () => {
-      const res = await axios.delete(`/wishlist/${wishlistId}/item/${item._id}`)
+      const res = await axios.delete(`/wishlist/${wishlistId}/item/${itemId}`)
       const items = res.data
       setItems(items)
     })
   }
 
-  function toggleAddItem(item) {
-    const isAdded = checkIfAdded(item.product._id)
-    if (!isAdded) {
-      addItem(item)
+  // add item if not present, remove item if present
+  function toggleItem(product, size, quantity) {
+    const item = items.find((item) => item.product._id === product._id)
+
+    if (!item) {
+      addItem(product, quantity, size)
     } else {
-      removeItem(item)
+      removeItem(item._id)
     }
   }
 
-  function updateItemSize(item, newSize) {
+  function updateItemSize(itemId, newSize) {
     redirectWrapper(async () => {
-      const res = await axios.put(`/wishlist/${wishlistId}/item/${item._id}`, newSize)
+      const res = await axios.put(`/wishlist/${wishlistId}/item/${itemId}`, newSize)
       const items = res.data
       setItems(items)
     })
@@ -54,13 +56,14 @@ export default function WishlistProvider({ children }) {
   }
 
   function checkIfAdded(productId) {
-    console.log(items)
     return !!items.find((item) => item.product._id === productId)
   }
 
   useEffect(() => {
     if (user) {
       setWishlistId(user.wishlist_id)
+    } else {
+      setWishlistId("")
     }
   }, [user])
 
@@ -85,7 +88,7 @@ export default function WishlistProvider({ children }) {
     items,
     addItem,
     removeItem,
-    toggleAddItem,
+    toggleItem,
     updateItemSize,
     checkIfAdded,
   }
