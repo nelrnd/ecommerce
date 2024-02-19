@@ -1,5 +1,6 @@
 const User = require("../models/user")
 const Cart = require("../models/cart")
+const Wishlist = require("../models/wishlist")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const { body, validationResult } = require("express-validator")
@@ -44,12 +45,14 @@ exports.register = [
 
     await user.save()
 
-    // create new cart when creating user
+    // create user cart and wishlist
     const userCart = new Cart({
       user: user._id,
     })
-
-    await userCart.save()
+    const userWishlist = new Wishlist({
+      user: user._id,
+    })
+    await Promise.all([userCart.save(), userWishlist.save()])
 
     next()
   },
@@ -77,7 +80,12 @@ exports.login = [
     if (!match) {
       return res.status(400).json({ error: "Incorrect email or password" })
     }
-    const cart = await Cart.findOne({ user: user }).exec()
+
+    const [cart, wishlist] = await Promise.all([
+      Cart.findOne({ user: user }).exec(),
+      Wishlist.findOne({ user: user }).exec(),
+    ])
+
     const SECRET = process.env.SECRET
     const payload = {
       id: user._id,
@@ -85,6 +93,7 @@ exports.login = [
       email: user.email,
       role: user.role,
       cart_id: cart._id,
+      wishlist_id: wishlist._id,
     }
     const token = jwt.sign(payload, SECRET)
     res.json({ message: "Login successful", user: { ...payload, token } })
