@@ -13,6 +13,8 @@ import SearchModal from "./SearchModal"
 import { useAuth } from "@/providers/AuthProvider"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { useWishlist } from "@/providers/WishlistProvider"
+import Badge from "./Badge"
 
 export default function NavBar({ minimized = false }) {
   return (
@@ -42,12 +44,15 @@ export default function NavBar({ minimized = false }) {
 }
 
 function WishlistButton() {
+  const { items } = useWishlist()
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
+        <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
           <BiHeart className="text-xl" />
           <span className="sr-only">Wishlist</span>
+          <Badge count={items.length} />
         </Link>
       </TooltipTrigger>
       <TooltipContent>Wishlist</TooltipContent>

@@ -7,11 +7,13 @@ import { formatPrice } from "@/utils"
 import { Button } from "./ui/button"
 import ProductImage from "./ProductImage"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
+import Badge from "./Badge"
 
 const MAX_ITEM_QUANTITY = 5
 
 export default function Cart() {
   const { items, isOpen, setIsOpen, closeCart } = useCart()
+  const count = items.reduce((acc, curr) => acc + Number(curr.quantity), 0)
   const navigate = useNavigate()
 
   const itemsQuantity = items.reduce((acc, curr) => curr.quantity + acc, 0)
@@ -29,7 +31,7 @@ export default function Cart() {
             <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
               <BiShoppingBag className="text-xl" />
               <span className="sr-only">Open cart</span>
-              <CartBadge />
+              <Badge count={count} />
             </button>
           </SheetTrigger>
         </TooltipTrigger>
@@ -160,7 +162,7 @@ function CartItem({ item, editable = true }) {
 
 function CartBadge() {
   const { items } = useCart()
-  const count = items.reduce((acc, curr) => acc + Number(curr.quantity), 0)
+
   const text = count < 10 ? count : "9+"
 
   if (count === 0) return null

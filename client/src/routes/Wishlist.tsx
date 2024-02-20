@@ -1,8 +1,6 @@
 import { ProductGrid, Section } from "@/components/Layout"
 import { useWishlist } from "../providers/WishlistProvider"
-import ProductCard from "@/components/ProductCard"
-import { Button } from "@/components/ui/button"
-import { BiTrash } from "react-icons/bi"
+import WishlistItem from "../components/WishlistItem"
 
 export default function Wishlist() {
   const { items } = useWishlist()
@@ -24,27 +22,5 @@ export default function Wishlist() {
         )}
       </main>
     </Section>
-  )
-}
-
-function WishlistItemDeleteButton({ item }) {
-  const { removeItem } = useWishlist()
-
-  return (
-    <Button
-      onClick={() => removeItem(item._id)}
-      variant="ghost"
-      className="absolute z-10 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
-    >
-      <BiTrash />
-    </Button>
-  )
-}
-
-function WishlistItem({ item }) {
-  return (
-    <div>
-      <ProductCard product={item.product} button={<WishlistItemDeleteButton item={item} />} />
-    </div>
   )
 }

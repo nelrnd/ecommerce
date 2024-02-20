@@ -6,7 +6,7 @@ import axios from "../axios"
 const WishlistContext = createContext(null)
 
 export default function WishlistProvider({ children }) {
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<string>([])
   const [wishlistId, setWishlistId] = useState("")
   const { user } = useAuth()
   const navigate = useNavigate()
