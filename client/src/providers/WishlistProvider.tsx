@@ -17,7 +17,7 @@ export default function WishlistProvider({ children }) {
   const from = location.pathname
 
   async function addToWishlist(product: Product, size: string, quantity: number) {
-    if (!wishlistId) return navigate("/login")
+    if (!wishlistId) return navigate("/login", { state: { from: from } })
     try {
       const endpoint = `/wishlist/${wishlistId}/item`
       const res = await axios.post(endpoint, { product, size, quantity })
@@ -31,7 +31,7 @@ export default function WishlistProvider({ children }) {
   }
 
   async function removeFromWishlist(itemId: string) {
-    if (!wishlistId) return navigate("/login")
+    if (!wishlistId) return navigate("/login", { state: { from: from } })
     try {
       const endpoint = `/wishlist/${wishlistId}/item/${itemId}`
       const res = await axios.delete(endpoint)
@@ -45,7 +45,7 @@ export default function WishlistProvider({ children }) {
   }
 
   async function toggleItemInWishlist(product: Product, size: string, quantity: number) {
-    if (!wishlistId) return navigate("/login")
+    if (!wishlistId) return navigate("/login", { state: { from: from } })
     try {
       const itemInWishlist = items.find((item) => item.product._id === product._id)
       if (!itemInWishlist) {
@@ -60,7 +60,7 @@ export default function WishlistProvider({ children }) {
   }
 
   async function updateItemSize(itemId: string, newSize: string) {
-    if (!wishlistId) return navigate("/login")
+    if (!wishlistId) return navigate("/login", { state: { from: from } })
     try {
       const endpoint = `/wishlist/${wishlistId}/item/${itemId}`
       const res = await axios.put(endpoint, { size: newSize })
