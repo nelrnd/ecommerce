@@ -70,7 +70,7 @@ function DeleteButton({ itemId }: DeleteButtonProps) {
 
   return (
     <Button
-      onClick={removeItem.bind(itemId)}
+      onClick={() => removeItem(itemId)}
       variant="ghost"
       className="absolute z-10 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
     >

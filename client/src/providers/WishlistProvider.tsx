@@ -1,62 +1,80 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useAuth } from "./AuthProvider"
 import axios from "../axios"
+import { useAuth } from "./AuthProvider"
+import { Product } from "../routes/Product"
 
 const WishlistContext = createContext(null)
 
 export default function WishlistProvider({ children }) {
-  const [items, setItems] = useState<string>([])
+  const [items, setItems] = useState([])
   const [wishlistId, setWishlistId] = useState("")
+
   const { user } = useAuth()
+
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.pathname
 
-  function addItem(product, size, quantity) {
-    redirectWrapper(async () => {
-      const res = await axios.post(`/wishlist/${wishlistId}/item`, { product, size, quantity })
+  async function addToWishlist(product: Product, size: string, quantity: number) {
+    if (!wishlistId) return navigate("/login")
+    try {
+      const endpoint = `/wishlist/${wishlistId}/item`
+      const res = await axios.post(endpoint, { product, size, quantity })
       const items = res.data
       setItems(items)
-    })
-  }
-
-  function removeItem(itemId) {
-    redirectWrapper(async () => {
-      const res = await axios.delete(`/wishlist/${wishlistId}/item/${itemId}`)
-      const items = res.data
-      setItems(items)
-    })
-  }
-
-  // add item if not present, remove item if present
-  function toggleItem(product, size, quantity) {
-    const item = items.find((item) => item.product._id === product._id)
-
-    if (!item) {
-      addItem(product, quantity, size)
-    } else {
-      removeItem(item._id)
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
     }
   }
 
-  function updateItemSize(itemId, newSize) {
-    redirectWrapper(async () => {
-      const res = await axios.put(`/wishlist/${wishlistId}/item/${itemId}`, newSize)
+  async function removeFromWishlist(itemId: string) {
+    if (!wishlistId) return navigate("/login")
+    try {
+      const endpoint = `/wishlist/${wishlistId}/item/${itemId}`
+      const res = await axios.delete(endpoint)
       const items = res.data
       setItems(items)
-    })
-  }
-
-  function redirectWrapper(fn) {
-    if (!wishlistId) {
-      return navigate("/login", { state: { from: from } })
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
     }
-    fn()
   }
 
-  function checkIfAdded(productId) {
-    return !!items.find((item) => item.product._id === productId)
+  async function toggleItemInWishlist(product: Product, size: string, quantity: number) {
+    if (!wishlistId) return navigate("/login")
+    try {
+      const itemInWishlist = items.find((item) => item.product._id === product._id)
+      if (!itemInWishlist) {
+        addToWishlist(product, size, quantity)
+      } else {
+        removeFromWishlist(itemInWishlist._id)
+      }
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
+    }
+  }
+
+  async function updateItemSize(itemId: string, newSize: string) {
+    if (!wishlistId) return navigate("/login")
+    try {
+      const endpoint = `/wishlist/${wishlistId}/item/${itemId}`
+      const res = await axios.put(endpoint, { size: newSize })
+      const items = res.data
+      setItems(items)
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
+    }
+  }
+
+  function isItemInWishlist(productId: string) {
+    return items.find((item) => item.product._id === productId) == true
   }
 
   useEffect(() => {
@@ -86,11 +104,11 @@ export default function WishlistProvider({ children }) {
 
   const contextValue = {
     items,
-    addItem,
-    removeItem,
-    toggleItem,
+    addToWishlist,
+    removeFromWishlist,
+    toggleItemInWishlist,
     updateItemSize,
-    checkIfAdded,
+    isItemInWishlist,
   }
 
   return <WishlistContext.Provider value={contextValue}>{children}</WishlistContext.Provider>

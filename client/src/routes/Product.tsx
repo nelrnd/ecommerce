@@ -8,11 +8,11 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RadioGroup } from "@radix-ui/react-radio-group"
 import { useForm } from "react-hook-form"
-import { BiChevronRight, BiLoaderAlt } from "react-icons/bi"
+import { BiChevronRight, BiHeart, BiLoaderAlt } from "react-icons/bi"
 import { Link, useLoaderData } from "react-router-dom"
 import { useState } from "react"
 
-interface Product {
+export interface Product {
   name: string
   slug: string
   price: number
@@ -43,6 +43,10 @@ export default function Product() {
           <p className="text-gray-600 mt-4">{product.description}</p>
 
           <ProductForm product={product} />
+          <Button variant="outline" className="w-full mt-3">
+            <BiHeart className="mr-1" />
+            Add To Wishlist
+          </Button>
         </div>
       </div>
     </Section>
