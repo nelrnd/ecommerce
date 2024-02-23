@@ -21,6 +21,7 @@ import AuthProvider from "./providers/AuthProvider"
 import AuthRoute from "./routes/AuthRoute"
 import Wishlist from "./routes/Wishlist"
 import WishlistProvider from "./providers/WishlistProvider"
+import Error from "./routes/Error"
 
 const router = createBrowserRouter([
   {
@@ -35,15 +36,11 @@ const router = createBrowserRouter([
         </CartProvider>
       </AuthProvider>
     ),
+    errorElement: <Error />,
     children: [
       {
         path: "/",
         element: <Root />,
-        errorElement: (
-          <div className="h-screen">
-            <NotFound />
-          </div>
-        ),
         loader: async () => {
           const [navbarCategories, navbarBrands] = await Promise.all([
             axios.get("/category?limit=5"),

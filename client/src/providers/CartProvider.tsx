@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import axios from "../axios"
 import { useAuth } from "./AuthProvider"
+import { Product } from "../routes/Product"
 
 const CartContext = createContext(null)
 
-interface cartItem {
+interface CartItem {
   _id: string
   sku: string
   product: string
@@ -16,6 +17,7 @@ export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<cartItem[]>([])
   const [cartId, setCartId_] = useState("")
+
   const { user } = useAuth()
 
   function openCart() {
@@ -26,68 +28,59 @@ export default function CartProvider({ children }) {
     setIsOpen(false)
   }
 
-  async function addItem(item) {
+  async function addToCart(product: Product, size: string, quantity: number) {
     try {
-      let newCartId = cartId
-      if (!newCartId) {
-        newCartId = await setCartId()
-      }
-
-      const res = await axios.post(`/cart/${newCartId}`, item)
+      if (!cartId) await setCartId()
+      const endpoint = `/cart/${cartId}`
+      const res = await axios.post(endpoint, { product, size, quantity })
       const items = res.data
       setItems(items)
       openCart()
       return Promise.resolve()
     } catch (err) {
       console.log(err)
+      return Promise.reject()
     }
   }
 
-  async function updateItemSize(item, newSize) {
-    if (cartId) {
-      try {
-        const res = await axios.put(`/cart/${cartId}/item/${item._id}`, {
-          slug: item.product.slug,
-          size: newSize,
-          quantity: item.quantity,
-        })
-        const items = res.data
-        setItems(items)
-      } catch (err) {
-        console.log(err)
-      }
+  async function removeFromCart(itemId: string) {
+    try {
+      if (!cartId) throw Error("No cart id")
+      const endpoint = `/cart/${cartId}/item/${itemId}`
+      const res = await axios.delete(endpoint)
+      const items = res.data
+      setItems(items)
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
     }
   }
 
-  async function updateItemQuantity(item, newQuantity) {
-    if (cartId) {
-      try {
-        const res = await axios.put(`/cart/${cartId}/item/${item._id}`, {
-          slug: item.product.slug,
-          size: item.size,
-          quantity: newQuantity,
-        })
-        const items = res.data
-        setItems(items)
-      } catch (err) {
-        console.log(err)
-      }
+  async function updateItem(item: CartItem, newSize, newQuantity) {
+    try {
+      if (!cartId) throw Error("No cart id")
+      const endpoint = `/cart/${cartId}/item/${item._id}`
+      const data = { slug: item.product.slug, size: newSize || item.size, quantity: newQuantity || item.quantity }
+      const res = await axios.put(endpoint, data)
+      const items = res.data
+      setItems(items)
+      return Promise.resolve()
+    } catch (err) {
+      console.log(err)
+      return Promise.reject()
     }
   }
 
-  async function deleteItem(item) {
-    if (cartId) {
-      try {
-        const res = await axios.delete(`/cart/${cartId}/item/${item._id}`)
-        const items = res.data
-        setItems(items)
-      } catch (err) {
-        console.log(err)
-      }
-    }
+  async function updateItemSize(item: CartItem, newSize: string) {
+    return updateItem(item, newSize, null)
   }
 
-  function getItem(item) {
+  async function updateItemQuantity(item: CartItem, newQuantity: number) {
+    return updateItem(item, null, newQuantity)
+  }
+
+  function getItem(item: CartItem) {
     const sku = item.product.slug + "_" + item.size
     return items.find((cartItem) => cartItem.sku === sku)
   }
@@ -97,13 +90,12 @@ export default function CartProvider({ children }) {
 
     if (user) {
       cartId = user.cart_id
-    } else {
+    } else if (localStorage.getItem("cartId")) {
       cartId = localStorage.getItem("cartId")
-      if (!cartId) {
-        const res = await axios.post("/cart")
-        cartId = res.data._id
-        localStorage.setItem("cartId", cartId)
-      }
+    } else {
+      const res = await axios.post("/cart")
+      cartId = res.data._id
+      localStorage.setItem("cartId", cartId)
     }
 
     setCartId_(cartId)
@@ -167,8 +159,8 @@ export default function CartProvider({ children }) {
     items,
     openCart,
     closeCart,
-    addItem,
-    deleteItem,
+    addToCart,
+    removeFromCart,
     updateItemSize,
     updateItemQuantity,
     getItem,

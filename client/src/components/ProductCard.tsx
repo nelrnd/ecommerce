@@ -5,16 +5,16 @@ import { BiHeart, BiSolidHeart } from "react-icons/bi"
 import { Button } from "./ui/button"
 
 function ProductCardLikeButton({ product }) {
-  const { toggleItem, checkIfAdded } = useWishlist()
-  const isAdded = checkIfAdded(product._id)
+  const { toggleItemInWishlist, isItemInWishlist } = useWishlist()
+  const isInWishlist = isItemInWishlist(product._id)
 
   return (
     <Button
-      onClick={() => toggleItem(product, 1)}
+      onClick={() => toggleItemInWishlist(product, null, 1)}
       variant="ghost"
       className="absolute z-10 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
     >
-      {!isAdded ? <BiHeart /> : <BiSolidHeart />}
+      {!isInWishlist ? <BiHeart /> : <BiSolidHeart />}
       <span className="sr-only">Add item to wishlist</span>
     </Button>
   )
