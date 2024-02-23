@@ -6,17 +6,13 @@ import { Link, useNavigate } from "react-router-dom"
 import { formatPrice } from "@/utils"
 import { Button } from "./ui/button"
 import ProductImage from "./ProductImage"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
-import Badge from "./Badge"
 
 const MAX_ITEM_QUANTITY = 5
 
 export default function Cart() {
   const { items, isOpen, setIsOpen, closeCart } = useCart()
-  const count = items.reduce((acc, curr) => acc + Number(curr.quantity), 0)
-  const navigate = useNavigate()
 
-  const itemsQuantity = items.reduce((acc, curr) => curr.quantity + acc, 0)
+  const navigate = useNavigate()
 
   function handleClick() {
     closeCart()
@@ -25,19 +21,6 @@ export default function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <SheetTrigger asChild>
-            <button className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
-              <BiShoppingBag className="text-xl" />
-              <span className="sr-only">Open cart</span>
-              <Badge count={count} />
-            </button>
-          </SheetTrigger>
-        </TooltipTrigger>
-        <TooltipContent>Cart ({itemsQuantity})</TooltipContent>
-      </Tooltip>
-
       <SheetContent className="w-[24rem]">
         <div className="h-full flex flex-col">
           <header className="p-6 border-b border-gray-200">
@@ -156,20 +139,6 @@ function CartItem({ item, editable = true }) {
           )}
         </div>
       </div>
-    </div>
-  )
-}
-
-function CartBadge() {
-  const { items } = useCart()
-
-  const text = count < 10 ? count : "9+"
-
-  if (count === 0) return null
-
-  return (
-    <div className="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs font-semibold grid place-content-center absolute -right-1 -top-1">
-      <span>{text}</span>
     </div>
   )
 }

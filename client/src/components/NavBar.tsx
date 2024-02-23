@@ -1,6 +1,6 @@
+import { useEffect, useLayoutEffect, useState } from "react"
 import { Link, useLoaderData } from "react-router-dom"
-import { BiUser, BiHeart } from "react-icons/bi"
-import Cart from "./Cart"
+import { BiUser, BiHeart, BiMenu, BiShoppingBag, BiX, BiChevronRight, BiLogOut } from "react-icons/bi"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,112 +12,60 @@ import {
 import SearchModal from "./SearchModal"
 import { useAuth } from "@/providers/AuthProvider"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 import { useWishlist } from "@/providers/WishlistProvider"
 import Badge from "./Badge"
+import { Button } from "./ui/button"
+import { useCart } from "@/providers/CartProvider"
 
-export default function NavBar({ minimized = false }) {
-  return (
-    <TooltipProvider>
-      <header className="bg-white p-6 lg:px-16 xl:px-24 border-b border-gray-200">
-        <div className="grid grid-cols-4 items-center">
-          <div className={minimized ? "col-span-4" : "" + " w-fit"}>
-            <Link to="/">
-              <h3>E-Commerce</h3>
-            </Link>
-          </div>
-          {!minimized && (
-            <>
-              <NavBarLinks />
-              <div className="flex justify-end items-center gap-1">
-                <SearchModal />
-                <WishlistButton />
-                <Cart />
-                <AccountButton />
-              </div>
-            </>
-          )}
-        </div>
-      </header>
-    </TooltipProvider>
-  )
-}
+export default function NavBar() {
+  // for mobile version
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-function WishlistButton() {
-  const { items } = useWishlist()
+  function toggleMenu() {
+    setIsMenuOpen((open) => !open)
+  }
 
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Link to="/wishlist" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center relative">
-          <BiHeart className="text-xl" />
-          <span className="sr-only">Wishlist</span>
-          <Badge count={items.length} />
-        </Link>
-      </TooltipTrigger>
-      <TooltipContent>Wishlist</TooltipContent>
-    </Tooltip>
-  )
-}
-
-function AccountButton() {
-  const { user, setUser } = useAuth()
-
-  const userName = user?.full_name.split(" ")[0]
-
-  function logout() {
-    setUser()
+  function closeMenu() {
+    setIsMenuOpen(false)
   }
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        {!user ? (
-          <Link to="/login" className="w-11 h-11 rounded-md hover:bg-gray-100 grid place-content-center">
-            <BiUser className="text-xl" />
-            <span className="sr-only">Account</span>
-          </Link>
-        ) : (
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="min-w-11 h-11 px-3 rounded-md hover:bg-gray-100 grid place-content-center relative">
-                  <div className="flex items-center gap-2">
-                    <BiUser className="text-xl" />
-                    <span>{userName}</span>
-                  </div>
-                  <span className="sr-only">Account</span>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <button className="w-full font-semibold cursor-pointer" onClick={logout}>
-                    Logout
-                  </button>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
-      </TooltipTrigger>
-      <TooltipContent>Account</TooltipContent>
-    </Tooltip>
+    <>
+      <header className="bg-white py-6 px-3 sm:px-6 md:px-12 border-b border-gray-200 sticky top-0 left-0 z-10">
+        <div className="flex items-center gap-4">
+          <NavBar_Logo />
+          <NavBar_Links />
+          <NavBar_Buttons toggleMenu={toggleMenu} />
+        </div>
+      </header>
+      <NavBar_MobileMenu isOpen={isMenuOpen} close={closeMenu} />
+    </>
   )
 }
 
-function NavBarLinks() {
-  const { navbarCategories, navbarBrands } = useLoaderData()
+function NavBar_Logo() {
+  return (
+    <div className="flex-1">
+      <Link to="/" className="block w-fit">
+        <h3>E-Commerce</h3>
+      </Link>
+    </div>
+  )
+}
+
+function NavBar_Links() {
+  const { categories, brands } = useLoaderData()
 
   return (
-    <div className="col-span-2 flex justify-center">
-      <NavigationMenu className="justify-end">
+    <div className="flex-1 hidden md:block">
+      <NavigationMenu>
         <NavigationMenuList>
-          {navbarCategories && navbarCategories.length > 0 && (
+          {categories && (
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="text-base font-normal">Categories</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="px-8 py-4 columns-2 w-[24rem] space-y-2">
-                  {navbarCategories.map((category) => (
+                <ul className="p-8 columns-2 w-[24rem] space-y-2">
+                  {categories.map((category) => (
                     <li key={category._id}>
                       <NavigationMenuLink asChild>
                         <Link to={`/category/${category.slug}`} className="hover:underline">
@@ -137,12 +85,13 @@ function NavBarLinks() {
               </NavigationMenuContent>
             </NavigationMenuItem>
           )}
-          {navbarBrands && (
+
+          {brands && (
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Brands</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="text-base font-normal">Brands</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="px-8 py-4 columns-2 w-[24rem] space-y-2">
-                  {navbarBrands.map((brand) => (
+                <ul className="p-8 columns-2 w-[24rem] space-y-2">
+                  {brands.map((brand) => (
                     <li key={brand._id}>
                       <NavigationMenuLink asChild>
                         <Link to={`/brand/${brand.slug}`} className="hover:underline">
@@ -162,6 +111,7 @@ function NavBarLinks() {
               </NavigationMenuContent>
             </NavigationMenuItem>
           )}
+
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link to="/latest" className="px-4 py-2 hover:underline">
@@ -172,5 +122,171 @@ function NavBarLinks() {
         </NavigationMenuList>
       </NavigationMenu>
     </div>
+  )
+}
+
+function NavBar_Buttons({ toggleMenu }) {
+  return (
+    <div className="flex-1">
+      <div className="flex justify-end gap-2">
+        <SearchModal />
+        <WishlistButton />
+        <CartButton />
+        <AccountButton />
+        <Button onClick={toggleMenu} variant="ghost" className="text-xl md:hidden" title="Open menu">
+          <BiMenu />
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function NavBar_MobileMenu({ isOpen, close }) {
+  const { user, setUser } = useAuth()
+
+  function logout() {
+    setUser()
+  }
+
+  useLayoutEffect(() => {
+    const menuLinks = document.querySelectorAll("#navbar-menu a")
+    menuLinks.forEach((elem) => {
+      elem.addEventListener("click", close)
+    })
+
+    return () =>
+      menuLinks.forEach((elem) => {
+        elem.removeEventListener("click", close)
+      })
+  }, [isOpen, close, user])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-y-hidden")
+    } else {
+      document.body.classList.remove("overflow-y-hidden")
+    }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  return (
+    <div className="bg-white fixed top-0 inset-0 z-20" id="navbar-menu">
+      <header className="py-6 px-3 sm:px-6">
+        <Button onClick={close} variant="ghost" className="text-xl block ml-auto">
+          <BiX />
+        </Button>
+      </header>
+      <section className="px-3 sm:px-6 pb-6 ">
+        <ul className="space-y-4">
+          {[
+            {
+              href: "/category",
+              text: "Categories",
+            },
+            {
+              href: "/brand",
+              text: "Brand",
+            },
+            {
+              href: "/latest",
+              text: "Latest",
+            },
+          ].map((link) => (
+            <li key={link.text}>
+              <Link to={link.href} className="px-3 py-2 flex justify-between hover:underline">
+                <span>{link.text}</span>
+                <BiChevronRight />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section className="px-3 sm:px-6 space-y-4">
+        <Button variant="outline" className="p-4 h-auto w-full justify-start gap-2" asChild>
+          <Link to="/wishlist" className="text-base">
+            <BiHeart />
+            <span>Wishlist</span>
+          </Link>
+        </Button>
+        {!user ? (
+          <Button variant="outline" className="p-4 h-auto w-full justify-start gap-2" asChild>
+            <Link to="/login" className="text-base">
+              <BiUser />
+              <span>Account</span>
+            </Link>
+          </Button>
+        ) : (
+          <Button onClick={logout} variant="outline" className="p-4 h-auto w-full justify-start gap-2">
+            <BiLogOut />
+            Logout
+          </Button>
+        )}
+      </section>
+    </div>
+  )
+}
+
+function CartButton() {
+  const { items, openCart } = useCart()
+
+  const nbOfItems = items.reduce((acc, curr) => acc + curr.quantity, 0)
+  const badgeText = nbOfItems < 10 ? nbOfItems : "9+"
+
+  return (
+    <Button onClick={openCart} variant="ghost" className="w-10 p-0 text-xl relative" title="Cart">
+      <BiShoppingBag />
+      <Badge count={badgeText} />
+    </Button>
+  )
+}
+
+function WishlistButton() {
+  const { items } = useWishlist()
+
+  const badgeText = items.length
+
+  return (
+    <Button variant="ghost" className="w-10 p-0 text-xl hidden md:flex relative z-10" title="Wishlist" asChild>
+      <Link to="/wishlist">
+        <BiHeart />
+        <Badge count={badgeText} />
+      </Link>
+    </Button>
+  )
+}
+
+function AccountButton() {
+  const { user, setUser } = useAuth()
+
+  const username = user?.full_name.split(" ")[0]
+
+  function logout() {
+    setUser()
+  }
+
+  return !user ? (
+    <Button variant="ghost" className="w-10 p-0 text-xl hidden md:flex" title="Account" asChild>
+      <Link to="/login">
+        <BiUser />
+      </Link>
+    </Button>
+  ) : (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="hidden md:flex" title="Account">
+          <BiUser className="text-xl" />
+          <span className="ml-2">{username}</span>
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Button onClick={logout} className="w-full">
+            Logout
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

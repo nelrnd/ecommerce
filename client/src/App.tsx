@@ -22,6 +22,7 @@ import AuthRoute from "./routes/AuthRoute"
 import Wishlist from "./routes/Wishlist"
 import WishlistProvider from "./providers/WishlistProvider"
 import Error from "./routes/Error"
+import Cart from "./components/Cart"
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
         <CartProvider>
           <WishlistProvider>
             <Outlet />
+            <Cart />
             <Toaster />
             <ScrollRestoration />
           </WishlistProvider>
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
             axios.get("/category?limit=5"),
             axios.get("/brand?limit=5"),
           ])
-          return { navbarCategories: navbarCategories.data, navbarBrands: navbarBrands.data }
+          return { categories: navbarCategories.data, brands: navbarBrands.data }
         },
         children: [
           {
