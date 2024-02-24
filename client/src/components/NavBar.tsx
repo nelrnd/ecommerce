@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useState } from "react"
-import { Link, useLoaderData } from "react-router-dom"
+import { useCallback, useEffect, useLayoutEffect, useState } from "react"
+import { Link, useLoaderData, useLocation } from "react-router-dom"
 import { BiUser, BiHeart, BiMenu, BiShoppingBag, BiX, BiChevronRight, BiLogOut } from "react-icons/bi"
 import {
   NavigationMenu,
@@ -25,9 +25,9 @@ export default function NavBar() {
     setIsMenuOpen((open) => !open)
   }
 
-  function closeMenu() {
+  const closeMenu = useCallback(function closeMenu() {
     setIsMenuOpen(false)
-  }
+  }, [])
 
   return (
     <>
@@ -143,22 +143,12 @@ function NavBar_Buttons({ toggleMenu }) {
 
 function NavBar_MobileMenu({ isOpen, close }) {
   const { user, setUser } = useAuth()
+  const location = useLocation()
 
   function logout() {
     setUser()
+    close()
   }
-
-  useLayoutEffect(() => {
-    const menuLinks = document.querySelectorAll("#navbar-menu a")
-    menuLinks.forEach((elem) => {
-      elem.addEventListener("click", close)
-    })
-
-    return () =>
-      menuLinks.forEach((elem) => {
-        elem.removeEventListener("click", close)
-      })
-  }, [isOpen, close, user])
 
   useEffect(() => {
     if (isOpen) {
@@ -167,6 +157,10 @@ function NavBar_MobileMenu({ isOpen, close }) {
       document.body.classList.remove("overflow-y-hidden")
     }
   }, [isOpen])
+
+  useEffect(() => {
+    close()
+  }, [location, close])
 
   if (!isOpen) return null
 
