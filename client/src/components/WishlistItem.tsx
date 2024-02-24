@@ -51,7 +51,7 @@ export default function WishlistItem({ item }) {
               name="size"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={item.size}>
+                  <Select onValueChange={field.onChange} defaultValue={item.size || undefined}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select size" />

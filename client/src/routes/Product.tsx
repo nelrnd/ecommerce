@@ -77,7 +77,6 @@ function ProductBreadcrumb({ product }) {
 function ProductForm({ product }) {
   const [loading, setLoading] = useState(false)
   const { addToCart, getItem } = useCart()
-  const { addToWishlist } = useWishlist()
 
   const formSchema = z.object({
     size: product.sizes ? z.string().min(1, "Please select a size") : z.null(),
