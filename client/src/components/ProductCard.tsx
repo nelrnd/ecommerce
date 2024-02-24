@@ -3,6 +3,12 @@ import ProductImage from "./ProductImage"
 import { useWishlist } from "../providers/WishlistProvider"
 import { BiHeart, BiSolidHeart } from "react-icons/bi"
 import { Button } from "./ui/button"
+import { Product } from "../routes/Product"
+
+interface ProductCardProps {
+  product: Product
+  button: JSX.Element | null
+}
 
 function ProductCardLikeButton({ product }) {
   const { toggleItemInWishlist, isItemInWishlist } = useWishlist()
@@ -20,7 +26,10 @@ function ProductCardLikeButton({ product }) {
   )
 }
 
-export default function ProductCard({ product, button = <ProductCardLikeButton product={product} /> }) {
+export default function ProductCard({
+  product,
+  button = <ProductCardLikeButton product={product} />,
+}: ProductCardProps) {
   return (
     <div className="relative">
       {button}

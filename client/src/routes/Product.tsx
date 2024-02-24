@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form"
 import { BiChevronRight, BiHeart, BiLoaderAlt } from "react-icons/bi"
 import { Link, useLoaderData } from "react-router-dom"
 import { useState } from "react"
+import { useWishlist } from "@/providers/WishlistProvider"
 
 export interface Product {
   name: string
@@ -43,10 +44,6 @@ export default function Product() {
           <p className="text-gray-600 mt-4">{product.description}</p>
 
           <ProductForm product={product} />
-          <Button variant="outline" className="w-full mt-3">
-            <BiHeart className="mr-1" />
-            Add To Wishlist
-          </Button>
         </div>
       </div>
     </Section>
@@ -79,7 +76,8 @@ function ProductBreadcrumb({ product }) {
 
 function ProductForm({ product }) {
   const [loading, setLoading] = useState(false)
-  const { addItem, getItem } = useCart()
+  const { addToCart, getItem } = useCart()
+  const { addToWishlist } = useWishlist()
 
   const formSchema = z.object({
     size: product.sizes ? z.string().min(1, "Please select a size") : z.null(),
@@ -98,51 +96,57 @@ function ProductForm({ product }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
-    const item = { product: product, size: values.size, quantity: 1 }
-    await addItem(item)
+    await addToCart(product, values.size, 1)
     setLoading(false)
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4">
-        {product.sizes && (
-          <FormField
-            control={form.control}
-            name="size"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <RadioGroup onValueChange={field.onChange}>
-                    <div className="flex gap-2 items-center">
-                      {product.sizes.map((size) => (
-                        <FormItem key={size} className="flex-1">
-                          <FormControl>
-                            <RadioGroupItem value={size} className="peer hidden" />
-                          </FormControl>
-                          <FormLabel className="block px-6 py-3 border border-gray-200 hover:bg-gray-200 text-center font-normal rounded cursor-pointer outline outline-2 outline-transparent peer-data-[state=checked]:outline-gray-900 peer-data-[state=checked]:hover:bg-white">
-                            {size}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        <Button type="submit" className="w-full mt-4" disabled={maxReached || loading}>
-          {loading ? (
-            <BiLoaderAlt className="animate-spin" />
-          ) : !maxReached ? (
-            "Add To Cart"
-          ) : (
-            "Max number of item in cart"
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4">
+          {product.sizes && (
+            <FormField
+              control={form.control}
+              name="size"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange}>
+                      <div className="flex gap-2 items-center">
+                        {product.sizes.map((size) => (
+                          <FormItem key={size} className="flex-1">
+                            <FormControl>
+                              <RadioGroupItem value={size} className="peer hidden" />
+                            </FormControl>
+                            <FormLabel className="block px-6 py-3 border border-gray-200 hover:bg-gray-200 text-center font-normal rounded cursor-pointer outline outline-2 outline-transparent peer-data-[state=checked]:outline-gray-900 peer-data-[state=checked]:hover:bg-white">
+                              {size}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        </Button>
-      </form>
-    </Form>
+          <Button type="submit" className="w-full mt-4" disabled={maxReached || loading}>
+            {loading ? (
+              <BiLoaderAlt className="animate-spin" />
+            ) : !maxReached ? (
+              "Add To Cart"
+            ) : (
+              "Max number of item in cart"
+            )}
+          </Button>
+        </form>
+      </Form>
+
+      <Button onClick={() => addToWishlist(product, size, 1)} variant="outline" className="w-full mt-3">
+        <BiHeart className="mr-1" />
+        Add To Wishlist
+      </Button>
+    </>
   )
 }
