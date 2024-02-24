@@ -9,6 +9,12 @@ exports.wishlist_get = async (req, res) => {
 exports.wishlist_item_create = async (req, res, next) => {
   const { wishlistId } = req.params
 
+  // prevent adding same product twice
+  const inWishlist = await ProductVariant.findOne({ product: req.body.product._id, in_wishlist: wishlistId }).exec()
+  if (inWishlist) {
+    return res.status(400).json({ error: "Product is already in wishlist" })
+  }
+
   const sku = req.body.product.slug + "_" + req.body.size
   const item = new ProductVariant({
     sku: sku,
