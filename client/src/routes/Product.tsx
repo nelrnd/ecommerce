@@ -31,7 +31,7 @@ export interface Product {
 
 const MAX_ITEM_QUANTITY = 5
 
-export async function productLoader({ params }) {
+export async function loader({ params }) {
   const slug = params.slug
 
   const [product, similarProducts] = await Promise.all([

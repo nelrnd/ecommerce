@@ -2,6 +2,15 @@ import { ProductGrid, Section } from "@/components/Layout"
 import ProductCard from "@/components/ProductCard"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLoaderData, useNavigate } from "react-router-dom"
+import axios from "../axios"
+
+export async function loader({ request, params }) {
+  const url = new URL(request.url)
+  const sort = url.searchParams.get("sort")
+  const endpoint = `/category/${params.slug}${sort ? `?sort=${sort}` : ""}`
+  const res = await axios.get(endpoint)
+  return res.data
+}
 
 export default function Category() {
   const category = useLoaderData()

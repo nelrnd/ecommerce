@@ -1,6 +1,12 @@
 import { ProductGrid, Section } from "@/components/Layout"
 import ProductCard from "@/components/ProductCard"
 import { useLoaderData } from "react-router-dom"
+import axios from "../axios"
+
+export async function loader() {
+  const res = await axios.get("/product")
+  return res.data
+}
 
 export default function Latest() {
   const products = useLoaderData()

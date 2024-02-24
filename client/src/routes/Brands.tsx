@@ -1,5 +1,11 @@
 import { Section } from "@/components/Layout"
 import { Link, useLoaderData } from "react-router-dom"
+import axios from "../axios"
+
+export async function loader() {
+  const res = await axios.get(`/brand`)
+  return res.data
+}
 
 export default function Brands() {
   const brands = useLoaderData()

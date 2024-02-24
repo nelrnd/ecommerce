@@ -1,6 +1,12 @@
 import CategoryCard from "@/components/CategoryCard"
 import { Section } from "@/components/Layout"
 import { useLoaderData } from "react-router-dom"
+import axios from "../axios"
+
+export async function loader() {
+  const res = await axios.get("/category")
+  return res.data
+}
 
 export default function Categories() {
   const categories = useLoaderData()

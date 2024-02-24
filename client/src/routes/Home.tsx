@@ -3,12 +3,23 @@ import * as z from "zod"
 import { useForm } from "react-hook-form"
 import ProductCard from "../components/ProductCard"
 import CategoryCard from "../components/CategoryCard"
-import { Section } from "..//components/Layout"
+import { Section } from "../components/Layout"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../components/ui/carousel"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../components/ui/form"
+import axios from "../axios"
+
+export async function loader() {
+  const [category1, category2, latestProducts] = await Promise.all([
+    axios.get("/category/t-shirts-1"),
+    axios.get("/category/jackets"),
+    axios.get("/product?limit=5"),
+  ])
+
+  return { categories: [category1.data, category2.data], latestProducts: latestProducts.data }
+}
 
 export default function Home() {
   return (
@@ -45,7 +56,7 @@ function CategoriesSection() {
 }
 
 function LatestProductsSection() {
-  const { products } = useLoaderData()
+  const { latestProducts } = useLoaderData()
 
   return (
     <Section>
@@ -58,10 +69,10 @@ function LatestProductsSection() {
         </div>
       </header>
       <main>
-        {products && (
+        {latestProducts && (
           <Carousel>
             <CarouselContent>
-              {products.map((product) => (
+              {latestProducts.map((product) => (
                 <CarouselItem key={product._id} className="basis-1/3">
                   <ProductCard product={product} />
                 </CarouselItem>

@@ -1,17 +1,16 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from "react-router-dom"
-import axios from "./axios"
-import Root from "./routes/Root"
-import Home from "./routes/Home"
-import Product, { productLoader } from "./routes/Product"
-import Category from "./routes/Category"
+import Root, { loader as rootLoader } from "./routes/Root"
+import Home, { loader as homeLoader } from "./routes/Home"
+import Product, { loader as productLoader } from "./routes/Product"
+import Categories, { loader as categoriesLoader } from "./routes/Categories"
+import Category, { loader as categoryLoader } from "./routes/Category"
+import Brand, { loader as brandLoader } from "./routes/Brand"
 import Checkout from "./routes/Checkout"
 import dashboardRouter from "./routes/Dashboard/Dashboard"
 import CartProvider from "./providers/CartProvider"
 import { Toaster } from "./components/ui/toaster"
-import Brand from "./routes/Brand"
-import Categories from "./routes/Categories"
-import Brands from "./routes/Brands"
-import Latest from "./routes/Latest"
+import Brands, { loader as brandsLoader } from "./routes/Brands"
+import Latest, { loader as latestLoader } from "./routes/Latest"
 import OrderConfirmation from "./routes/OrderConfirmation"
 import Search from "./routes/Search"
 import Register from "./routes/Register"
@@ -42,77 +41,42 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Root />,
-        loader: async () => {
-          const [navbarCategories, navbarBrands] = await Promise.all([
-            axios.get("/category?limit=5"),
-            axios.get("/brand?limit=5"),
-          ])
-          return { categories: navbarCategories.data, brands: navbarBrands.data }
-        },
+        loader: rootLoader,
         children: [
           {
             index: true,
             element: <Home />,
-            loader: async () => {
-              const [category1, category2, products] = await Promise.all([
-                axios.get("/category/t-shirts-1"),
-                axios.get("/category/jackets"),
-                axios.get("/product?limit=5"),
-              ])
-
-              return { categories: [category1.data, category2.data], products: products.data }
-            },
+            loader: homeLoader,
           },
           {
-            path: "/product/:slug",
+            path: "product/:slug",
             element: <Product />,
             loader: productLoader,
           },
           {
             path: "category",
             element: <Categories />,
-            loader: async () => {
-              const res = await axios.get("/category")
-              return res.data
-            },
+            loader: categoriesLoader,
           },
           {
             path: "category/:slug",
             element: <Category />,
-            loader: async ({ request, params }) => {
-              const url = new URL(request.url)
-              const sort = url.searchParams.get("sort")
-              const endpoint = `/category/${params.slug}${sort ? `?sort=${sort}` : ""}`
-              const res = await axios.get(endpoint)
-              return res.data
-            },
+            loader: categoryLoader,
           },
           {
             path: "brand",
             element: <Brands />,
-            loader: async () => {
-              const res = await axios.get(`/brand`)
-              return res.data
-            },
+            loader: brandsLoader,
           },
           {
             path: "brand/:slug",
             element: <Brand />,
-            loader: async ({ request, params }) => {
-              const url = new URL(request.url)
-              const sort = url.searchParams.get("sort")
-              const endpoint = `/brand/${params.slug}${sort ? `?sort=${sort}` : ""}`
-              const res = await axios.get(endpoint)
-              return res.data
-            },
+            loader: brandLoader,
           },
           {
             path: "latest",
             element: <Latest />,
-            loader: async () => {
-              const res = await axios.get("/product")
-              return res.data
-            },
+            loader: latestLoader,
           },
           {
             path: "register",
@@ -138,7 +102,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/checkout",
+        path: "checkout",
         element: <Checkout />,
       },
       {
