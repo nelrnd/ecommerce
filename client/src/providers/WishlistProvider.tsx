@@ -74,7 +74,7 @@ export default function WishlistProvider({ children }) {
   }
 
   function isItemInWishlist(productId: string) {
-    return items.find((item) => item.product._id === productId) == true
+    return !!items.find((item) => item.product._id === productId)
   }
 
   useEffect(() => {

@@ -8,7 +8,7 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RadioGroup } from "@radix-ui/react-radio-group"
 import { useForm } from "react-hook-form"
-import { BiChevronRight, BiHeart, BiLoaderAlt } from "react-icons/bi"
+import { BiChevronRight, BiHeart, BiLoaderAlt, BiSolidHeart } from "react-icons/bi"
 import { Link, useLoaderData } from "react-router-dom"
 import { useState } from "react"
 import { useWishlist } from "@/providers/WishlistProvider"
@@ -145,10 +145,33 @@ function ProductForm({ product }) {
         </form>
       </Form>
 
-      <Button onClick={() => addToWishlist(product, size, 1)} variant="outline" className="w-full mt-3">
-        <BiHeart className="mr-1" />
-        Add To Wishlist
-      </Button>
+      <WishlistButton product={product} size={size} />
     </>
+  )
+}
+
+function WishlistButton({ product, size }) {
+  const { toggleItemInWishlist, isItemInWishlist } = useWishlist()
+
+  const isInWishlist = isItemInWishlist(product._id)
+
+  function handleClick() {
+    toggleItemInWishlist(product, size, 1)
+  }
+
+  return (
+    <Button onClick={handleClick} variant="outline" className="w-full mt-3">
+      {!isInWishlist ? (
+        <>
+          <BiHeart className="mr-1" />
+          Add To Wishlist
+        </>
+      ) : (
+        <>
+          <BiSolidHeart className="mr-1" />
+          Remove From Wishlist
+        </>
+      )}
+    </Button>
   )
 }
