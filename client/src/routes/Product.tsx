@@ -118,9 +118,11 @@ function ProductForm({ product }) {
                             <FormControl>
                               <RadioGroupItem value={size} className="peer hidden" />
                             </FormControl>
-                            <FormLabel className="block px-6 py-3 border border-gray-200 hover:bg-gray-200 text-center font-normal rounded cursor-pointer outline outline-2 outline-transparent peer-data-[state=checked]:outline-gray-900 peer-data-[state=checked]:hover:bg-white">
-                              {size}
-                            </FormLabel>
+                            <Button type="button" variant="outline" className="w-full" asChild>
+                              <FormLabel className="cursor-pointer outline outline-2 outline-transparent peer-data-[state=checked]:outline-gray-800 peer-data-[state=checked]:hover:bg-white">
+                                {size}
+                              </FormLabel>
+                            </Button>
                           </FormItem>
                         ))}
                       </div>
