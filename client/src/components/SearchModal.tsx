@@ -71,7 +71,7 @@ export default function SearchModal() {
         </div>
 
         {results.length > 0 && (
-          <div className="mt-4 grid grid-cols-3 gap-2 item-start self-start">
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 item-start self-start">
             {results.map((product) => (
               <div key={product._id} className="p-2 rounded-xl hover:bg-gray-100" onClick={() => setIsOpen(false)}>
                 <ProductCard product={product} button={null} />

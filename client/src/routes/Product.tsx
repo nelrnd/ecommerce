@@ -49,12 +49,12 @@ export default function Product() {
     <>
       <Section>
         <ProductBreadcrumb product={product} />
-        <div className="grid grid-cols-3 items-start gap-8">
+        <div className="md:grid md:grid-cols-3 items-start gap-8">
           <div className="col-span-2">
             <ProductImage src={product.image} />
           </div>
           <div className="pt-6">
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
+            <h1 className="scroll-m-20 text-3xl lg:text-4xl font-extrabold tracking-tight">{product.name}</h1>
             <p className="mt-2 text-xl text-gray-600">${product.price}</p>
             <p className="text-gray-600 mt-4">{product.description}</p>
 
@@ -195,6 +195,8 @@ function WishlistButton({ product, size }) {
 
 function SimilarProducts() {
   const { similarProducts } = useLoaderData()
+
+  if (similarProducts.length < 1) return null
 
   return (
     <Section>

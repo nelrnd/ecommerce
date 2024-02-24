@@ -21,7 +21,7 @@ export default function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-[24rem]">
+      <SheetContent className="w-full sm:w-[24rem]">
         <div className="h-full flex flex-col">
           <header className="p-6 border-b border-gray-200">
             <div className="flex justify-between items-baseline">

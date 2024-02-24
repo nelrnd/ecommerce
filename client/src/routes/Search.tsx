@@ -35,10 +35,12 @@ export default function Search() {
       {results.length > 0 ? (
         <>
           <header className="mb-8">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center gap-4">
               <div>
-                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Search results for "{term}"</h1>
-                <p className="mt-2 text-xl text-gray-600">{nbOfResultsText}</p>
+                <h1 className="scroll-m-20 text-2xl sm:text-4xl font-extrabold tracking-tight">
+                  Search results for "{term}"
+                </h1>
+                <p className="sm:mt-2 sm:text-xl text-gray-600">{nbOfResultsText}</p>
               </div>
               {results.length > 1 && (
                 <div className="flex items-center gap-3">
@@ -47,7 +49,15 @@ export default function Search() {
                     <SelectTrigger className="w-[11rem]">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
-                    <SelectContent align="end">
+                    <SelectContent
+                      align="end"
+                      ref={(ref) => {
+                        if (!ref) return
+                        ref.ontouchstart = (e) => {
+                          e.preventDefault()
+                        }
+                      }}
+                    >
                       <SelectItem value="latest" defaultChecked>
                         Latest
                       </SelectItem>

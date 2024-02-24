@@ -4,7 +4,7 @@ const API_BASE = import.meta.env.VITE_API_BASE
 
 export default function ProductImage({ src, className = "" }) {
   return (
-    <div className={`relative z-0 aspect-square bg-gray-200 ${className}`}>
+    <div className={`relative aspect-square bg-gray-200 ${className}`}>
       {src ? (
         <img src={API_BASE + "/" + src} alt="" className="block w-full h-full object-cover" />
       ) : (

@@ -6,7 +6,7 @@ import { useCart } from "@/providers/CartProvider"
 import { formatPrice } from "../utils"
 import axios from "../axios"
 import countries from "../countries.json"
-import Footer from "../components/Footer"
+import { CheckoutFooter } from "../components/Footer"
 import OrderSummary from "../components/OrderSummary"
 import { CheckoutNavBar } from "../components/NavBar"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select"
@@ -30,11 +30,11 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-gray-100">
       <CheckoutNavBar />
-      <div className="w-[64rem] max-w-full m-auto mb-16 px-4">
+      <div className="w-[64rem] max-w-full m-auto mb-16 px-2 md:px-4">
         <Checkout_Header />
         <Checkout_Form />
       </div>
-      <Footer minimized={true} />
+      <CheckoutFooter />
     </div>
   )
 }
@@ -42,7 +42,7 @@ export default function Checkout() {
 function Checkout_Header() {
   return (
     <header className="py-8">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">Checkout</h1>
+      <h1 className="scroll-m-20 text-2xl sm:text-4xl font-extrabold tracking-tight">Checkout</h1>
     </header>
   )
 }
@@ -134,9 +134,9 @@ function Checkout_Form() {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid md:grid-cols-8 gap-6 items-start">
-          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
+          <section className="bg-white px-4 md:px-8 py-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
-              <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Personal info</h2>
+              <h2 className="scroll-m-20 text-xl md:text-2xl font-semibold tracking-tight">Personal info</h2>
             </header>
             <main className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
@@ -311,9 +311,9 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
+          <section className="bg-white px-4 md:px-8 py-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
-              <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Shipping method</h2>
+              <h2 className="scroll-m-20 text-xl md:text-2xl font-semibold tracking-tight">Shipping method</h2>
             </header>
             <main className="space-y-6">
               <FormField
@@ -343,9 +343,9 @@ function Checkout_Form() {
             </main>
           </section>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
+          <section className="bg-white px-4 md:px-8 py-8 rounded-xl border border-gray-200 md:col-span-5">
             <header className="mb-6">
-              <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Payment info</h2>
+              <h2 className="scroll-m-20 text-xl md:text-2xl font-semibold tracking-tight">Payment info</h2>
             </header>
             <main className="space-y-6">
               <FormField
@@ -411,7 +411,7 @@ function Checkout_Form() {
             <OrderSummary items={items} shippingMethod={shipingMethodValue} />
           </div>
 
-          <section className="bg-white p-8 rounded-xl border border-gray-200 md:col-span-5">
+          <section className="bg-white px-4 md:px-8 py-8 rounded-xl border border-gray-200 md:col-span-5">
             <FormField
               control={form.control}
               name="accepts_terms"

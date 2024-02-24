@@ -17,7 +17,7 @@ export default function Categories() {
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">All categories</h1>
       </header>
       <main>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4">
           {categories.map((category) => (
             <CategoryCard key={category._id} category={category} />
           ))}

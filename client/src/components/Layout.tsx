@@ -7,7 +7,7 @@ export function ProductGrid({ children }) {
 }
 
 export function Section({ className = "", children }) {
-  const sectionClasses = `py-14 ${className || ""}`
+  const sectionClasses = `pt-6 pb-12 lg:pt-14 lg:pb-14 ${className || ""}`
   return (
     <section className={sectionClasses}>
       <Layout>{children}</Layout>

@@ -10,10 +10,10 @@ export default function OrderSummary({ title = "Summary", items, shippingMethod 
   const totalPrice = shippingPrice + subtotalPrice
 
   return (
-    <aside className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+    <aside className="bg-white px-4 md:px-8 py-8 rounded-xl border border-gray-200 space-y-6">
       <header>
         <div className="flex justify-between items-baseline">
-          <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">{title}</h2>
+          <h2 className="scroll-m-20 text-xl md:text-2xl font-semibold tracking-tight">{title}</h2>
           <p className="text-sm text-gray-600">{itemsLengthText}</p>
         </div>
       </header>

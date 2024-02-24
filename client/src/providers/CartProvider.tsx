@@ -38,7 +38,6 @@ export default function CartProvider({ children }) {
       const endpoint = `/cart/${newCartId || cartId}`
       const res = await axios.post(endpoint, { product, size, quantity })
       const items = res.data
-      console.log(items)
       setItems(items)
       openCart()
       return Promise.resolve()

@@ -105,15 +105,17 @@ function NewsletterSection() {
 
   return (
     <Section>
-      <div className="bg-gradient-to-br from-gray-900 to-gray-950 text-white pt-24 pb-28 text-center space-y-6 rounded-xl border border-gray-500">
-        <h3 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Subscribe to our newsletter</h3>
+      <div className="bg-gradient-to-br from-gray-900 to-gray-950 text-white px-4 pt-24 pb-28 text-center space-y-6 rounded-xl border border-gray-500">
+        <h3 className="scroll-m-20 text-3xl md:text-4xl font-extrabold tracking-tight lg:text-5xl">
+          Subscribe to our newsletter
+        </h3>
         <p className="max-w-[28rem] m-auto text-gray-400">
           Discover our latest releases and major sales firsthand. Sign up now for free weekly styling guides,
           exclusively for you. Elevate your fashion game effortlessly! ✨
         </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="m-auto w-fit flex items-start space-x-2">
+            <div className="m-auto w-fit flex flex-col items-stretch md:flex-row md:items-start gap-2">
               <FormField
                 control={form.control}
                 name="email"

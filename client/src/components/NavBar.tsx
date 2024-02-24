@@ -186,7 +186,7 @@ function NavBar_MobileMenu({ isOpen, close }) {
             },
             {
               href: "/brand",
-              text: "Brand",
+              text: "Brands",
             },
             {
               href: "/latest",

@@ -54,7 +54,7 @@ export default function Register() {
   }, [user, navigate])
 
   return (
-    <div className="mt-24 m-auto w-full max-w-md p-8 border border-gray-200 rounded-xl">
+    <div className="sm:my-24 m-auto w-full max-w-md p-8 sm:border border-gray-200 rounded-xl">
       <h1 className="text-3xl font-semibold tracking-tight mb-6">Register</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

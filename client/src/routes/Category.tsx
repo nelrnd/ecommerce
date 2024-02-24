@@ -23,10 +23,10 @@ export default function Category() {
   return (
     <Section>
       <header className="mb-8">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{category.name}</h1>
-            <p className="mt-2 text-xl text-gray-600">
+            <h1 className="scroll-m-20 text-2xl sm:text-4xl font-extrabold tracking-tight">{category.name}</h1>
+            <p className="sm:mt-2 sm:text-xl text-gray-600">
               {category.products.length} {category.products.length < 2 ? "item" : "items"}
             </p>
           </div>
@@ -37,7 +37,15 @@ export default function Category() {
                 <SelectTrigger className="w-[11rem]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
-                <SelectContent align="end">
+                <SelectContent
+                  align="end"
+                  ref={(ref) => {
+                    if (!ref) return
+                    ref.ontouchstart = (e) => {
+                      e.preventDefault()
+                    }
+                  }}
+                >
                   <SelectItem value="latest" defaultChecked>
                     Latest
                   </SelectItem>

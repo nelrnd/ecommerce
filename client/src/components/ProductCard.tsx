@@ -18,7 +18,7 @@ function ProductCardLikeButton({ product }) {
     <Button
       onClick={() => toggleItemInWishlist(product, null, 1)}
       variant="ghost"
-      className="absolute z-10 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
+      className="absolute z-0 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
     >
       {!isInWishlist ? <BiHeart /> : <BiSolidHeart />}
       <span className="sr-only">Add item to wishlist</span>
@@ -32,7 +32,6 @@ export default function ProductCard({
 }: ProductCardProps) {
   return (
     <div className="relative">
-      {button}
       <Link to={`/product/${product.slug}`}>
         <div className="group">
           <div>
@@ -44,6 +43,7 @@ export default function ProductCard({
           </div>
         </div>
       </Link>
+      {button}
     </div>
   )
 }
