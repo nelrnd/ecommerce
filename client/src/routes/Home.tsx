@@ -73,7 +73,7 @@ function LatestProductsSection() {
           <Carousel>
             <CarouselContent>
               {latestProducts.map((product) => (
-                <CarouselItem key={product._id} className="basis-1/3">
+                <CarouselItem key={product._id} className="sm:basis-1/2 md:basis-1/3">
                   <ProductCard product={product} />
                 </CarouselItem>
               ))}

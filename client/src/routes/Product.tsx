@@ -204,7 +204,7 @@ function SimilarProducts() {
       <Carousel>
         <CarouselContent>
           {similarProducts.map((product) => (
-            <CarouselItem key={product._id} className="basis-1/4">
+            <CarouselItem key={product._id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
               <ProductCard product={product} />
             </CarouselItem>
           ))}
