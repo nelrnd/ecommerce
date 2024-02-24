@@ -8,7 +8,7 @@ import axios from "../axios"
 import countries from "../countries.json"
 import Footer from "../components/Footer"
 import OrderSummary from "../components/OrderSummary"
-import NavBar from "../components/NavBar"
+import { CheckoutNavBar } from "../components/NavBar"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form"
 import { Input } from "../components/ui/input"
@@ -20,7 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 export default function Checkout() {
   return (
     <div className="min-h-screen bg-gray-100">
-      <NavBar minimized={true} />
+      <CheckoutNavBar />
       <div className="w-[64rem] max-w-full m-auto mb-16 px-4">
         <Checkout_Header />
         <Checkout_Form />

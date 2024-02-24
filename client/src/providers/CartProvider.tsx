@@ -15,7 +15,7 @@ interface CartItem {
 
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState<cartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>([])
   const [cartId, setCartId_] = useState("")
 
   const { user } = useAuth()
@@ -30,10 +30,14 @@ export default function CartProvider({ children }) {
 
   async function addToCart(product: Product, size: string, quantity: number) {
     try {
-      if (!cartId) await setCartId()
-      const endpoint = `/cart/${cartId}`
+      let newCartId
+      if (!cartId) {
+        newCartId = await setCartId()
+      }
+      const endpoint = `/cart/${newCartId || cartId}`
       const res = await axios.post(endpoint, { product, size, quantity })
       const items = res.data
+      console.log(items)
       setItems(items)
       openCart()
       return Promise.resolve()

@@ -290,3 +290,11 @@ function AccountButton() {
     </DropdownMenu>
   )
 }
+
+export function CheckoutNavBar() {
+  return (
+    <header className="bg-white py-3 md:py-6 px-3 sm:px-6 md:px-12 border-b border-gray-200 sticky top-0 left-0 z-10">
+      <NavBar_Logo />
+    </header>
+  )
+}
