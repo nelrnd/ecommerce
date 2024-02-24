@@ -208,3 +208,18 @@ exports.product_delete = async (req, res) => {
   }
   res.json(deletedProduct)
 }
+
+exports.product_similar = async (req, res) => {
+  const { slug } = req.params
+  const product = await Product.findOne({ slug: slug }).exec()
+
+  if (!product) {
+    res.status(404).json({ error: "Product not found" })
+  }
+
+  const similar_products = await Product.find({ category: product.category, _id: { $ne: product._id } })
+    .sort({ view_count: -1 })
+    .limit(6)
+
+  res.json(similar_products)
+}

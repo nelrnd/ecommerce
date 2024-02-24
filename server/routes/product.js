@@ -13,4 +13,6 @@ Router.put("/:slug", authController.isAdmin, productController.product_update)
 
 Router.delete("/:slug", authController.isAdmin, productController.product_delete)
 
+Router.get("/:slug/similar", productController.product_similar)
+
 module.exports = Router
