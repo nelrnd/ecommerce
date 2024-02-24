@@ -58,6 +58,10 @@ exports.cart_item_create = async (req, res, next) => {
 
   const itemInCart = await ProductVariant.findOne({ in_cart: cartId, sku: sku }).exec()
 
+  if (product.sizes && !size) {
+    return res.status(400).json({ error: "Size is required" })
+  }
+
   if (itemInCart) {
     if (itemInCart.quantity < MAX_ITEM_QUANTITY) {
       itemInCart.quantity++
