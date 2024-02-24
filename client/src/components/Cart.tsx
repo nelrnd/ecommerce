@@ -78,7 +78,7 @@ export default function Cart() {
 }
 
 function CartItem({ item, editable = true }) {
-  const { updateItemSize, updateItemQuantity, deleteItem, closeCart } = useCart()
+  const { updateItemSize, updateItemQuantity, removeFromCart, closeCart } = useCart()
 
   return (
     <div className="flex gap-3">
@@ -94,7 +94,7 @@ function CartItem({ item, editable = true }) {
             <p className="text-gray-600">{formatPrice(item.product.price * item.quantity)}</p>
           </div>
           <button
-            onClick={() => deleteItem(item)}
+            onClick={() => removeFromCart(item._id)}
             className="w-9 h-9 rounded-md hover:bg-gray-100 grid place-content-center"
           >
             <BiX />

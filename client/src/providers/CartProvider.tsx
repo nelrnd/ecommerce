@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import axios from "../axios"
 import { useAuth } from "./AuthProvider"
 import { Product } from "../routes/Product"
@@ -16,6 +16,7 @@ interface CartItem {
 export default function CartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<CartItem[]>([])
+  const [itemsLoading, setItemsLoading] = useState(true)
   const [cartId, setCartId_] = useState("")
 
   const { user } = useAuth()
@@ -32,7 +33,7 @@ export default function CartProvider({ children }) {
     try {
       let newCartId
       if (!cartId) {
-        newCartId = await setCartId()
+        newCartId = await setCartId({ createNew: true })
       }
       const endpoint = `/cart/${newCartId || cartId}`
       const res = await axios.post(endpoint, { product, size, quantity })
@@ -61,7 +62,7 @@ export default function CartProvider({ children }) {
     }
   }
 
-  async function updateItem(item: CartItem, newSize, newQuantity) {
+  async function updateItem(item: CartItem, newSize: string | null, newQuantity: number | null) {
     try {
       if (!cartId) throw Error("No cart id")
       const endpoint = `/cart/${cartId}/item/${item._id}`
@@ -89,58 +90,48 @@ export default function CartProvider({ children }) {
     return items.find((cartItem) => cartItem.sku === sku)
   }
 
-  async function setCartId() {
-    let cartId
+  const setCartId = useCallback(
+    async (options) => {
+      let cartId
+      const storedCartId = localStorage.getItem("cartId")
 
-    if (user) {
-      cartId = user.cart_id
-    } else if (localStorage.getItem("cartId")) {
-      cartId = localStorage.getItem("cartId")
-    } else {
-      const res = await axios.post("/cart")
-      cartId = res.data._id
-      localStorage.setItem("cartId", cartId)
-    }
-
-    setCartId_(cartId)
-    return cartId
-  }
-
-  // remove user cartId when user log out
-  useEffect(() => {
-    if (!user) {
-      setCartId_("")
-    }
-  }, [user])
-
-  // set cart id to user cart id when user log in
-  useEffect(() => {
-    async function handleUserLogin() {
       if (user) {
-        setCartId_(user.cart_id)
-        // merge current cart with user cart when user log in
-        const currentCartId = localStorage.getItem("cartId")
-        if (currentCartId) {
+        cartId = user.cart_id
+        if (storedCartId) {
+          await axios.post(`/cart/${cartId}/merge`, { currentCartId: storedCartId })
           localStorage.removeItem("cartId")
-          const res = await axios.post(`/cart/${user.cart_id}/merge`, { currentCartId: currentCartId })
-          const items = res.data
-          setItems(items)
+        }
+      } else if (storedCartId) {
+        cartId = storedCartId
+      } else {
+        if (options.createNew) {
+          const res = await axios.post("/cart")
+          cartId = res.data._id
+          localStorage.setItem("cartId", cartId)
+        } else {
+          cartId = ""
         }
       }
-    }
-    handleUserLogin()
-  }, [user])
 
-  // fetch cart items when changing cart id
+      setCartId_(cartId)
+      return cartId
+    },
+    [user]
+  )
+
+  useEffect(() => {
+    setCartId({ createNew: false })
+  }, [setCartId])
+
   useEffect(() => {
     async function fetchItems() {
       try {
         if (cartId) {
+          setItemsLoading(true)
           const res = await axios.get(`/cart/${cartId}`)
           const items = res.data
           setItems(items)
-        } else {
-          setItems([])
+          setItemsLoading(false)
         }
       } catch (err) {
         console.log(err)
@@ -149,18 +140,11 @@ export default function CartProvider({ children }) {
     fetchItems()
   }, [cartId])
 
-  // set cartId to local storage cartId if defined
-  useEffect(() => {
-    const savedCartId = localStorage.getItem("cartId")
-    if (savedCartId) {
-      setCartId_(savedCartId)
-    }
-  }, [])
-
   const contextValue = {
     isOpen,
     setIsOpen,
     items,
+    itemsLoading,
     openCart,
     closeCart,
     addToCart,

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -18,6 +18,15 @@ import { Link, useNavigate } from "react-router-dom"
 import { Checkbox } from "@/components/ui/checkbox"
 
 export default function Checkout() {
+  const { itemsLoading, items } = useCart()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (itemsLoading === false && items.length < 1) {
+      navigate("/")
+    }
+  }, [items, itemsLoading, navigate])
+
   return (
     <div className="min-h-screen bg-gray-100">
       <CheckoutNavBar />
@@ -104,13 +113,12 @@ function Checkout_Form() {
   }, [countryValue, setValue])
 
   useEffect(() => {
-    if (items.length === 0) {
-      return navigate("/")
+    if (items.length) {
+      setValue(
+        "products",
+        items.map((item) => ({ ...item, product: item.product._id }))
+      )
     }
-    setValue(
-      "products",
-      items.map((item) => ({ ...item, product: item.product._id }))
-    )
   }, [items, navigate, setValue])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
