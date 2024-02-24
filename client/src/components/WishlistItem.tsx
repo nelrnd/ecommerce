@@ -14,8 +14,8 @@ const formSchema = z.object({
 })
 
 export default function WishlistItem({ item }) {
-  const { addItem } = useCart()
-  const { removeItem } = useWishlist()
+  const { addToCart } = useCart()
+  const { removeFromWishlist } = useWishlist()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,6 +30,7 @@ export default function WishlistItem({ item }) {
     <div className="flex flex-col">
       <div className="flex-1">
         <ProductCard product={item.product} button={<DeleteButton itemId={item._id} />} />
+        {item.size}
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-2">
@@ -66,11 +67,11 @@ interface DeleteButtonProps {
 }
 
 function DeleteButton({ itemId }: DeleteButtonProps) {
-  const { removeItem } = useWishlist()
+  const { removeFromWishlist } = useWishlist()
 
   return (
     <Button
-      onClick={() => removeItem(itemId)}
+      onClick={() => removeFromWishlist(itemId)}
       variant="ghost"
       className="absolute z-10 top-2 right-2 w-10 h-10 p-0 text-xl text-gray-800"
     >
