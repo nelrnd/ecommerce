@@ -7,7 +7,7 @@ import { Product } from "../routes/Product"
 
 interface ProductCardProps {
   product: Product
-  button: JSX.Element | null
+  button?: JSX.Element | null
 }
 
 function ProductCardLikeButton({ product }) {

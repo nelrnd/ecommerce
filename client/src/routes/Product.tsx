@@ -12,6 +12,9 @@ import { BiChevronRight, BiHeart, BiLoaderAlt, BiSolidHeart } from "react-icons/
 import { Link, useLoaderData } from "react-router-dom"
 import { useState } from "react"
 import { useWishlist } from "@/providers/WishlistProvider"
+import axios from "../axios"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import ProductCard from "@/components/ProductCard"
 
 export interface Product {
   name: string
@@ -28,25 +31,40 @@ export interface Product {
 
 const MAX_ITEM_QUANTITY = 5
 
+export async function productLoader({ params }) {
+  const slug = params.slug
+
+  const [product, similarProducts] = await Promise.all([
+    axios.get(`/product/${slug}`),
+    axios.get(`/product/${slug}/similar`),
+  ])
+
+  return { product: product.data, similarProducts: similarProducts.data }
+}
+
 export default function Product() {
-  const product: Product = useLoaderData()
+  const { product } = useLoaderData()
 
   return (
-    <Section>
-      <ProductBreadcrumb product={product} />
-      <div className="grid grid-cols-3 items-start gap-8">
-        <div className="col-span-2">
-          <ProductImage src={product.image} />
-        </div>
-        <div className="pt-6">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
-          <p className="mt-2 text-xl text-gray-600">${product.price}</p>
-          <p className="text-gray-600 mt-4">{product.description}</p>
+    <>
+      <Section>
+        <ProductBreadcrumb product={product} />
+        <div className="grid grid-cols-3 items-start gap-8">
+          <div className="col-span-2">
+            <ProductImage src={product.image} />
+          </div>
+          <div className="pt-6">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">{product.name}</h1>
+            <p className="mt-2 text-xl text-gray-600">${product.price}</p>
+            <p className="text-gray-600 mt-4">{product.description}</p>
 
-          <ProductForm product={product} />
+            <ProductForm product={product} />
+          </div>
         </div>
-      </div>
-    </Section>
+      </Section>
+
+      <SimilarProducts />
+    </>
   )
 }
 
@@ -172,5 +190,28 @@ function WishlistButton({ product, size }) {
         </>
       )}
     </Button>
+  )
+}
+
+function SimilarProducts() {
+  const { similarProducts } = useLoaderData()
+
+  return (
+    <Section>
+      <header className="mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight">You may also like</h2>
+      </header>
+      <Carousel>
+        <CarouselContent>
+          {similarProducts.map((product) => (
+            <CarouselItem key={product._id} className="basis-1/4">
+              <ProductCard product={product} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </Section>
   )
 }

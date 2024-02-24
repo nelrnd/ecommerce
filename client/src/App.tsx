@@ -2,13 +2,12 @@ import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from "
 import axios from "./axios"
 import Root from "./routes/Root"
 import Home from "./routes/Home"
-import Product from "./routes/Product"
+import Product, { productLoader } from "./routes/Product"
 import Category from "./routes/Category"
 import Checkout from "./routes/Checkout"
 import dashboardRouter from "./routes/Dashboard/Dashboard"
 import CartProvider from "./providers/CartProvider"
 import { Toaster } from "./components/ui/toaster"
-import NotFound from "./routes/NotFound"
 import Brand from "./routes/Brand"
 import Categories from "./routes/Categories"
 import Brands from "./routes/Brands"
@@ -67,10 +66,7 @@ const router = createBrowserRouter([
           {
             path: "/product/:slug",
             element: <Product />,
-            loader: async ({ params }) => {
-              const res = await axios.get(`/product/${params.slug}`)
-              return res.data
-            },
+            loader: productLoader,
           },
           {
             path: "category",
