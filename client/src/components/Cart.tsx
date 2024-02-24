@@ -1,6 +1,6 @@
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BiX, BiShoppingBag } from "react-icons/bi"
+import { BiX } from "react-icons/bi"
 import { useCart } from "../providers/CartProvider"
 import { Link, useNavigate } from "react-router-dom"
 import { formatPrice } from "@/utils"
