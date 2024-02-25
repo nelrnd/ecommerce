@@ -47,6 +47,14 @@ function Checkout_Header() {
   )
 }
 
+const cartItemSchema = z.object({
+  _id: z.string(),
+  sku: z.string(),
+  product: z.string(),
+  size: z.string().nullable(),
+  quantity: z.number(),
+})
+
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
@@ -64,9 +72,7 @@ const formSchema = z.object({
   card_expires: z.string().min(1, "Card expiration date is required"),
   card_cvc: z.string().min(1, "Card CVC is required").length(3, "CVC must be 3 characters long"),
   accepts_terms: z.boolean().default(false),
-  products: z.array(
-    z.object({ id: z.string(), product: z.string(), quantity: z.number(), size: z.string().nullable() })
-  ),
+  products: z.array(cartItemSchema),
 })
 
 const shippingMethods = [
@@ -108,7 +114,7 @@ function Checkout_Form() {
   useEffect(() => {
     if (countryValue) {
       const country = countries.find((country) => country.name === countryValue)
-      setValue("phone_code", country.phone_code)
+      setValue("phone_code", country.phone_code, { shouldValidate: true })
     }
   }, [countryValue, setValue])
 
@@ -116,12 +122,15 @@ function Checkout_Form() {
     if (items.length) {
       setValue(
         "products",
-        items.map((item) => ({ ...item, product: item.product._id }))
+        items.map((item) => ({ ...item, product: item.product._id })),
+        { shouldValidate: true }
       )
+      console.log(form.getValues("products"))
     }
   }, [items, navigate, setValue])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("gang?")
     if (acceptTerms === false) return
     const res = await axios.post("/order", values)
     const order = res.data
@@ -433,7 +442,8 @@ function Checkout_Form() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" disabled={acceptTerms === false}>
+
+            <Button type="submit" className="w-full" disabled={acceptTerms === false}>
               Continue
             </Button>
           </section>
