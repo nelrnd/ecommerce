@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import logo from "/opwear_logo.svg"
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -8,8 +9,8 @@ export default function Footer() {
       <div className="w-[80rem] max-w-full m-auto">
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-6">
           <div className="md:col-span-3">
-            <h3 className="text-xl mb-4">E-Commerce</h3>
-            <p className="text-gray-600">©{year} E-Commerce. All rights reserved.</p>
+            <img src={logo} />
+            <p className="mt-4 text-gray-600">©{year} OPWEAR. All rights reserved.</p>
           </div>
           {[
             {

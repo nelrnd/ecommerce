@@ -16,6 +16,7 @@ import { useWishlist } from "@/providers/WishlistProvider"
 import Badge from "./Badge"
 import { Button } from "./ui/button"
 import { useCart } from "@/providers/CartProvider"
+import logo from "/opwear_logo.svg"
 
 export default function NavBar() {
   // for mobile version
@@ -47,7 +48,7 @@ function NavBar_Logo() {
   return (
     <div className="flex-1">
       <Link to="/" className="block w-fit">
-        <h3>E-Commerce</h3>
+        <img src={logo} />
       </Link>
     </div>
   )
