@@ -131,6 +131,8 @@ export default function CartProvider({ children }) {
           const items = res.data
           setItems(items)
           setItemsLoading(false)
+        } else {
+          setItems([])
         }
       } catch (err) {
         console.log(err)
