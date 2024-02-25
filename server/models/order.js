@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   shipping_method: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
+  status: { type: String, enum: ["in progress", "complete"], default: "in progress" },
   products: [
     {
       product: { type: mongoose.Types.ObjectId, ref: "Product", required: true },

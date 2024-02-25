@@ -7,11 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu"
-import useFetch from "../../hooks/useFetch"
 import { formatPrice } from "../../utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { BiDotsHorizontalRounded, BiSortAlt2 } from "react-icons/bi"
-import { Link } from "react-router-dom"
+import { Link, useLoaderData } from "react-router-dom"
+import axios from "../../axios"
 
 type Product = {
   _id: string
@@ -22,10 +22,13 @@ type Product = {
   price: number
 }
 
-export default function Products() {
-  const [products, loading] = useFetch("/product")
+export async function loader() {
+  const products = await axios.get("/product")
+  return products.data
+}
 
-  if (loading) return null
+export default function Products() {
+  const products = useLoaderData()
 
   const tableProducts = products?.map((product) => ({
     _id: product._id,

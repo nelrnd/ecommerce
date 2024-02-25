@@ -7,10 +7,10 @@ import CategoryDelete from "./CategoryDelete"
 import CategoryForm from "./CategoryForm"
 import Index from "./Index"
 import Order from "./Order"
-import Orders from "./Orders"
+import Orders, { loader as ordersLoader } from "./Orders"
 import ProductDelete from "./ProductDelete"
 import ProductForm from "./ProductForm"
-import Products from "./Products"
+import Products, { loader as productsLoader } from "./Products"
 import { BiChart, BiCube, BiGridAlt, BiLinkExternal, BiLogOut, BiPurchaseTag, BiSolidHome } from "react-icons/bi"
 import AdminRoute from "../AdminRoute"
 import { useAuth } from "@/providers/AuthProvider"
@@ -29,6 +29,7 @@ export default {
         {
           path: "order",
           element: <Orders />,
+          loader: ordersLoader,
         },
         {
           path: "order/:id",
@@ -36,6 +37,7 @@ export default {
         },
         {
           path: "product",
+          loader: productsLoader,
           element: <Products />,
         },
         {
