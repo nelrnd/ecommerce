@@ -20,7 +20,7 @@ const formSchema = z.object({
   price: z.coerce
     .number({ required_error: "Price is required", invalid_type_error: "Price must be a number" })
     .nonnegative(),
-  description: z.string().min(3).max(1000).optional(),
+  description: z.string().optional(),
   category: z.string().min(1).optional(),
   brand: z.string().min(1).optional(),
   image: z

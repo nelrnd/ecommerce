@@ -15,7 +15,7 @@ import { BiShow } from "react-icons/bi"
 const formSchema = z.object({
   id: z.string().optional(), // if editing an existing brand
   name: z.string().min(3).max(200),
-  description: z.string().min(3).max(200).optional(),
+  description: z.string().optional(),
 })
 
 export default function BrandForm() {
