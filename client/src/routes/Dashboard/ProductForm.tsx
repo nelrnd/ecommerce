@@ -72,7 +72,6 @@ export default function ProductForm() {
   }, [slug, form, navigate])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     const options = { headers: { "Content-Type": "multipart/form-data" } }
 
     const catchHandler = (err) => {
