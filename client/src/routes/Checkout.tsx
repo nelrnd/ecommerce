@@ -125,12 +125,10 @@ function Checkout_Form() {
         items.map((item) => ({ ...item, product: item.product._id })),
         { shouldValidate: true }
       )
-      console.log(form.getValues("products"))
     }
   }, [items, navigate, setValue])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("gang?")
     if (acceptTerms === false) return
     const res = await axios.post("/order", values)
     const order = res.data
