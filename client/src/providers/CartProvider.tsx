@@ -118,6 +118,15 @@ export default function CartProvider({ children }) {
     [user]
   )
 
+  async function clearCart() {
+    if (cartId) {
+      const res = await axios.put(`/cart/${cartId}/clear`)
+      setItems(res.data)
+    } else {
+      setItems([])
+    }
+  }
+
   useEffect(() => {
     setCartId({ createNew: false })
   }, [setCartId])
@@ -153,6 +162,7 @@ export default function CartProvider({ children }) {
     updateItemSize,
     updateItemQuantity,
     getItem,
+    clearCart,
   }
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>

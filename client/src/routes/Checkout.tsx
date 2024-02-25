@@ -122,7 +122,7 @@ function Checkout_Form() {
 
   const navigate = useNavigate()
 
-  const { items } = useCart()
+  const { items, clearCart } = useCart()
 
   useEffect(() => {
     if (items.length) {
@@ -139,6 +139,7 @@ function Checkout_Form() {
     const order = res.data
     if (order) {
       navigate("/order", { state: order })
+      clearCart()
     }
   }
 

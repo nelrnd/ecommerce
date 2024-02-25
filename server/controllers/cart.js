@@ -132,3 +132,9 @@ exports.cart_item_delete = async (req, res, next) => {
   }
   next()
 }
+
+exports.cart_clear = async (req, res, next) => {
+  const { cartId } = req.params
+  await ProductVariant.deleteMany({ in_cart: cartId }).exec()
+  next()
+}

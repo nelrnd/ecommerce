@@ -16,4 +16,6 @@ Router.put("/:cartId/item/:itemId", cartController.cart_item_update, cartControl
 
 Router.delete("/:cartId/item/:itemId", cartController.cart_item_delete, cartController.cart_get)
 
+Router.put("/:cartId/clear", cartController.cart_clear, cartController.cart_get)
+
 module.exports = Router
