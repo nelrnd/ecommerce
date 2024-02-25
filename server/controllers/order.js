@@ -121,3 +121,12 @@ exports.order_detail = async (req, res) => {
   }
   res.json(order)
 }
+
+exports.order_update = async (req, res) => {
+  const { id } = req.params
+  const updatedOrder = await Order.findByIdAndUpdate(id, { status: req.body.status }, { new: true }).exec()
+  if (!updatedOrder) {
+    return res.status(404).json({ error: "Order not found" })
+  }
+  res.json(updatedOrder)
+}

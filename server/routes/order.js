@@ -8,4 +8,6 @@ Router.post("/", orderController.order_create)
 
 Router.get("/:id", orderController.order_detail)
 
+Router.put("/:id", orderController.order_update)
+
 module.exports = Router

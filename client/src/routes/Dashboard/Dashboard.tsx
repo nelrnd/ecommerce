@@ -6,7 +6,7 @@ import Categories from "./Categories"
 import CategoryDelete from "./CategoryDelete"
 import CategoryForm from "./CategoryForm"
 import Index from "./Index"
-import Order from "./Order"
+import Order, { loader as orderLoader } from "./Order"
 import Orders, { loader as ordersLoader } from "./Orders"
 import ProductDelete from "./ProductDelete"
 import ProductForm from "./ProductForm"
@@ -34,6 +34,7 @@ export default {
         {
           path: "order/:id",
           element: <Order />,
+          loader: orderLoader,
         },
         {
           path: "product",

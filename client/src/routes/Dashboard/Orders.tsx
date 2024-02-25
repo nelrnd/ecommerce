@@ -33,8 +33,6 @@ export default function Orders() {
     date: order.created_at,
   }))
 
-  console.log(tableOrders)
-
   const columns: ColumnDef<Order>[] = [
     {
       accessorKey: "number",
