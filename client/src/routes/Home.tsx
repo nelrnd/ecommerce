@@ -13,7 +13,7 @@ import axios from "../axios"
 
 export async function loader() {
   const [category1, category2, latestProducts] = await Promise.all([
-    axios.get("/category/t-shirts-1"),
+    axios.get("/category/t-shirts"),
     axios.get("/category/jackets"),
     axios.get("/product?limit=5"),
   ])
