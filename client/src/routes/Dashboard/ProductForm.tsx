@@ -21,8 +21,14 @@ const formSchema = z.object({
     .number({ required_error: "Price is required", invalid_type_error: "Price must be a number" })
     .nonnegative(),
   description: z.string().optional(),
-  category: z.string().min(1).optional(),
-  brand: z.string().min(1).optional(),
+  category: z
+    .string()
+    .optional()
+    .transform((e) => (e === "" ? undefined : e)),
+  brand: z
+    .string()
+    .optional()
+    .transform((e) => (e === "" ? undefined : e)),
   image: z
     .union([z.string(), z.instanceof(File).refine((f) => f.size < 5242880, "Image should be less than 5 MB")])
     .optional(),
@@ -35,6 +41,7 @@ export default function ProductForm() {
     defaultValues: {
       name: "",
       price: 0,
+      sizes: [],
     },
   })
 
